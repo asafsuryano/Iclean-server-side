@@ -1,4 +1,4 @@
-package demo;
+package ElementPackage;
 
 public class MessageBoundary {
 	private String message;

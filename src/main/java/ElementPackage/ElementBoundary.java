@@ -1,0 +1,82 @@
+	package ElementPackage;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.xml.crypto.Data;
+
+public class ElementBoundary {
+   private ElementId elementId; 
+   private Type type;
+   private boolean active;
+   private Date date;
+   private CreatedBy createdby;
+   private Location location;
+   private Map<String,Object> elemetnAttrbiutes;
+   //if we need another things for elements private elements Attributes
+   
+   
+   public ElementBoundary(ElementId eID,Type type,boolean active,Date date,CreatedBy CBy,Location location) {
+	   this.elementId=eID;
+	   this.active=active;
+	   this.type=type;
+	   this.date=date;
+	   this.createdby=CBy;
+	   this.location=location;
+	   elemetnAttrbiutes=new HashMap<String,Object>();
+	   
+   }
+   public ElementBoundary() {}
+   
+   public ElementBoundary(String userDomain,String userEmail,String elemnetDomain,int elementID) {	   
+	  this.createdby=new CreatedBy(new UserId(userDomain, userEmail));
+	  this.elementId=new ElementId(elemnetDomain,elementID);
+	   elemetnAttrbiutes=new HashMap<String,Object>();
+	   this.type=Type.DEMO_ELEMENT;
+	  
+   }
+public ElementId getElementId() {
+	return elementId;
+}
+public void setElementId(ElementId elementId) {
+	this.elementId = elementId;
+}
+public Type getType() {
+	return type;
+}
+public void setType(Type type) {
+	this.type = type;
+}
+public Map<String, Object> getElementAttribute() {
+	return elemetnAttrbiutes;
+}
+public void setElementAttrbiutes(Map<String, Object> elemetnAttrbiutes) {
+	this.elemetnAttrbiutes = elemetnAttrbiutes;
+}
+public boolean isActive() {
+	return active;
+}
+public void setActive(boolean active) {
+	this.active = active;
+}
+public Date getDate() {
+	return date;
+}
+public void setDate(Date date) {
+	this.date = date;
+}
+public CreatedBy getCreatedby() {
+	return createdby;
+}
+public void setCreatedby(CreatedBy createdby) {
+	this.createdby = createdby;
+}
+public Location getLocation() {
+	return location;
+}
+public void setLocation(Location location) {
+	this.location = location;
+}
+   
+}
