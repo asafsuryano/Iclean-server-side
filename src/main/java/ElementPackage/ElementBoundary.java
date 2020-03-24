@@ -13,7 +13,7 @@ public class ElementBoundary {
    private Date date;
    private CreatedBy createdby;
    private Location location;
-   private Map<String,Object> elemetnAttrbiutes;
+   private Map<String,Object> elementAttributes;
    //if we need another things for elements private elements Attributes
    
    
@@ -24,15 +24,17 @@ public class ElementBoundary {
 	   this.date=date;
 	   this.createdby=CBy;
 	   this.location=location;
-	   elemetnAttrbiutes=new HashMap<String,Object>();
+	   elementAttributes=new HashMap<String,Object>();
 	   
    }
-   public ElementBoundary() {}
+   public ElementBoundary() {
+	   this.elementAttributes = new HashMap<>();
+   }
    
    public ElementBoundary(String userDomain,String userEmail,String elemnetDomain,int elementID) {	   
 	  this.createdby=new CreatedBy(new UserId(userDomain, userEmail));
 	  this.elementId=new ElementId(elemnetDomain,elementID);
-	   elemetnAttrbiutes=new HashMap<String,Object>();
+	   this.elementAttributes=new HashMap<String,Object>();
 	   this.type=Type.DEMO_ELEMENT;
 	  
    }
@@ -49,10 +51,10 @@ public void setType(Type type) {
 	this.type = type;
 }
 public Map<String, Object> getElementAttribute() {
-	return elemetnAttrbiutes;
+	return elementAttributes;
 }
 public void setElementAttrbiutes(Map<String, Object> elemetnAttrbiutes) {
-	this.elemetnAttrbiutes = elemetnAttrbiutes;
+	this.elementAttributes = elemetnAttrbiutes;
 }
 public boolean isActive() {
 	return active;

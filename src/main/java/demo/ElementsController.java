@@ -1,5 +1,6 @@
 package demo;
 
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import ElementPackage.ElementBoundary;
+import ElementPackage.ElementId;
 import ElementPackage.MessageBoundary;
 
 @RestController
@@ -47,8 +49,16 @@ public class ElementsController {
 		     })
 		     .collect(Collectors.toList())    //list ElementBoundary
 		     .toArray(new ElementBoundary[0]);// ElementsBoundary []
-		    	 
+		   
 		    }
-		
+		@RequestMapping(path = "/acs/elements/{managerDomain}/{managerEmail}",
+				method = RequestMethod.POST,produces = MediaType.APPLICATION_JSON_VALUE,
+				consumes = MediaType.APPLICATION_JSON_VALUE)
+		public ElementBoundary createNewElement(@RequestBody ElementBoundary element,
+				@PathVariable("managerDomain") String managerDomain,
+				@PathVariable("managerEmail") String managerEmail) {
+			element.setElementId(new ElementId(managerDomain, 1213));
+			return element;
+		}
    	}
 
