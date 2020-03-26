@@ -1,14 +1,20 @@
 package ActionBoundaryClasses;
 
+
+import java.util.Date;
+import java.util.HashMap;
+
+import org.apache.tomcat.jni.Time;
+
 public class ActionBoundary {
 	private String type;
-	private String createdTimestamp;
+	private Date createdTimestamp;
 	private ActionId actionId;
 	private Element element;
 	private InvokedBy invokedBy;
-	private ActionAttributes actionAttributes;
-	public ActionBoundary(String type, String createdTimestamp, ActionId actionId, Element element, InvokedBy invokedBy,
-			ActionAttributes actionAttributes) {
+	private HashMap<String, Object> actionAttributes;
+	public ActionBoundary(String type, Date createdTimestamp, ActionId actionId, Element element, InvokedBy invokedBy,
+			HashMap<String, Object> actionAttributes) {
 		super();
 		this.type = type;
 		this.createdTimestamp = createdTimestamp;
@@ -23,10 +29,10 @@ public class ActionBoundary {
 	public void setType(String type) {
 		this.type = type;
 	}
-	public String getCreatedTimestamp() {
+	public Date getCreatedTimestamp() {
 		return createdTimestamp;
 	}
-	public void setCreatedTimestamp(String createdTimestamp) {
+	public void setCreatedTimestamp(Date createdTimestamp) {
 		this.createdTimestamp = createdTimestamp;
 	}
 	public ActionId getActionId() {
@@ -47,10 +53,10 @@ public class ActionBoundary {
 	public void setInvokedBy(InvokedBy invokedBy) {
 		this.invokedBy = invokedBy;
 	}
-	public ActionAttributes getActionAttributes() {
+	public HashMap<String, Object> getActionAttributes() {
 		return actionAttributes;
 	}
-	public void setActionAttributes(ActionAttributes actionAttributes) {
+	public void setActionAttributes(HashMap<String, Object> actionAttributes) {
 		this.actionAttributes = actionAttributes;
 	}
 	
