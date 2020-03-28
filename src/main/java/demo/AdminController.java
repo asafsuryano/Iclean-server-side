@@ -15,14 +15,17 @@ import ActionBoundaryClasses.Element;
 import ActionBoundaryClasses.ElementId;
 import ActionBoundaryClasses.InvokedBy;
 import ActionBoundaryClasses.UserId;
+import users.Roles;
+import users.User;
+import users.UserBoundary;
 
 @RestController
 public class AdminController {
 	@SuppressWarnings("serial")
-	@RequestMapping(path = "acs/admin/users/{adminDomain}/{adminEmail}",
+	@RequestMapping(path = "acs/admin/actions/{adminDomain}/{adminEmail}",
 			method = RequestMethod.GET,
 			produces = MediaType.APPLICATION_JSON_VALUE)
-	public ActionBoundary exportAllUsers(@PathVariable("adminDomain") String adminDomain,
+	public ActionBoundary exportAllActions(@PathVariable("adminDomain") String adminDomain,
 			@PathVariable("adminEmail") String adminEmail) {
 	
 		
@@ -41,6 +44,44 @@ public class AdminController {
 		}
 				);
 	}
+	
+	
+	@RequestMapping(path = "acs/admin/users/{adminDomain}/{adminEmail}",
+			method = RequestMethod.GET,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	public UserBoundary exportAllUsers(@PathVariable("adminDomain") String adminDomain,
+			@PathVariable("adminEmail") String adminEmail) {
+		return new UserBoundary(new User("2020b.demo", "ddemo@us.er"),Roles.PLAYER,"Demo User",";-)");
+				
+			}
+	
+	@RequestMapping(path = "acs/admin/users/{adminDomain}/{adminEmail}",
+			method = RequestMethod.DELETE)
+	public void deleteAllUsers (
+			@PathVariable("id") String id) {
+		// TODO implement this stub later
+	}
+	
+	
+	
+	@RequestMapping(path = "acs/admin/elements/{adminDomain}/{adminEmail}",
+			method = RequestMethod.DELETE)
+	public void deleteAllElements (
+			@PathVariable("id") String id) {
+		// TODO implement this stub later
+	}
+	
+	
+	
+	@RequestMapping(path = "acs/admin/actions/{adminDomain}/{adminEmail}",
+			method = RequestMethod.DELETE)
+	public void deleteAllActions (
+			@PathVariable("id") String id) {
+		// TODO implement this stub later
+	}
+	
+	
+	
 }
 
 

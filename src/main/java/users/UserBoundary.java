@@ -1,12 +1,14 @@
 package users;
 
+
 public class UserBoundary {
 	private User userId;
 	private Roles role;
 	private String username;
 	private String avatar;
 	
-	public UserBoundary() {
+	public UserBoundary()
+	{
 		
 	}
 
@@ -17,6 +19,8 @@ public class UserBoundary {
 		this.username = username;
 		this.avatar = avatar;
 	}
+
+	
 
 	public User getUserId() {
 		return userId;
