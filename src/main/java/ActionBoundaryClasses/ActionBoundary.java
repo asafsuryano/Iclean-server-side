@@ -12,6 +12,8 @@ public class ActionBoundary {
 	private Element element;
 	private InvokedBy invokedBy;
 	private HashMap<String, Object> actionAttributes;
+	
+	public ActionBoundary() {}
 	public ActionBoundary(String type, Date createdTimestamp, ActionId actionId, Element element, InvokedBy invokedBy,
 			HashMap<String, Object> actionAttributes) {
 		super();
@@ -22,6 +24,7 @@ public class ActionBoundary {
 		this.invokedBy = invokedBy;
 		this.actionAttributes = actionAttributes;
 	}
+	
 	public String getType() {
 		return type;
 	}
