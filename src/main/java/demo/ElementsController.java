@@ -57,7 +57,7 @@ public class ElementsController {
 		
 		
 		@RequestMapping(path = "/acs/elements/{userDomain}/{userEmail}/{elementDomain}/{elementID}", 
-				method = RequestMethod.GET, 
+				method = RequestMethod.PUT, 
 				produces = MediaType.APPLICATION_JSON_VALUE,
 				consumes = MediaType.APPLICATION_JSON_VALUE)
 		public void updateElement(@PathVariable("userDomain") String userDomain,
