@@ -55,31 +55,30 @@ public class AdminController {
 				
 			}
 	
+	
 	@RequestMapping(path = "acs/admin/users/{adminDomain}/{adminEmail}",
 			method = RequestMethod.DELETE)
 	public void deleteAllUsers (
-			@PathVariable("id") String id) {
-		// TODO implement this stub later
+			@PathVariable("adminDomain") String adminDomain,
+			@PathVariable("adminEmail") String adminEmail) {
+		return;//TODO
 	}
-	
-	
 	
 	@RequestMapping(path = "acs/admin/elements/{adminDomain}/{adminEmail}",
 			method = RequestMethod.DELETE)
 	public void deleteAllElements (
-			@PathVariable("id") String id) {
-		// TODO implement this stub later
+			@PathVariable("adminDomain") String adminDomain,
+			@PathVariable("adminEmail") String adminEmail) {
+		return;//TODO
 	}
-	
-	
 	
 	@RequestMapping(path = "acs/admin/actions/{adminDomain}/{adminEmail}",
 			method = RequestMethod.DELETE)
 	public void deleteAllActions (
-			@PathVariable("id") String id) {
-		// TODO implement this stub later
+			@PathVariable("adminDomain") String adminDomain,
+			@PathVariable("adminEmail") String adminEmail) {
+		return;//TODO
 	}
-	
 	
 	
 }

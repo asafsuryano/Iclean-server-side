@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import users.NewUserDetails;
+import users.Roles;
 import users.UserBoundary;
 import users.User;
 
@@ -37,4 +38,18 @@ public class UserController {
 									@PathVariable("userEmail") String email) {
 		return;
 	}
+	
+	@RequestMapping(path="/acs/users/login/{userDomain}/{userEmail}",
+			method = RequestMethod.GET,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	public UserBoundary newBuondary(@PathVariable("userDomain") String domain,
+									@PathVariable("userEmail") String email) {
+		UserBoundary ub = new UserBoundary();
+		ub.setUsername("Demo");
+		ub.setAvatar(":)");
+		ub.setRole(Roles.PLAYER);
+		ub.setUserId(new User(domain,email));
+		return ub;
+	}
+	
 }
