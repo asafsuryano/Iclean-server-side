@@ -25,11 +25,11 @@ public class AdminController {
 	@RequestMapping(path = "acs/admin/actions/{adminDomain}/{adminEmail}",
 			method = RequestMethod.GET,
 			produces = MediaType.APPLICATION_JSON_VALUE)
-	public ActionBoundary exportAllActions(@PathVariable("adminDomain") String adminDomain,
+	public ActionBoundary[] exportAllActions(@PathVariable("adminDomain") String adminDomain,
 			@PathVariable("adminEmail") String adminEmail) {
 	
-		
-		return new ActionBoundary("actionType",
+		ActionBoundary[] arr = new ActionBoundary[1];
+		arr[0]= new ActionBoundary("actionType",
 				new Date(),
 				new ActionId("2020b.demo","971"),
 				new Element(new ElementId("2020b.demo", "54")),
@@ -43,16 +43,19 @@ public class AdminController {
 			}
 		}
 				);
+		return arr; 
 	}
 	
 	
 	@RequestMapping(path = "acs/admin/users/{adminDomain}/{adminEmail}",
 			method = RequestMethod.GET,
 			produces = MediaType.APPLICATION_JSON_VALUE)
-	public UserBoundary exportAllUsers(@PathVariable("adminDomain") String adminDomain,
+	public UserBoundary[] exportAllUsers(@PathVariable("adminDomain") String adminDomain,
 			@PathVariable("adminEmail") String adminEmail) {
-		return new UserBoundary(new User("2020b.demo", "ddemo@us.er"),Roles.PLAYER,"Demo User",";-)");
-				
+		UserBoundary[] arr = new UserBoundary[1];
+		arr[0] =new UserBoundary(new User("2020b.demo", "ddemo@us.er"),Roles.PLAYER,"Demo User",";-)");
+		 
+		return arr;
 			}
 	
 	
