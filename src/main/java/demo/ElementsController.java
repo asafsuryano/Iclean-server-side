@@ -22,7 +22,7 @@ public class ElementsController {
 	@RequestMapping(path = "/acs/elements/{userDomain}/{userEmail}/{elementDomain}/{elementID}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ElementBoundary retreiveSpecificElement(@PathVariable("userDomain") String userDomain,
 			@PathVariable("userEmail") String userEmail, @PathVariable("elementDomain") String elementDomain,
-			@PathVariable("elementID") int elementID) {
+			@PathVariable("elementID") 	String elementID) {
 		return new ElementBoundary(userDomain, userEmail, elementDomain, elementID);
 		
 	}
@@ -33,7 +33,7 @@ public class ElementsController {
 		int count=4;
 		return 
 		     IntStream.range(0, count).// Stream of Integer
-		     mapToObj(i->retreiveSpecificElement(userDomain, userEmail,"goolge", rand.nextInt(10)))// Stream of ElementBoundary
+		     mapToObj(i->retreiveSpecificElement(userDomain, userEmail,"goolge", Integer.toString(rand.nextInt(10))))// Stream of ElementBoundary
 		     .map(element->{
 		    	 Map<String, Object> elementsAttribute = new HashMap<>();
 					elementsAttribute.putAll(element.getElementAttribute());
@@ -51,7 +51,7 @@ public class ElementsController {
 		public ElementBoundary createNewElement(@RequestBody ElementBoundary element,
 				@PathVariable("managerDomain") String managerDomain,
 				@PathVariable("managerEmail") String managerEmail) {
-			element.setElementId(new ElementId(managerDomain, 1213));
+			element.setElementId(new ElementId(managerDomain, "1213"));
 			return element;
 		}
 		
@@ -62,7 +62,7 @@ public class ElementsController {
 				consumes = MediaType.APPLICATION_JSON_VALUE)
 		public void updateElement(@PathVariable("userDomain") String userDomain,
 				@PathVariable("userEmail") String userEmail, @PathVariable("elementDomain") String elementDomain,
-				@PathVariable("elementID") int elementID,
+				@PathVariable("elementID") String elementID,
 				@RequestBody ElementBoundary element)
 		{
 			return;

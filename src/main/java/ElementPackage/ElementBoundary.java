@@ -31,7 +31,7 @@ public class ElementBoundary {
 	   this.elementAttributes = new HashMap<>();
    }
    
-   public ElementBoundary(String userDomain,String userEmail,String elemnetDomain,int elementID) {	   
+   public ElementBoundary(String userDomain,String userEmail,String elemnetDomain,String elementID) {	   
 	  this.createdby=new CreatedBy(new UserId(userDomain, userEmail));
 	  this.elementId=new ElementId(elemnetDomain,elementID);
 	   this.elementAttributes=new HashMap<String,Object>();

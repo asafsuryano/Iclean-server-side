@@ -2,9 +2,9 @@ package ElementPackage;
 
 public class ElementId {
 	private String elementDomain;
-	private int ElementId;
+	private String ElementId;
 
-	public ElementId(String domain, int id) {
+	public ElementId(String domain, String id) {
 		this.elementDomain = domain;
 		this.ElementId = id;
 	}
@@ -19,11 +19,11 @@ public class ElementId {
 		this.elementDomain = elementDomain;
 	}
 
-	public int getElementId() {
+	public String getElementId() {
 		return ElementId;
 	}
 
-	public void setElementId(int elementId) {
+	public void setElementId(String elementId) {
 		ElementId = elementId;
 	}
 }
