@@ -33,7 +33,7 @@ public class UserController {
 			method = RequestMethod.PUT,
 			produces = MediaType.APPLICATION_JSON_VALUE,
 			consumes = MediaType.APPLICATION_JSON_VALUE)
-	public void newBuondary(@RequestBody  UserBoundary user, 
+	public void updateUser(@RequestBody  UserBoundary user, 
 									@PathVariable("userDomain") String domain,
 									@PathVariable("userEmail") String email) {
 		return;
@@ -42,7 +42,7 @@ public class UserController {
 	@RequestMapping(path="/acs/users/login/{userDomain}/{userEmail}",
 			method = RequestMethod.GET,
 			produces = MediaType.APPLICATION_JSON_VALUE)
-	public UserBoundary newBuondary(@PathVariable("userDomain") String domain,
+	public UserBoundary login(@PathVariable("userDomain") String domain,
 									@PathVariable("userEmail") String email) {
 		UserBoundary ub = new UserBoundary();
 		ub.setUsername("Demo");
