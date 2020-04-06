@@ -1,4 +1,4 @@
-package demo;
+package acs.demo;
 
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -7,10 +7,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import users.NewUserDetails;
-import users.Roles;
-import users.UserBoundary;
-import users.User;
+import acs.users.NewUserDetails;
+import acs.users.Roles;
+import acs.users.User;
+import acs.users.UserBoundary;
 
 @RestController
 public class UserController {

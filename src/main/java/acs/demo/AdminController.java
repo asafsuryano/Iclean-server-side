@@ -1,4 +1,4 @@
-package demo;
+package acs.demo;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -8,16 +8,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-
-import ActionBoundaryClasses.ActionBoundary;
-import ActionBoundaryClasses.ActionId;
-import ActionBoundaryClasses.Element;
-import ActionBoundaryClasses.ElementId;
-import ActionBoundaryClasses.InvokedBy;
-import ActionBoundaryClasses.UserId;
-import users.Roles;
-import users.User;
-import users.UserBoundary;
+import acs.ActionBoundaryClasses.ActionBoundary;
+import acs.ActionBoundaryClasses.ActionId;
+import acs.ActionBoundaryClasses.Element;
+import acs.ActionBoundaryClasses.ElementId;
+import acs.ActionBoundaryClasses.InvokedBy;
+import acs.ActionBoundaryClasses.UserId;
+import acs.users.Roles;
+import acs.users.User;
+import acs.users.UserBoundary;
 
 @RestController
 public class AdminController {

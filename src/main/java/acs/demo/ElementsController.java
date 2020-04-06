@@ -1,4 +1,4 @@
-package demo;
+package acs.demo;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import ElementPackage.ElementBoundary;
-import ElementPackage.ElementId;
+import acs.ElementPackage.ElementBoundary;
+import acs.ElementPackage.ElementId;
 
 @RestController
 public class ElementsController {

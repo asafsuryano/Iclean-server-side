@@ -1,30 +1,41 @@
-package users;
+package acs.users;
 
 
-public class NewUserDetails {
-	private String email;
+public class UserBoundary {
+	private User userId;
 	private Roles role;
 	private String username;
 	private String avatar;
 	
-	public NewUserDetails() {
+	public UserBoundary()
+	{
 		
 	}
-	
-	public NewUserDetails(String email, String username, String avatar, Roles role) {
+
+	public UserBoundary(User userId, Roles role, String username, String avatar) {
 		super();
+		this.userId = userId;
 		this.role = role;
-		this.email = email;
 		this.username = username;
 		this.avatar = avatar;
 	}
 
-	public String getEmail() {
-		return email;
+	
+
+	public User getUserId() {
+		return userId;
 	}
 
-	public void setEmail(String email) {
-		this.email = email;
+	public void setUserId(User userId) {
+		this.userId = userId;
+	}
+
+	public Roles getRole() {
+		return role;
+	}
+
+	public void setRole(Roles role) {
+		this.role = role;
 	}
 
 	public String getUsername() {
@@ -42,15 +53,5 @@ public class NewUserDetails {
 	public void setAvatar(String avatar) {
 		this.avatar = avatar;
 	}
-	
-	public Roles getRole() {
-		return role;
-	}
 
-	public void setRole(Roles role) {
-		this.role = role;
-	}
-
-	
-	
 }

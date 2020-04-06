@@ -1,4 +1,4 @@
-package ElementPackage;
+package acs.ElementPackage;
 
 public class ElementId {
 	private String elementDomain;
