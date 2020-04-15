@@ -1,4 +1,4 @@
-package acs.ElementPackage;
+package acs.elementBoundaryPackage;
 
 public class Location {
 private double  lat;

@@ -1,4 +1,4 @@
-package acs.ActionBoundaryClasses;
+package acs.actionBoundaryPackage;
 
 public class ActionId {
 	private String domain;

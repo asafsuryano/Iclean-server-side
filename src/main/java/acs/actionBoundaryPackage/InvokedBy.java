@@ -1,4 +1,4 @@
-package acs.ActionBoundaryClasses;
+package acs.actionBoundaryPackage;
 
 public class InvokedBy {
 	private UserId userId;

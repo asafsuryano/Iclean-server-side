@@ -1,4 +1,4 @@
-package acs.ActionBoundaryClasses;
+package acs.actionBoundaryPackage;
 
 
 import java.util.Date;

@@ -8,15 +8,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import acs.ActionBoundaryClasses.ActionBoundary;
-import acs.ActionBoundaryClasses.ActionId;
-import acs.ActionBoundaryClasses.Element;
-import acs.ActionBoundaryClasses.ElementId;
-import acs.ActionBoundaryClasses.InvokedBy;
-import acs.ActionBoundaryClasses.UserId;
-import acs.users.Roles;
-import acs.users.User;
-import acs.users.UserBoundary;
+import acs.actionBoundaryPackage.ActionBoundary;
+import acs.actionBoundaryPackage.ActionId;
+import acs.actionBoundaryPackage.Element;
+import acs.actionBoundaryPackage.ElementId;
+import acs.actionBoundaryPackage.InvokedBy;
+import acs.actionBoundaryPackage.UserId;
+import acs.usersBoundaryPackage.Roles;
+import acs.usersBoundaryPackage.User;
+import acs.usersBoundaryPackage.UserBoundary;
 
 @RestController
 public class AdminController {

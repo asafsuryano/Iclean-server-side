@@ -1,4 +1,4 @@
-package acs.users;
+package acs.usersBoundaryPackage;
 
 public class User {
 	private String domain;

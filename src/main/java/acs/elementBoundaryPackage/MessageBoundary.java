@@ -1,4 +1,4 @@
-package acs.ElementPackage;
+package acs.elementBoundaryPackage;
 
 public class MessageBoundary {
 	private String message;

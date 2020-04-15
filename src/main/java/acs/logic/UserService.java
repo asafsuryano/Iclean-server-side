@@ -1,7 +1,7 @@
-package acs.users.logic;
+package acs.logic;
 import java.util.List;
 
-import acs.users.UserBoundary;
+import acs.usersBoundaryPackage.UserBoundary;
 
 public interface UserService {
 	public UserBoundary	createUser(UserBoundary user);

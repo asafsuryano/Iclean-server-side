@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import acs.ElementPackage.ElementBoundary;
-import acs.ElementPackage.ElementId;
+import acs.elementBoundaryPackage.ElementBoundary;
+import acs.elementBoundaryPackage.ElementId;
 
 @RestController
 public class ElementsController {
