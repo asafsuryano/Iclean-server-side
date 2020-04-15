@@ -1,11 +1,14 @@
-package acs.actionBoundaryPackage;
-
+package acs.data;
 
 import java.util.Date;
 import java.util.HashMap;
 
+import acs.data.actionEntityProperties.ActionId;
+import acs.data.actionEntityProperties.Element;
+import acs.data.actionEntityProperties.InvokedBy;
 
-public class ActionBoundary {
+
+public class ActionEntity {
 	private String type;
 	private Date createdTimestamp;
 	private ActionId actionId;
@@ -13,8 +16,8 @@ public class ActionBoundary {
 	private InvokedBy invokedBy;
 	private HashMap<String, Object> actionAttributes;
 	
-	public ActionBoundary() {}
-	public ActionBoundary(String type, Date createdTimestamp, ActionId actionId, Element element, InvokedBy invokedBy,
+	public ActionEntity() {}
+	public ActionEntity(String type, Date createdTimestamp, ActionId actionId, Element element, InvokedBy invokedBy,
 			HashMap<String, Object> actionAttributes) {
 		super();
 		this.type = type;
@@ -24,7 +27,6 @@ public class ActionBoundary {
 		this.invokedBy = invokedBy;
 		this.actionAttributes = actionAttributes;
 	}
-	
 	
 	public String getType() {
 		return type;
