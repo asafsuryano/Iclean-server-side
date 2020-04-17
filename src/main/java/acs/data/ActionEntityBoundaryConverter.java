@@ -20,7 +20,7 @@ public class ActionEntityBoundaryConverter {
 		return ab;
 	}
 	
-	public ActionEntity entityToBoundary(ActionBoundary boundary) {
+	public ActionEntity boundaryToEntity(ActionBoundary boundary) {
 		ActionEntity ae = new ActionEntity();
 		ae.setType(boundary.getType());
 		ae.setCreatedTimestamp(boundary.getCreatedTimestamp());
