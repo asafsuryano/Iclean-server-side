@@ -9,4 +9,16 @@ public Location(double lat,double ing) {
 	this.ing=ing;
 }
 public Location() {}
+public double getLat() {
+	return lat;
+}
+public void setLat(double lat) {
+	this.lat = lat;
+}
+public double getIng() {
+	return ing;
+}
+public void setIng(double ing) {
+	this.ing = ing;
+}
 }

@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.xml.crypto.Data;
 
 public class ElementBoundary {
+	private String name;
    private ElementId elementId; 
    private Type type;
    private boolean active;
@@ -79,6 +80,12 @@ public Location getLocation() {
 }
 public void setLocation(Location location) {
 	this.location = location;
+}
+public String getName() {
+	return name;
+}
+public void setName(String name) {
+	this.name = name;
 }
    
 }
