@@ -1,9 +1,6 @@
 package acs.data;
-import java.util.Collection;
-import java.util.Collections;
 
 import acs.elementBoundaryPackage.*;
-import acs.data.elementEntityProperties.*;
 import acs.data.elementEntityProperties.ElementId;
 import acs.data.elementEntityProperties.Location;
 import acs.data.elementEntityProperties.UserId;
@@ -18,7 +15,7 @@ public class ElementEntityBoundaryConverter {
 		eb.setActive(entity.isActive());
 		eb.setCreatedby(new CreatedBy(new acs.elementBoundaryPackage.UserId(entity.getCreatedBy().getDomain(),
 				entity.getCreatedBy().getEmail())));
-		eb.setElementAttrbiutes(Collections.singletonMap("Level Of Dirt", entity.getLevelOfDirt()));
+		eb.setElementAttrbiutes(entity.getElementAttributes());
 		eb.setType(entity.getType());
 		return eb;
 	}
@@ -32,8 +29,8 @@ public class ElementEntityBoundaryConverter {
 		entity.setType(boundary.getType());
 		entity.setCreatedBy(new UserId(boundary.getCreatedby().getUserId().getUserdomain(),
 				boundary.getCreatedby().getUserId().getUserEmail()));
+		entity.setElementAttributes(boundary.getElementAttribute());
 		entity.setActive(boundary.isActive());
-		entity.setLevelOfDirt(((Integer)boundary.getElementAttribute().get("Level Of Dirt")).intValue());
 		return entity;
 	}
 }

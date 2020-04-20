@@ -1,6 +1,7 @@
 package acs.data;
 
 import java.util.Date;
+import java.util.Map;
 
 import acs.data.elementEntityProperties.*;
 import acs.elementBoundaryPackage.Type;
@@ -12,8 +13,9 @@ public class ElementEntity {
 	private Date createdTimeStamp;
 	private Location location;
 	private UserId createdBy;// ask about if createdBy is a class of its own
-	private int levelOfDirt;
-	private boolean isActive;
+	private Boolean isActive;
+	private Map<String,Object> elementAttributes;
+	
 	public ElementEntity() {}
 	public ElementId getElementId() {
 		return elementId;
@@ -51,16 +53,17 @@ public class ElementEntity {
 	public void setCreatedBy(UserId createdBy) {
 		this.createdBy = createdBy;
 	}
-	public int getLevelOfDirt() {
-		return levelOfDirt;
-	}
-	public void setLevelOfDirt(int levelOfDirt) {
-		this.levelOfDirt = levelOfDirt;
-	}
-	public boolean isActive() {
+	public Boolean isActive() {
 		return isActive;
 	}
 	public void setActive(boolean isActive) {
 		this.isActive = isActive;
 	}
+	public Map<String, Object> getElementAttributes() {
+		return elementAttributes;
+	}
+	public void setElementAttributes(Map<String, Object> elementAttributes) {
+		this.elementAttributes = elementAttributes;
+	}
+	
 }
