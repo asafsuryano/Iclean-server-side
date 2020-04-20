@@ -15,11 +15,11 @@ import org.springframework.stereotype.Service;
 
 import acs.data.ElementEntity;
 import acs.data.ElementEntityBoundaryConverter;
+import acs.data.elementEntityProperties.Type;
 import acs.elementBoundaryPackage.CreatedBy;
 import acs.elementBoundaryPackage.ElementBoundary;
 import acs.elementBoundaryPackage.ElementId;
 import acs.elementBoundaryPackage.Location;
-import acs.elementBoundaryPackage.Type;
 import acs.elementBoundaryPackage.UserId;
 import acs.logic.ElementService;
 
@@ -27,9 +27,13 @@ import acs.logic.ElementService;
 @Service
 public class ElementServiceImplementation implements ElementService {
 	private String projectName;
-	private Map<ElementId, ElementEntity> elementsDatabase;
+	private Map<acs.data.elementEntityProperties.ElementId, ElementEntity> elementsDatabase;
 	private ElementEntityBoundaryConverter converter; 
 	
+	public ElementServiceImplementation() {
+		// TODO Auto-generated constructor stub
+		this.converter =  new ElementEntityBoundaryConverter();
+	}
 
 	@PostConstruct
 	public void init() {
@@ -48,7 +52,7 @@ public class ElementServiceImplementation implements ElementService {
 		ElementId elementId = new ElementId(this.projectName, UUID.randomUUID().toString());
 		element.setElementId(elementId);
 		if(element.getType() == null) {
-			element.setType(Type.DEMO_ELEMENT);
+			element.setType("");
 		}
 		if(element.isActive() == null) {
 			element.setActive(false);
@@ -69,7 +73,9 @@ public class ElementServiceImplementation implements ElementService {
 			element.setLocation(new Location(0,0));
 		}
 		
-		this.elementsDatabase.put(element.getElementId(), this.converter.toEntity(element));
+		ElementEntity el = this.converter.fromBoundarytoEntity(element);
+		
+		this.elementsDatabase.put(el.getElementId(), el);
 		
 		return element;
 	}
@@ -78,7 +84,7 @@ public class ElementServiceImplementation implements ElementService {
 	public ElementBoundary update(String managerDomain, String managerEmail, String elementDomain, String elementId,
 			ElementBoundary update) {
 		
-		ElementId id = new ElementId(elementDomain, elementId);
+		acs.data.elementEntityProperties.ElementId id = new acs.data.elementEntityProperties.ElementId(elementDomain, elementId);
 		ElementEntity element = this.elementsDatabase.get(id);
 		if(element == null) {
 			throw new RuntimeException("Invalid Element");
@@ -88,24 +94,36 @@ public class ElementServiceImplementation implements ElementService {
 		}
 		
 		if(update.getType() == null) {
-			element.setType(Type.DEMO_ELEMENT);
+			
+		}
+		else {
+			element.setType(Type.valueOf(update.getType()));
 		}
 				
 		if(update.getName() == null) {
-			element.setName("");
+			
+		}
+		else {
+			element.setName(update.getName());
 		}
 		
 //		update.setDate(new Date());
 		
 		if(update.getElementAttribute() == null) {
-			element.setElementAttributes(new HashMap<>());
+			
+		}
+		else {
+			element.setElementAttributes(update.getElementAttribute());
 		}
 		
 		if(update.getLocation() == null) {
 			//leave element location as it was created
 		}
+		else {
+			element.setLocation(new acs.data.elementEntityProperties.Location(update.getLocation().getLat(),update.getLocation().getIng()));
+		}
 			
-		return this.converter.fromEntity(element);
+		return this.converter.fromEntityToBoundary(element);
 	}
 
 	@Override
@@ -114,7 +132,7 @@ public class ElementServiceImplementation implements ElementService {
 		return this.elementsDatabase // Map<String, ElementEntity>
 				.values()           // Collection<ElementEntity>
 				.stream()		    // Stream<ElementEntity>				
-				.map(this.converter::fromEntity)	
+				.map(this.converter::fromEntityToBoundary)	
 				.filter(el -> el.isActive() == true)
 				.collect(Collectors.toList()); // List<DummyBoundaries>
 	}
@@ -123,11 +141,11 @@ public class ElementServiceImplementation implements ElementService {
 	public ElementBoundary getSpecificElement(String userDomain, String userEmail, String elementDomain,
 			String elementId) {
 		// TODO Auto-generated method stub
-		ElementId id = new ElementId(elementDomain, elementId);
+		acs.data.elementEntityProperties.ElementId id = new acs.data.elementEntityProperties.ElementId(elementDomain, elementId);
 		ElementEntity elEntity =  this.elementsDatabase.get(id);
 		if(elEntity != null) {
 			return this.converter
-					.fromEntity(
+					.fromEntityToBoundary(
 							elEntity);
 		}
 		else {

@@ -4,7 +4,6 @@ import java.util.Date;
 import java.util.Map;
 
 import acs.data.elementEntityProperties.*;
-import acs.elementBoundaryPackage.Type;
 
 public class ElementEntity {
 	private ElementId elementId;
