@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import acs.data.ElementEntity;
@@ -25,7 +26,7 @@ import acs.logic.ElementService;
 
 @Service
 public class ElementServiceImplementation implements ElementService {
-
+	private String projectName;
 	private Map<ElementId, ElementEntity> elementsDatabase;
 	private ElementEntityBoundaryConverter converter; 
 	
@@ -35,10 +36,16 @@ public class ElementServiceImplementation implements ElementService {
 		// since this class is a singleton, we generate a thread safe collection
 		this.elementsDatabase = Collections.synchronizedMap(new HashMap<>());
 	}
+	
+	// injection of value from the spring boot configuration
+	@Value("${spring.application.name:demo}")
+	public void setProjectName(String projectName) {
+		this.projectName = projectName;
+	}
 
 	@Override
 	public ElementBoundary create(String managerDomain, String managerEmail, ElementBoundary element) {
-		ElementId elementId = new ElementId(managerDomain, UUID.randomUUID().toString());
+		ElementId elementId = new ElementId(this.projectName, UUID.randomUUID().toString());
 		element.setElementId(elementId);
 		if(element.getType() == null) {
 			element.setType(Type.DEMO_ELEMENT);
@@ -76,14 +83,14 @@ public class ElementServiceImplementation implements ElementService {
 		if(element == null) {
 			throw new RuntimeException("Invalid Element");
 		}
+		if(element.isActive() == false) {
+			throw new RuntimeException("Element Not Active! Cannot update...");
+		}
 		
 		if(update.getType() == null) {
 			element.setType(Type.DEMO_ELEMENT);
 		}
-		if(update.isActive() == null) {
-			element.setActive(false);
-		}
-		
+				
 		if(update.getName() == null) {
 			element.setName("");
 		}
@@ -107,7 +114,8 @@ public class ElementServiceImplementation implements ElementService {
 		return this.elementsDatabase // Map<String, ElementEntity>
 				.values()           // Collection<ElementEntity>
 				.stream()		    // Stream<ElementEntity>				
-				.map(this.converter::fromEntity)								
+				.map(this.converter::fromEntity)	
+				.filter(el -> el.isActive() == true)
 				.collect(Collectors.toList()); // List<DummyBoundaries>
 	}
 
