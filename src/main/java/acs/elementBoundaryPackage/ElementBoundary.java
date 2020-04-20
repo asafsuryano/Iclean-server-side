@@ -4,12 +4,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.xml.crypto.Data;
-
 public class ElementBoundary {
+   private String name;
    private ElementId elementId; 
    private Type type;
-   private boolean active;
+   private Boolean active;
    private Date date;
    private CreatedBy createdby;
    private Location location;
@@ -56,7 +55,7 @@ public Map<String, Object> getElementAttribute() {
 public void setElementAttrbiutes(Map<String, Object> elemetnAttrbiutes) {
 	this.elementAttributes = elemetnAttrbiutes;
 }
-public boolean isActive() {
+public Boolean isActive() {
 	return active;
 }
 public void setActive(boolean active) {
@@ -79,6 +78,12 @@ public Location getLocation() {
 }
 public void setLocation(Location location) {
 	this.location = location;
+}
+public String getName() {
+	return name;
+}
+public void setName(String name) {
+	this.name = name;
 }
    
 }
