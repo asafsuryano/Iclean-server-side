@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import acs.data.ElementEntity;
 import acs.data.ElementEntityBoundaryConverter;
+import acs.data.elementEntityProperties.Type;
 import acs.elementBoundaryPackage.CreatedBy;
 import acs.elementBoundaryPackage.ElementBoundary;
 import acs.elementBoundaryPackage.ElementId;
@@ -96,7 +97,7 @@ public class ElementServiceImplementation implements ElementService {
 			
 		}
 		else {
-			element.setType(update.getType());
+			element.setType(Type.valueOf(update.getType()));
 		}
 				
 		if(update.getName() == null) {
