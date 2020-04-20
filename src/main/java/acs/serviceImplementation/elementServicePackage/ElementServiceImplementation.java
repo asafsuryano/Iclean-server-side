@@ -27,7 +27,7 @@ import acs.logic.ElementService;
 @Service
 public class ElementServiceImplementation implements ElementService {
 	private String projectName;
-	private Map<ElementId, ElementEntity> elementsDatabase;
+	private Map<acs.data.elementEntityProperties.ElementId, ElementEntity> elementsDatabase;
 	private ElementEntityBoundaryConverter converter; 
 	
 
@@ -69,7 +69,9 @@ public class ElementServiceImplementation implements ElementService {
 			element.setLocation(new Location(0,0));
 		}
 		
-		this.elementsDatabase.put(element.getElementId(), this.converter.toEntity(element));
+		ElementEntity el = this.converter.toEntity(element);
+		
+		this.elementsDatabase.put(el.getElementId(), el);
 		
 		return element;
 	}
@@ -78,7 +80,7 @@ public class ElementServiceImplementation implements ElementService {
 	public ElementBoundary update(String managerDomain, String managerEmail, String elementDomain, String elementId,
 			ElementBoundary update) {
 		
-		ElementId id = new ElementId(elementDomain, elementId);
+		acs.data.elementEntityProperties.ElementId id = new acs.data.elementEntityProperties.ElementId(elementDomain, elementId);
 		ElementEntity element = this.elementsDatabase.get(id);
 		if(element == null) {
 			throw new RuntimeException("Invalid Element");
@@ -123,7 +125,7 @@ public class ElementServiceImplementation implements ElementService {
 	public ElementBoundary getSpecificElement(String userDomain, String userEmail, String elementDomain,
 			String elementId) {
 		// TODO Auto-generated method stub
-		ElementId id = new ElementId(elementDomain, elementId);
+		acs.data.elementEntityProperties.ElementId id = new acs.data.elementEntityProperties.ElementId(elementDomain, elementId);
 		ElementEntity elEntity =  this.elementsDatabase.get(id);
 		if(elEntity != null) {
 			return this.converter
