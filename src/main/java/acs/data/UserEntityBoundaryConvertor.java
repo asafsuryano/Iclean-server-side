@@ -4,8 +4,10 @@ import acs.usersBoundaryPackage.UserBoundary;
 import acs.usersBoundaryPackage.User;
 import acs.usersBoundaryPackage.Roles;
 
-public class UserConvertor {
-	public UserBoundary fromEntity(UserEntity entity) {
+public class UserEntityBoundaryConvertor {
+	
+	
+	public UserBoundary entityToBoundary(UserEntity entity) {
 		UserBoundary newUserBoundary = new UserBoundary();
 		newUserBoundary.setAvatar(entity.getAvatar());
 		newUserBoundary.setUsername(entity.getUsername());
@@ -23,7 +25,7 @@ public class UserConvertor {
 		return newUserBoundary;
 	}
 
-	public UserEntity toEntity(UserBoundary boundary) {
+	public UserEntity boundarytoEntity(UserBoundary boundary) {
 		UserEntity newUserEntity = new UserEntity();
 		newUserEntity.setAvatar(boundary.getAvatar());
 		newUserEntity.setUsername(boundary.getUsername());

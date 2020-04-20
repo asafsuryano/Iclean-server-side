@@ -9,6 +9,7 @@ import acs.actionBoundaryPackage.UserId;
 
 
 public class ActionEntityBoundaryConverter {
+	
 	public ActionBoundary entityToBoundary(ActionEntity entity) {
 		ActionBoundary ab = new ActionBoundary();
 		ab.setType(entity.getType());
@@ -20,7 +21,7 @@ public class ActionEntityBoundaryConverter {
 		return ab;
 	}
 	
-	public ActionEntity entityToBoundary(ActionBoundary boundary) {
+	public ActionEntity boundaryToEntity(ActionBoundary boundary) {
 		ActionEntity ae = new ActionEntity();
 		ae.setType(boundary.getType());
 		ae.setCreatedTimestamp(boundary.getCreatedTimestamp());
