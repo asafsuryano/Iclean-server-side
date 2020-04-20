@@ -4,11 +4,10 @@ import java.util.Date;
 import java.util.Map;
 
 import acs.data.elementEntityProperties.*;
-import acs.elementBoundaryPackage.Type;
 
 public class ElementEntity {
 	private ElementId elementId;
-	private Type type;
+	private String type;
 	private String name;
 	private Date createdTimeStamp;
 	private Location location;
@@ -23,10 +22,10 @@ public class ElementEntity {
 	public void setElementId(ElementId elementId) {
 		this.elementId = elementId;
 	}
-	public Type getType() {
+	public String getType() {
 		return type;
 	}
-	public void setType(Type type) {
+	public void setType(String type) {
 		this.type = type;
 	}
 	public String getName() {

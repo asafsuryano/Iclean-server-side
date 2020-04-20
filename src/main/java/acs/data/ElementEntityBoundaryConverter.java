@@ -5,7 +5,7 @@ import acs.data.elementEntityProperties.ElementId;
 import acs.data.elementEntityProperties.Location;
 import acs.data.elementEntityProperties.UserId;
 public class ElementEntityBoundaryConverter {
-	public ElementBoundary fromEntity(ElementEntity entity) {
+	public ElementBoundary fromEntityToBoundary(ElementEntity entity) {
 		ElementBoundary eb=new ElementBoundary();
 		eb.setElementId(new acs.elementBoundaryPackage.ElementId(entity.getElementId().getElementDomain(),
 				entity.getElementId().getElementId()));
@@ -19,7 +19,7 @@ public class ElementEntityBoundaryConverter {
 		eb.setType(entity.getType());
 		return eb;
 	}
-	public ElementEntity toEntity(ElementBoundary boundary) {
+	public ElementEntity fromBoundarytoEntity(ElementBoundary boundary) {
 		ElementEntity entity=new ElementEntity();
 		entity.setElementId(new ElementId(boundary.getElementId().getElementDomain(),
 				boundary.getElementId().getElementId()));
