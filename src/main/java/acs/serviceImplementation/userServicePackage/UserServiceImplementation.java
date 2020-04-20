@@ -6,26 +6,23 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.UUID;
-
+import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
-import acs.actionBoundaryPackage.UserId;
 import acs.data.UserEntity;
 import acs.data.UserEntityBoundaryConvertor;
 import acs.data.userEntityProperties.User;
 import acs.logic.UserService;
-import acs.newUserDetailsBoundaryPackage.NewUserDetails;
-import acs.usersBoundaryPackage.Roles;
 import acs.usersBoundaryPackage.UserBoundary;
+import acs.data.userEntityProperties.Roles;
 
+@Service
 public class UserServiceImplementation implements UserService {
 	private UserEntityBoundaryConvertor converter;
 	private String projectName;
-	// private Map<String, UserEntity> userDatabase;
 	private Map<User, UserEntity> userDatabase;
 
 	// injection of value from the spring boot configuration
@@ -49,7 +46,8 @@ public class UserServiceImplementation implements UserService {
 	public UserBoundary createUser(UserBoundary user) {
 		user.getUserId().setDomain(this.projectName);
 		if (user.getRole() == null) {
-			user.setRole(Roles.USER);
+			user.setRole(""); // if null what to do ?
+
 		}
 		if (user.getDetails() == null) {
 			user.setDetails(new HashMap<>());
@@ -83,22 +81,37 @@ public class UserServiceImplementation implements UserService {
 
 	@Override
 	public UserBoundary updateUser(String userDomain, String userEmail, UserBoundary update) {
-		UserBoundary existingUser = new UserBoundary();
-		existingUser.setDeleted(update.getDeleted());
+		// THE UPDATER OF THE USER
+		User updater = new User(userDomain, userEmail);
+		UserEntity updaterUser = this.userDatabase.get(updater);// this is the manager!!
 
-		if (update.getUserId() != null) {
-			existingUser.getUserId().setDomain(userDomain);
-			existingUser.getUserId().setEmail(userEmail);
+		if (updaterUser == null || updaterUser.getDeleted()) {
+			throw new UserNotFoundException("Update Fail, the updater details is incorrect");
 		}
 
-		if (update.getRole() != null) {
-			existingUser.setRole(update.getRole());
+		if (updaterUser.getRole() != Roles.ADMIN) {
+			throw new NotAdminExeption("this user is not a admin");
+		}
 
+		UserEntity existingUser = this.userDatabase.get(this.converter.boundarytoEntity(update).getUserId());
+
+		if (existingUser == null || existingUser.getDeleted()) {
+			throw new UserNotFoundException("Update Fail, User to update is not exsist");
+		}
+
+		// UserBoundary existingUser = new UserBoundary();// here
+		// existingUser.setDeleted(update.getDeleted());
+
+		if (update.getRole() != null) {
+			existingUser.setRole(this.converter.boundaryToEntityRole(update.getRole()));
+
+		}
+		if (update.getDeleted() != null) {
+			existingUser.setDeleted(false);
 		}
 
 		if (update.getUsername() != null) {
 			existingUser.setUsername(update.getUsername());
-
 		}
 
 		if (update.getAvatar() != null) {
@@ -111,24 +124,33 @@ public class UserServiceImplementation implements UserService {
 
 		}
 
-		if (update.getTimestamp() != null) {
-			existingUser.setTimestamp(update.getTimestamp());
-
-		}
-
-		return existingUser;
+		this.userDatabase.replace(existingUser.getUserId(), existingUser);
+		return this.converter.entityToBoundary(existingUser);
 	}
 
 	@Override
 	public List<UserBoundary> getAllUsers(String adminDomain, String adminEmail) {
-	
-		return null;
+		User adminUser = new User(adminDomain, adminEmail);
+		UserEntity admin = this.userDatabase.get(adminUser);
+
+		if (admin != null) {
+			if (admin.getRole() == acs.data.userEntityProperties.Roles.ADMIN) {
+				return this.userDatabase.values().stream().map(this.converter::entityToBoundary)
+						.filter(e -> e.getDeleted() == false).collect(Collectors.toList());
+			}
+		}
+		return null;// need to retunr null or empty list??
 	}
 
 	@Override
 	public void deleteAllUsers(String adminDomain, String adminEmail) {
-		// TODO Auto-generated method stub
-
+		User admidUser = new User(adminDomain, adminEmail);
+		UserEntity admin = this.userDatabase.get(admidUser);
+		if (admin != null) {
+			if (admin.getRole() == acs.data.userEntityProperties.Roles.ADMIN) {
+				this.userDatabase.clear();
+			}
+		}
 	}
 
 }
