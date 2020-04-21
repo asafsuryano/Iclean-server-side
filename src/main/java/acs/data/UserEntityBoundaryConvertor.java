@@ -2,7 +2,6 @@ package acs.data;
 
 import acs.usersBoundaryPackage.UserBoundary;
 import acs.usersBoundaryPackage.User;
-import acs.usersBoundaryPackage.Roles;
 
 public class UserEntityBoundaryConvertor {
 
@@ -17,8 +16,6 @@ public class UserEntityBoundaryConvertor {
 
 		if (entity.getRole() != null) {
 			newUserBoundary.setRole(entityToBoundaryRole(entity.getRole()));
-		} else {
-			newUserBoundary.setRole(null);// NULL ? OR ELSE?
 		}
 
 		return newUserBoundary;
@@ -39,10 +36,7 @@ public class UserEntityBoundaryConvertor {
 
 		if (boundary.getRole() != null) {
 			newUserEntity.setRole(boundaryToEntityRole(boundary.getRole()));
-		} else {
-			newUserEntity.setRole(null); // NULL ? OR ELSE?
 		}
-
 		return newUserEntity;
 	}
 
@@ -51,7 +45,6 @@ public class UserEntityBoundaryConvertor {
 	}
 
 	public String entityToBoundaryRole(acs.data.userEntityProperties.Roles role) {
-
 		return role.toString();
 
 	}
