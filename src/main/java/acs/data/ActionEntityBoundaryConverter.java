@@ -1,6 +1,7 @@
 package acs.data;
 
 import acs.actionBoundaryPackage.ActionBoundary;
+
 import acs.actionBoundaryPackage.ActionId;
 import acs.actionBoundaryPackage.Element;
 import acs.actionBoundaryPackage.ElementId;
@@ -9,6 +10,7 @@ import acs.actionBoundaryPackage.UserId;
 
 
 public class ActionEntityBoundaryConverter {
+	
 	public ActionBoundary entityToBoundary(ActionEntity entity) {
 		ActionBoundary ab = new ActionBoundary();
 		ab.setType(entity.getType());

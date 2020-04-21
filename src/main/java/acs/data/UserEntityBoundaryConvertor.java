@@ -4,8 +4,9 @@ import acs.usersBoundaryPackage.UserBoundary;
 import acs.usersBoundaryPackage.User;
 import acs.usersBoundaryPackage.Roles;
 
-public class UserConvertor {
-	public UserBoundary fromEntity(UserEntity entity) {
+public class UserEntityBoundaryConvertor {
+
+	public UserBoundary entityToBoundary(UserEntity entity) {
 		UserBoundary newUserBoundary = new UserBoundary();
 		newUserBoundary.setAvatar(entity.getAvatar());
 		newUserBoundary.setUsername(entity.getUsername());
@@ -15,15 +16,15 @@ public class UserConvertor {
 		newUserBoundary.setTimestamp(entity.getTimestemp());
 
 		if (entity.getRole() != null) {
-			newUserBoundary.setRole(Roles.valueOf(entity.getRole()));
+			newUserBoundary.setRole(entityToBoundaryRole(entity.getRole()));
 		} else {
-			newUserBoundary.setRole(null);
+			newUserBoundary.setRole(null);// NULL ? OR ELSE?
 		}
 
 		return newUserBoundary;
 	}
 
-	public UserEntity toEntity(UserBoundary boundary) {
+	public UserEntity boundarytoEntity(UserBoundary boundary) {
 		UserEntity newUserEntity = new UserEntity();
 		newUserEntity.setAvatar(boundary.getAvatar());
 		newUserEntity.setUsername(boundary.getUsername());
@@ -35,15 +36,24 @@ public class UserConvertor {
 		} else {
 			newUserEntity.setDeleted(false);
 		}
-		
 
 		if (boundary.getRole() != null) {
-			newUserEntity.setRole(boundary.getRole().name());
+			newUserEntity.setRole(boundaryToEntityRole(boundary.getRole()));
 		} else {
-			newUserEntity.setRole(null);
+			newUserEntity.setRole(null); // NULL ? OR ELSE?
 		}
-		
 
 		return newUserEntity;
 	}
+
+	public acs.data.userEntityProperties.Roles boundaryToEntityRole(String role) {
+		return acs.data.userEntityProperties.Roles.valueOf(role);
+	}
+
+	public String entityToBoundaryRole(acs.data.userEntityProperties.Roles role) {
+
+		return role.toString();
+
+	}
+
 }

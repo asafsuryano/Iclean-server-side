@@ -1,38 +1,38 @@
-package acs.elementBoundaryPackage;
+package acs.data.elementEntityProperties;
 
-public class ElementId {
-	private String elementDomain;
-	private String ElementId;
+public class ElementId implements Comparable<ElementId> {
+	private String domain;
+	private String id;
 
 	public ElementId(String domain, String id) {
-		this.elementDomain = domain;
-		this.ElementId = id;
+		this.domain = domain;
+		this.id = id;
 	}
 
 	public ElementId() {}
 
 	public String getElementDomain() {
-		return elementDomain;
+		return domain;
 	}
 
 	public void setElementDomain(String elementDomain) {
-		this.elementDomain = elementDomain;
+		this.domain = elementDomain;
 	}
 
 	public String getElementId() {
-		return ElementId;
+		return id;
 	}
 
 	public void setElementId(String elementId) {
-		ElementId = elementId;
+		id = elementId;
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((ElementId == null) ? 0 : ElementId.hashCode());
-		result = prime * result + ((elementDomain == null) ? 0 : elementDomain.hashCode());
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		result = prime * result + ((domain == null) ? 0 : domain.hashCode());
 		return result;
 	}
 
@@ -45,17 +45,23 @@ public class ElementId {
 		if (getClass() != obj.getClass())
 			return false;
 		ElementId other = (ElementId) obj;
-		if (ElementId == null) {
-			if (other.ElementId != null)
+		if (id == null) {
+			if (other.id != null)
 				return false;
-		} else if (!ElementId.equals(other.ElementId))
+		} else if (!id.equals(other.id))
 			return false;
-		if (elementDomain == null) {
-			if (other.elementDomain != null)
+		if (domain == null) {
+			if (other.domain != null)
 				return false;
-		} else if (!elementDomain.equals(other.elementDomain))
+		} else if (!domain.equals(other.domain))
 			return false;
 		return true;
+	}
+
+	@Override
+	public int compareTo(ElementId o) {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 	
 	

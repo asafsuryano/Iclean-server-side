@@ -23,7 +23,7 @@ public class UserController {
 		UserBoundary ub = new UserBoundary();
 		ub.setUsername(user.getUsername());
 		ub.setAvatar(user.getAvatar());
-		ub.setRole(user.getRole());
+		ub.setRole(user.getRole().toString());
 		ub.setUserId(new User("2020b.demo",user.getEmail()));
 		return ub;
 	}
@@ -47,7 +47,7 @@ public class UserController {
 		UserBoundary ub = new UserBoundary();
 		ub.setUsername("Demo");
 		ub.setAvatar(":)");
-		ub.setRole(Roles.PLAYER);
+		ub.setRole(Roles.PLAYER.toString());
 		ub.setUserId(new User(domain,email));
 		return ub;
 	}

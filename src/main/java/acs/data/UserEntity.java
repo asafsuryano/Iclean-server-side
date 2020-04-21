@@ -10,7 +10,7 @@ import acs.data.userEntityProperties.User;
 
 public class UserEntity {
 	private User userId;
-	private String role;
+	private Roles role;
 	private String username;
 	private String avatar;
 	private boolean isDeleted;
@@ -19,7 +19,7 @@ public class UserEntity {
 	
 	
 	
-	public UserEntity(User userId, String role, String username, String avatar) {
+	public UserEntity(User userId, Roles role, String username, String avatar) {
 		this.userId = userId;
 		this.role = role;
 		this.username = username;
@@ -36,11 +36,11 @@ public class UserEntity {
 		this.userId = user;
 	}
 
-	public String getRole() {
+	public Roles getRole() {
 		return role;
 	}
 	
-	public void setRole(String role) {
+	public void setRole(Roles role) {
 		this.role = role;
 	}
 

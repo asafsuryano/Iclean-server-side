@@ -1,63 +1,156 @@
 package acs.serviceImplementation.userServicePackage;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
+import java.util.stream.Collectors;
+import javax.annotation.PostConstruct;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
-import acs.data.UserConvertor;
 import acs.data.UserEntity;
+import acs.data.UserEntityBoundaryConvertor;
+import acs.data.userEntityProperties.User;
 import acs.logic.UserService;
-import acs.newUserDetailsBoundaryPackage.NewUserDetails;
-import acs.usersBoundaryPackage.Roles;
 import acs.usersBoundaryPackage.UserBoundary;
+import acs.data.userEntityProperties.Roles;
 
+@Service
 public class UserServiceImplementation implements UserService {
-UserConvertor converter =new UserConvertor();
-private Map<String, UserEntity> userDatabase;
+	private UserEntityBoundaryConvertor converter;
+	private String projectName;
+	private Map<User, UserEntity> userDatabase;
+
+	// injection of value from the spring boot configuration
+	@Value("${spring.application.name:demo}")
+	public void setProjectName(String projectName) {
+		this.projectName = projectName;
+	}
+
+	@Autowired
+	public UserServiceImplementation(UserEntityBoundaryConvertor convertor) {
+		this.converter = convertor;
+	}
+
+	@PostConstruct
+	public void init() {
+		// since this class is a singleton, we generate a thread safe collection
+		this.userDatabase = Collections.synchronizedMap(new TreeMap<>());
+	}
+
 	@Override
 	public UserBoundary createUser(UserBoundary user) {
-          if (user.getRole()==null) {
-        	  user.setRole(Roles.USER);
-          }
-          if (user.getDetails()==null) {
-        	  user.setDetails(new HashMap<>());
-          }
-          user.setDeleted(false);
-          UserEntity newUserEntity=this.converter.toEntity(user);
-          user.setTimestamp(new Date());
-          
-         this.userDatabase.put(user.getUserId().getDomain()+"#"+user.getUserId().getEmail(),newUserEntity);
-         return this.converter.fromEntity(newUserEntity);
+		user.getUserId().setDomain(this.projectName);
+		if (user.getRole() == null) {
+			user.setRole(""); // if null what to do ?
+
+		}
+		if (user.getDetails() == null) {
+			user.setDetails(new HashMap<>());
+		}
+		user.setDeleted(false);
+		user.setTimestamp(new Date());
+		UserEntity newUserEntity = this.converter.boundarytoEntity(user);
+		UserEntity exiting = this.userDatabase.get(newUserEntity.getUserId());
+
+		if (exiting != null) {
+			if (exiting.getDeleted())
+				exiting.setDeleted(false);// old user recreate account
+			else
+				throw new UserAllReadyExsistExeption("User allready exsist ");// try to hack the system
+		} else
+			this.userDatabase.put(newUserEntity.getUserId(), newUserEntity);// new user in system
+
+		return user;
 	}
 
 	@Override
 	public UserBoundary login(String userDomain, String userEmail) {
-	UserEntity getUser=this.userDatabase.get(userDomain+"#"+userEmail);
-		if (getUser!=null) {
-			return this.converter.fromEntity(getUser);
-		}
-		else {
+		User exsistUser = new User(userDomain, userEmail);
+		UserEntity getUser = this.userDatabase.get(exsistUser);
+		if (getUser != null && getUser.getDeleted() == false) {
+			return this.converter.entityToBoundary(getUser);
+		} else {
 			throw new UserNotFoundException("User Not Found With This UserDomain and Email");
 		}
 	}
 
 	@Override
 	public UserBoundary updateUser(String userDomain, String userEmail, UserBoundary update) {
-		// TODO Auto-generated method stub
-		return null;
+		// THE UPDATER OF THE USER
+		User updater = new User(userDomain, userEmail);
+		UserEntity updaterUser = this.userDatabase.get(updater);// this is the manager!!
+
+		if (updaterUser == null || updaterUser.getDeleted()) {
+			throw new UserNotFoundException("Update Fail, the updater details is incorrect");
+		}
+
+		if (updaterUser.getRole() != Roles.ADMIN) {
+			throw new NotAdminExeption("this user is not a admin");
+		}
+
+		UserEntity existingUser = this.userDatabase.get(this.converter.boundarytoEntity(update).getUserId());
+
+		if (existingUser == null || existingUser.getDeleted()) {
+			throw new UserNotFoundException("Update Fail, User to update is not exsist");
+		}
+
+		// UserBoundary existingUser = new UserBoundary();// here
+		// existingUser.setDeleted(update.getDeleted());
+
+		if (update.getRole() != null) {
+			existingUser.setRole(this.converter.boundaryToEntityRole(update.getRole()));
+
+		}
+		if (update.getDeleted() != null) {
+			existingUser.setDeleted(false);
+		}
+
+		if (update.getUsername() != null) {
+			existingUser.setUsername(update.getUsername());
+		}
+
+		if (update.getAvatar() != null) {
+			existingUser.setAvatar(update.getAvatar());
+
+		}
+
+		if (update.getDetails() != null) {
+			existingUser.setDetails(update.getDetails());
+
+		}
+
+		this.userDatabase.replace(existingUser.getUserId(), existingUser);
+		return this.converter.entityToBoundary(existingUser);
 	}
 
 	@Override
 	public List<UserBoundary> getAllUsers(String adminDomain, String adminEmail) {
-		// TODO Auto-generated method stub
-		return null;
+		User adminUser = new User(adminDomain, adminEmail);
+		UserEntity admin = this.userDatabase.get(adminUser);
+
+		if (admin != null) {
+			if (admin.getRole() == acs.data.userEntityProperties.Roles.ADMIN) {
+				return this.userDatabase.values().stream().map(this.converter::entityToBoundary)
+						.filter(e -> e.getDeleted() == false).collect(Collectors.toList());
+			}
+		}
+		return null;// need to retunr null or empty list??
 	}
 
 	@Override
 	public void deleteAllUsers(String adminDomain, String adminEmail) {
-		// TODO Auto-generated method stub
-		
+		User admidUser = new User(adminDomain, adminEmail);
+		UserEntity admin = this.userDatabase.get(admidUser);
+		if (admin != null) {
+			if (admin.getRole() == acs.data.userEntityProperties.Roles.ADMIN) {
+				this.userDatabase.clear();
+			}
+		}
 	}
 
 }

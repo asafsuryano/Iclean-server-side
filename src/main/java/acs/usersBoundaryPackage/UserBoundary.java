@@ -5,16 +5,16 @@ import java.util.Map;
 
 public class UserBoundary {
 	private User userId;
-	private Roles role;
+	private String role;
 	private String username;
-	private boolean isDeleted;
+	private Boolean isDeleted;
 	private String avatar;
 	private Map<String, Object> details;
 	private Date timestamp;
 	
 	
 
-	public UserBoundary(User userId, Roles roles, String username, String avatar) {
+	public UserBoundary(User userId, String roles, String username, String avatar) {
 		super();
 		this.userId = userId;
 		this.role = roles;
@@ -44,11 +44,11 @@ public class UserBoundary {
 		this.userId = userId;
 	}
 
-	public Roles getRole() {
+	public String getRole() {
 		return role;
 	}
 
-	public void setRole(Roles role) {
+	public void setRole(String  role) {
 		this.role = role;
 	}
 

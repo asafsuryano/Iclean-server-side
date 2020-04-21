@@ -4,12 +4,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.xml.crypto.Data;
-
 public class ElementBoundary {
+   private String name;
    private ElementId elementId; 
-   private Type type;
-   private boolean active;
+   private String type;
+   private Boolean active;
    private Date date;
    private CreatedBy createdby;
    private Location location;
@@ -17,7 +16,7 @@ public class ElementBoundary {
    //if we need another things for elements private elements Attributes
    
    
-   public ElementBoundary(ElementId eID,Type type,boolean active,Date date,CreatedBy CBy,Location location) {
+   public ElementBoundary(ElementId eID,String type,boolean active,Date date,CreatedBy CBy,Location location) {
 	   this.elementId=eID;
 	   this.active=active;
 	   this.type=type;
@@ -34,9 +33,7 @@ public class ElementBoundary {
    public ElementBoundary(String userDomain,String userEmail,String elemnetDomain,String elementID) {	   
 	  this.createdby=new CreatedBy(new UserId(userDomain, userEmail));
 	  this.elementId=new ElementId(elemnetDomain,elementID);
-	   this.elementAttributes=new HashMap<String,Object>();
-	   this.type=Type.DEMO_ELEMENT;
-	  
+	   this.elementAttributes=new HashMap<String,Object>();	  
    }
 public ElementId getElementId() {
 	return elementId;
@@ -44,10 +41,10 @@ public ElementId getElementId() {
 public void setElementId(ElementId elementId) {
 	this.elementId = elementId;
 }
-public Type getType() {
+public String getType() {
 	return type;
 }
-public void setType(Type type) {
+public void setType(String type) {
 	this.type = type;
 }
 public Map<String, Object> getElementAttribute() {
@@ -56,7 +53,7 @@ public Map<String, Object> getElementAttribute() {
 public void setElementAttrbiutes(Map<String, Object> elemetnAttrbiutes) {
 	this.elementAttributes = elemetnAttrbiutes;
 }
-public boolean isActive() {
+public Boolean isActive() {
 	return active;
 }
 public void setActive(boolean active) {
@@ -79,6 +76,12 @@ public Location getLocation() {
 }
 public void setLocation(Location location) {
 	this.location = location;
+}
+public String getName() {
+	return name;
+}
+public void setName(String name) {
+	this.name = name;
 }
    
 }
