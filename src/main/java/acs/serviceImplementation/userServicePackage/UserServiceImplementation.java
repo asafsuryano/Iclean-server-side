@@ -46,7 +46,7 @@ public class UserServiceImplementation implements UserService {
 	public UserBoundary createUser(UserBoundary user) {
 		user.getUserId().setDomain(this.projectName);
 		if (user.getRole() == null) {
-			user.setRole(""); // if null what to do ?
+			user.setRole(Roles.PLAYER.toString());
 
 		}
 		if (user.getDetails() == null) {
@@ -90,24 +90,21 @@ public class UserServiceImplementation implements UserService {
 		}
 
 		if (updaterUser.getRole() != Roles.ADMIN) {
-			throw new NotAdminExeption("this user is not a admin");
+			throw new NotAdminExeption("This user is not an admin");
 		}
 
 		UserEntity existingUser = this.userDatabase.get(this.converter.boundarytoEntity(update).getUserId());
 
 		if (existingUser == null || existingUser.getDeleted()) {
-			throw new UserNotFoundException("Update Fail, User to update is not exsist");
+			throw new UserNotFoundException("Update Fail, User to update is not exist");
 		}
-
-		// UserBoundary existingUser = new UserBoundary();// here
-		// existingUser.setDeleted(update.getDeleted());
 
 		if (update.getRole() != null) {
 			existingUser.setRole(this.converter.boundaryToEntityRole(update.getRole()));
 
 		}
 		if (update.getDeleted() != null) {
-			existingUser.setDeleted(false);
+			existingUser.setDeleted(update.getDeleted());
 		}
 
 		if (update.getUsername() != null) {
@@ -139,18 +136,21 @@ public class UserServiceImplementation implements UserService {
 						.filter(e -> e.getDeleted() == false).collect(Collectors.toList());
 			}
 		}
-		return null;// need to retunr null or empty list??
+		throw new NotAdminExeption("This user is not a admin");
 	}
 
 	@Override
 	public void deleteAllUsers(String adminDomain, String adminEmail) {
 		User admidUser = new User(adminDomain, adminEmail);
 		UserEntity admin = this.userDatabase.get(admidUser);
+
 		if (admin != null) {
 			if (admin.getRole() == acs.data.userEntityProperties.Roles.ADMIN) {
 				this.userDatabase.clear();
 			}
 		}
+
+		throw new NotAdminExeption("This user is not a admin");
 	}
 
 }

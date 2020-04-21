@@ -2,6 +2,8 @@ package acs.demo;
 
 import java.util.Date;
 import java.util.HashMap;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,13 +16,37 @@ import acs.actionBoundaryPackage.Element;
 import acs.actionBoundaryPackage.ElementId;
 import acs.actionBoundaryPackage.InvokedBy;
 import acs.actionBoundaryPackage.UserId;
+import acs.logic.ActionService;
+import acs.logic.ElementService;
+import acs.logic.UserService;
 import acs.usersBoundaryPackage.Roles;
 import acs.usersBoundaryPackage.User;
 import acs.usersBoundaryPackage.UserBoundary;
 
 @RestController
 public class AdminController {
-	@SuppressWarnings("serial")
+	private ElementService elementService;
+	private UserService userService;
+	private ActionService actionService;
+	
+	public AdminController(ElementService elementService, UserService userService, ActionService actionService) {
+		super();
+		this.elementService = elementService;
+		this.userService = userService;
+		this.actionService = actionService;
+	}
+
+	@Autowired
+	public AdminController() {
+	}
+	
+	@Autowired
+	public void setElementService(ElementService elementService, UserService userService, ActionService actionService) {
+		this.elementService = elementService;
+		this.userService = userService;
+		this.actionService = actionService;
+	}
+
 	@RequestMapping(path = "acs/admin/actions/{adminDomain}/{adminEmail}",
 			method = RequestMethod.GET,
 			produces = MediaType.APPLICATION_JSON_VALUE)
@@ -52,7 +78,7 @@ public class AdminController {
 	public UserBoundary[] exportAllUsers(@PathVariable("adminDomain") String adminDomain,
 			@PathVariable("adminEmail") String adminEmail) {
 		UserBoundary[] arr = new UserBoundary[1];
-		arr[0] =new UserBoundary(new User("2020b.demo", "ddemo@us.er"),Roles.PLAYER,"Demo User",";-)");
+		arr[0] = new UserBoundary(new User("2020b.demo", "ddemo@us.er"), Roles.PLAYER.toString() ,"Demo User",";-)");
 		 
 		return arr;
 			}
@@ -63,7 +89,7 @@ public class AdminController {
 	public void deleteAllUsers (
 			@PathVariable("adminDomain") String adminDomain,
 			@PathVariable("adminEmail") String adminEmail) {
-		return;//TODO
+		this.userService.deleteAllUsers(adminDomain, adminEmail);
 	}
 	
 	@RequestMapping(path = "acs/admin/elements/{adminDomain}/{adminEmail}",
@@ -71,7 +97,7 @@ public class AdminController {
 	public void deleteAllElements (
 			@PathVariable("adminDomain") String adminDomain,
 			@PathVariable("adminEmail") String adminEmail) {
-		return;//TODO
+		this.elementService.deleteAllElements(adminDomain, adminEmail);
 	}
 	
 	@RequestMapping(path = "acs/admin/actions/{adminDomain}/{adminEmail}",
@@ -79,7 +105,7 @@ public class AdminController {
 	public void deleteAllActions (
 			@PathVariable("adminDomain") String adminDomain,
 			@PathVariable("adminEmail") String adminEmail) {
-		return;//TODO
+		this.actionService.deleteAllActions(adminDomain, adminEmail);
 	}
 	
 	

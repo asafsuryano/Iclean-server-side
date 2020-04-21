@@ -11,7 +11,7 @@ public class ElementEntity {
 	private String name;
 	private Date createdTimeStamp;
 	private Location location;
-	private UserId createdBy;// ask about if createdBy is a class of its own
+	private UserId createdBy;
 	private Boolean isActive;
 	private Map<String,Object> elementAttributes;
 	

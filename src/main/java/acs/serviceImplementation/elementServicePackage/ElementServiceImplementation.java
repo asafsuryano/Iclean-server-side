@@ -31,7 +31,6 @@ public class ElementServiceImplementation implements ElementService {
 	private ElementEntityBoundaryConverter converter; 
 	
 	public ElementServiceImplementation() {
-		// TODO Auto-generated constructor stub
 		this.converter =  new ElementEntityBoundaryConverter();
 	}
 
@@ -73,7 +72,7 @@ public class ElementServiceImplementation implements ElementService {
 			element.setLocation(new Location(0,0));
 		}
 		
-		ElementEntity el = this.converter.fromBoundarytoEntity(element);
+		ElementEntity el = this.converter.boundaryToEntity(element);
 		
 		this.elementsDatabase.put(el.getElementId(), el);
 		
@@ -93,46 +92,33 @@ public class ElementServiceImplementation implements ElementService {
 			throw new RuntimeException("Element Not Active! Cannot update...");
 		}
 		
-		if(update.getType() == null) {
-			
-		}
-		else {
+		if(update.getType() != null) {
 			element.setType(Type.valueOf(update.getType()));
 		}
+
 				
-		if(update.getName() == null) {
-			
-		}
-		else {
+		if(update.getName() != null) {
 			element.setName(update.getName());
 		}
 		
-//		update.setDate(new Date());
 		
-		if(update.getElementAttribute() == null) {
-			
-		}
-		else {
+		if(update.getElementAttribute() != null) {
 			element.setElementAttributes(update.getElementAttribute());
 		}
 		
-		if(update.getLocation() == null) {
-			//leave element location as it was created
-		}
-		else {
+		if(update.getLocation() != null) {
 			element.setLocation(new acs.data.elementEntityProperties.Location(update.getLocation().getLat(),update.getLocation().getIng()));
 		}
 			
-		return this.converter.fromEntityToBoundary(element);
+		return this.converter.entityToBoundary(element);
 	}
 
 	@Override
 	public List<ElementBoundary> getAll(String userDomain, String userEmail) {
-		// TODO Auto-generated method stub
 		return this.elementsDatabase // Map<String, ElementEntity>
 				.values()           // Collection<ElementEntity>
 				.stream()		    // Stream<ElementEntity>				
-				.map(this.converter::fromEntityToBoundary)	
+				.map(this.converter::entityToBoundary)	
 				.filter(el -> el.isActive() == true)
 				.collect(Collectors.toList()); // List<DummyBoundaries>
 	}
@@ -140,12 +126,11 @@ public class ElementServiceImplementation implements ElementService {
 	@Override
 	public ElementBoundary getSpecificElement(String userDomain, String userEmail, String elementDomain,
 			String elementId) {
-		// TODO Auto-generated method stub
 		acs.data.elementEntityProperties.ElementId id = new acs.data.elementEntityProperties.ElementId(elementDomain, elementId);
 		ElementEntity elEntity =  this.elementsDatabase.get(id);
 		if(elEntity != null) {
 			return this.converter
-					.fromEntityToBoundary(
+					.entityToBoundary(
 							elEntity);
 		}
 		else {
@@ -155,7 +140,6 @@ public class ElementServiceImplementation implements ElementService {
 
 	@Override
 	public void deleteAllElements(String userDomain, String adminEmail) {
-		// TODO Auto-generated method stub
 		this.elementsDatabase.clear();
 	}
 

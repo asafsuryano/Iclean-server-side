@@ -1,5 +1,6 @@
 package acs.demo;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -7,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import acs.logic.UserService;
 import acs.newUserDetailsBoundaryPackage.NewUserDetails;
 import acs.usersBoundaryPackage.Roles;
 import acs.usersBoundaryPackage.User;
@@ -14,6 +16,23 @@ import acs.usersBoundaryPackage.UserBoundary;
 
 @RestController
 public class UserController {
+	UserService userService;
+	
+	@Autowired
+	public UserController() {
+	}
+	
+	public UserController(UserService userService) {
+		super();
+		this.userService = userService;
+	}
+	
+	@Autowired
+	public void setUserService(UserService userService) {
+		this.userService = userService;
+	}
+
+
 	@RequestMapping(path="/acs/users",
 			method = RequestMethod.POST,
 			produces = MediaType.APPLICATION_JSON_VALUE,
