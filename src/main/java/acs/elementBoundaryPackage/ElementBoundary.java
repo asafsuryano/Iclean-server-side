@@ -13,7 +13,6 @@ public class ElementBoundary {
    private CreatedBy createdby;
    private Location location;
    private Map<String,Object> elementAttributes;
-   //if we need another things for elements private elements Attributes
    
    
    public ElementBoundary(ElementId eID,String type,boolean active,Date date,CreatedBy CBy,Location location) {

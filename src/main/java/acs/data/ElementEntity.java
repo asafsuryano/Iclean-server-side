@@ -12,7 +12,7 @@ public class ElementEntity {
 	private Date createdTimeStamp;
 	private Location location;
 	private UserId createdBy;
-	private Boolean isActive;
+	private boolean isActive;
 	private Map<String,Object> elementAttributes;
 	
 	public ElementEntity() {}
@@ -52,7 +52,7 @@ public class ElementEntity {
 	public void setCreatedBy(UserId createdBy) {
 		this.createdBy = createdBy;
 	}
-	public Boolean isActive() {
+	public boolean isActive() {
 		return isActive;
 	}
 	public void setActive(boolean isActive) {
