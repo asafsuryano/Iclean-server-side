@@ -47,8 +47,8 @@ public class UserServiceImplementation implements UserService {
 		user.getUserId().setDomain(this.projectName);
 		if (user.getRole() == null) {
 			user.setRole(Roles.PLAYER.toString());
-
 		}
+		
 		if (user.getDetails() == null) {
 			user.setDetails(new HashMap<>());
 		}
