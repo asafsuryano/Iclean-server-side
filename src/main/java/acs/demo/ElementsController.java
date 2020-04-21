@@ -1,10 +1,5 @@
 package acs.demo;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -15,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import acs.elementBoundaryPackage.ElementBoundary;
-import acs.elementBoundaryPackage.ElementId;
 import acs.logic.ElementService;
 
 @RestController
