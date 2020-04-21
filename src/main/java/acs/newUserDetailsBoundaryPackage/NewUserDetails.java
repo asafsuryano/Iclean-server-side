@@ -1,10 +1,9 @@
 package acs.newUserDetailsBoundaryPackage;
 
-import acs.usersBoundaryPackage.Roles;
 
 public class NewUserDetails {
 	private String email;
-	private Roles role;
+	private String  role;
 	private String username;
 	private String avatar;
 	
@@ -12,7 +11,7 @@ public class NewUserDetails {
 		
 	}
 	
-	public NewUserDetails(String email, String username, String avatar, Roles role) {
+	public NewUserDetails(String email, String username, String avatar, String role) {
 		super();
 		this.role = role;
 		this.email = email;
@@ -44,11 +43,11 @@ public class NewUserDetails {
 		this.avatar = avatar;
 	}
 	
-	public Roles getRole() {
+	public String getRole() {
 		return role;
 	}
 
-	public void setRole(Roles role) {
+	public void setRole(String role) {
 		this.role = role;
 	}
 

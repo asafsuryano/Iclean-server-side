@@ -41,8 +41,8 @@ public class UserController {
 		UserBoundary ub = new UserBoundary();
 		ub.setUsername(user.getUsername());
 		ub.setAvatar(user.getAvatar());
-		ub.setRole(user.getRole().toString());
-		ub.setUserId(new User("2020b.demo",user.getEmail()));
+		ub.setRole(user.getRole());
+		ub.setUserId(new User("",user.getEmail()));
 		
 		return this.userService.createUser(ub);
 	}

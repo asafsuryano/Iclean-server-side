@@ -30,7 +30,7 @@ public class AdminController {
 	}
 	
 	@Autowired
-	public void setElementService(ElementService elementService, UserService userService, ActionService actionService) {
+	public void setAdminServices(ElementService elementService, UserService userService, ActionService actionService) {
 		this.elementService = elementService;
 		this.userService = userService;
 		this.actionService = actionService;
