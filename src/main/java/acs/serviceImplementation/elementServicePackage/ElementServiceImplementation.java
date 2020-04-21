@@ -31,7 +31,6 @@ public class ElementServiceImplementation implements ElementService {
 	private ElementEntityBoundaryConverter converter; 
 	
 	public ElementServiceImplementation() {
-		// TODO Auto-generated constructor stub
 		this.converter =  new ElementEntityBoundaryConverter();
 	}
 
@@ -116,7 +115,6 @@ public class ElementServiceImplementation implements ElementService {
 
 	@Override
 	public List<ElementBoundary> getAll(String userDomain, String userEmail) {
-		// TODO Auto-generated method stub
 		return this.elementsDatabase // Map<String, ElementEntity>
 				.values()           // Collection<ElementEntity>
 				.stream()		    // Stream<ElementEntity>				
@@ -128,7 +126,6 @@ public class ElementServiceImplementation implements ElementService {
 	@Override
 	public ElementBoundary getSpecificElement(String userDomain, String userEmail, String elementDomain,
 			String elementId) {
-		// TODO Auto-generated method stub
 		acs.data.elementEntityProperties.ElementId id = new acs.data.elementEntityProperties.ElementId(elementDomain, elementId);
 		ElementEntity elEntity =  this.elementsDatabase.get(id);
 		if(elEntity != null) {

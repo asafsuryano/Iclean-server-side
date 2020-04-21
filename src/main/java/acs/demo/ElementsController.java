@@ -26,8 +26,8 @@ public class ElementsController {
 	}
 	
 	@Autowired
-	public void setElementService(ElementService dummyService) {
-		this.elementService = dummyService;
+	public void setElementService(ElementService elementService) {
+		this.elementService = elementService;
 	}
 
 	@RequestMapping(path = "/acs/elements/{userDomain}/{userEmail}/{elementDomain}/{elementID}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -40,20 +40,6 @@ public class ElementsController {
 	@RequestMapping(path = "/acs/elements/{userDomain}/{userEmail}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ElementBoundary[] getAllelements(
 		    @RequestBody @PathVariable("userDomain") String userDomain, @PathVariable("userEmail") String userEmail){
-//		Random rand = new Random(System.currentTimeMillis());
-//		int count=4;
-//		return 
-//		     IntStream.range(0, count).// Stream of Integer
-//		     mapToObj(i->retreiveSpecificElement(userDomain, userEmail,"goolge", Integer.toString(rand.nextInt(10))))// Stream of ElementBoundary
-//		     .map(element->{
-//		    	 Map<String, Object> elementsAttribute = new HashMap<>();
-//					elementsAttribute.putAll(element.getElementAttribute());
-//					elementsAttribute.put("Level of dirt", rand.nextInt(10));
-//					element.setElementAttrbiutes(elementsAttribute);
-//					return element;
-//		     })
-//		     .collect(Collectors.toList())    //list ElementBoundary
-//		     .toArray(new ElementBoundary[0]);// ElementsBoundary []
 		return this.elementService.getAll(userDomain, userEmail).toArray(new ElementBoundary[0]);
 		   
 		    }
