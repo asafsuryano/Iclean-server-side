@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import acs.logic.UserService;
 import acs.newUserDetailsBoundaryPackage.NewUserDetails;
-import acs.usersBoundaryPackage.Roles;
 import acs.usersBoundaryPackage.User;
 import acs.usersBoundaryPackage.UserBoundary;
 
@@ -44,7 +43,8 @@ public class UserController {
 		ub.setAvatar(user.getAvatar());
 		ub.setRole(user.getRole().toString());
 		ub.setUserId(new User("2020b.demo",user.getEmail()));
-		return ub;
+		
+		return this.userService.createUser(ub);
 	}
 
 	
@@ -55,7 +55,7 @@ public class UserController {
 	public void updateUser(@RequestBody  UserBoundary user, 
 									@PathVariable("userDomain") String domain,
 									@PathVariable("userEmail") String email) {
-		return;
+		this.userService.updateUser(domain, email, user);
 	}
 	
 	@RequestMapping(path="/acs/users/login/{userDomain}/{userEmail}",
@@ -63,12 +63,7 @@ public class UserController {
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public UserBoundary login(@PathVariable("userDomain") String domain,
 									@PathVariable("userEmail") String email) {
-		UserBoundary ub = new UserBoundary();
-		ub.setUsername("Demo");
-		ub.setAvatar(":)");
-		ub.setRole(Roles.PLAYER.toString());
-		ub.setUserId(new User(domain,email));
-		return ub;
+		return this.userService.login(domain, email);
 	}
-	
+		
 }
