@@ -52,7 +52,7 @@ public class AdminController {
 	public UserBoundary[] exportAllUsers(@PathVariable("adminDomain") String adminDomain,
 			@PathVariable("adminEmail") String adminEmail) {
 		UserBoundary[] arr = new UserBoundary[1];
-		arr[0] =new UserBoundary(new User("2020b.demo", "ddemo@us.er"),Roles.PLAYER,"Demo User",";-)");
+		arr[0] = new UserBoundary(new User("2020b.demo", "ddemo@us.er"), Roles.PLAYER.toString() ,"Demo User",";-)");
 		 
 		return arr;
 			}
