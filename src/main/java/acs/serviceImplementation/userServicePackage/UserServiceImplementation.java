@@ -14,10 +14,10 @@ import org.springframework.stereotype.Service;
 import acs.Utils.StringUtil;
 import acs.data.UserEntity;
 import acs.data.UserEntityBoundaryConvertor;
+import acs.data.UserRoles;
 import acs.data.userEntityProperties.User;
 import acs.logic.UserService;
 import acs.usersBoundaryPackage.UserBoundary;
-import acs.data.userEntityProperties.Roles;
 
 @Service
 public class UserServiceImplementation implements UserService {
@@ -50,7 +50,7 @@ public class UserServiceImplementation implements UserService {
 			throw new RuntimeException("username invalid");
 		user.getUserId().setDomain(this.projectName);
 		if (user.getRole() == null) {
-			user.setRole(Roles.PLAYER.toString());
+			user.setRole(UserRoles.PLAYER.toString());
 		}
 		
 		if (user.getDetails() == null) {
@@ -93,7 +93,7 @@ public class UserServiceImplementation implements UserService {
 			throw new UserNotFoundException("Update Fail, the updater details is incorrect");
 		}
 
-		if (updaterUser.getRole() != Roles.ADMIN ||updaterUser.getRole() != Roles.MANAGER  ) {
+		if (updaterUser.getRole() != UserRoles.ADMIN ||updaterUser.getRole() != UserRoles.MANAGER  ) {
 			//updater not MANAGER or ADMIN
 			if ((!userDomain.equals(update.getUserId().getDomain())) || (!userEmail.equals(update.getUserId().getEmail())))
 				//updater is not update
@@ -138,7 +138,7 @@ public class UserServiceImplementation implements UserService {
 		UserEntity admin = this.userDatabase.get(adminUser);
 
 		if (admin != null) {//if the user that create the request is exist
-			if (admin.getRole() == acs.data.userEntityProperties.Roles.ADMIN) {//is user have right permissions 
+			if (admin.getRole() == acs.data.UserRoles.ADMIN) {//is user have right permissions 
 				return this.userDatabase.values().stream().map(this.converter::entityToBoundary)
 						.filter(e -> e.getDeleted() == false).collect(Collectors.toList());
 			}
@@ -153,7 +153,7 @@ public class UserServiceImplementation implements UserService {
 		UserEntity admin = this.userDatabase.get(admidUser);
 
 		if (admin != null) {
-			if (admin.getRole() == acs.data.userEntityProperties.Roles.ADMIN) {
+			if (admin.getRole() == acs.data.UserRoles.ADMIN) {
 				this.userDatabase.clear();
 			}
 			else throw new NoPermissionsExeption("This user is not a admin");

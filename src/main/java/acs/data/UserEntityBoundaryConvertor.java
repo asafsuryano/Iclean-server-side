@@ -43,11 +43,11 @@ public class UserEntityBoundaryConvertor {
 		return newUserEntity;
 	}
 
-	public acs.data.userEntityProperties.Roles boundaryToEntityRole(String role) {
-		return acs.data.userEntityProperties.Roles.valueOf(role);
+	public acs.data.UserRoles boundaryToEntityRole(String role) {
+		return acs.data.UserRoles.valueOf(role);
 	}
 
-	public String entityToBoundaryRole(acs.data.userEntityProperties.Roles role) {
+	public String entityToBoundaryRole(acs.data.UserRoles role) {
 		return role.toString();
 
 	}

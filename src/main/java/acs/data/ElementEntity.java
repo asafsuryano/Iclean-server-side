@@ -1,31 +1,35 @@
 package acs.data;
 
 import java.util.Date;
-import java.util.Map;
+import java.util.LinkedHashMap;
 
 import acs.data.elementEntityProperties.*;
+import acs.data.elementEntityProperties.ElementId;
+import acs.data.elementEntityProperties.Location;
 
 public class ElementEntity {
 	private ElementId elementId;
-	private Type type;
+	private String type;
 	private String name;
 	private Date createdTimeStamp;
 	private Location location;
 	private UserId createdBy;
 	private boolean isActive;
-	private Map<String,Object> elementAttributes;
+	private LinkedHashMap<String,Object> elementAttributes;
 	
 	public ElementEntity() {}
+	
+	
 	public ElementId getElementId() {
 		return elementId;
 	}
 	public void setElementId(ElementId elementId) {
 		this.elementId = elementId;
 	}
-	public Type getType() {
+	public String getType() {
 		return type;
 	}
-	public void setType(Type type) {
+	public void setType(String type) {
 		this.type = type;
 	}
 	public String getName() {
@@ -58,10 +62,10 @@ public class ElementEntity {
 	public void setActive(boolean isActive) {
 		this.isActive = isActive;
 	}
-	public Map<String, Object> getElementAttributes() {
+	public LinkedHashMap<String, Object> getElementAttributes() {
 		return elementAttributes;
 	}
-	public void setElementAttributes(Map<String, Object> elementAttributes) {
+	public void setElementAttributes(LinkedHashMap<String, Object> elementAttributes) {
 		this.elementAttributes = elementAttributes;
 	}
 	

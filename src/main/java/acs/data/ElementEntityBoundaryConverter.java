@@ -6,7 +6,6 @@ import org.springframework.stereotype.Component;
 
 import acs.data.elementEntityProperties.ElementId;
 import acs.data.elementEntityProperties.Location;
-import acs.data.elementEntityProperties.Type;
 import acs.data.elementEntityProperties.UserId;
 
 @Component
@@ -21,8 +20,9 @@ public class ElementEntityBoundaryConverter {
 		eb.setActive(entity.isActive());
 		eb.setCreatedby(new CreatedBy(new acs.elementBoundaryPackage.UserId(entity.getCreatedBy().getDomain(),
 				entity.getCreatedBy().getEmail())));
-		eb.setElementAttrbiutes(entity.getElementAttributes());
+		eb.setElementAttributes(entity.getElementAttributes());
 		eb.setType(entity.getType().toString());
+		eb.setName(entity.getName());
 		return eb;
 	}
 	public ElementEntity boundaryToEntity(ElementBoundary boundary) {
@@ -30,13 +30,16 @@ public class ElementEntityBoundaryConverter {
 		entity.setElementId(new ElementId(boundary.getElementId().getElementDomain(),
 				boundary.getElementId().getElementId()));
 		entity.setName(boundary.getName());
-		entity.setLocation(new Location(boundary.getLocation().getLat(), boundary.getLocation().getIng()));
+		entity.setLocation(new Location(boundary.getLocation().getLat(), boundary.getLocation().getLng()));
 		entity.setCreatedTimeStamp(boundary.getDate());
-		entity.setType(Type.valueOf(boundary.getType()));
+		
+		entity.setType(boundary.getType());
+		
 		entity.setCreatedBy(new UserId(boundary.getCreatedby().getUserId().getUserdomain(),
 				boundary.getCreatedby().getUserId().getUserEmail()));
-		entity.setElementAttributes(boundary.getElementAttribute());
+		entity.setElementAttributes(boundary.getElementAttributes());
 		entity.setActive(boundary.isActive());
 		return entity;
 	}
+	
 }

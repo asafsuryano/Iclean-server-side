@@ -3,14 +3,13 @@ package acs.data;
 import java.util.Date;
 import java.util.Map;
 
-import acs.data.userEntityProperties.Roles;
 import acs.data.userEntityProperties.User;
 
 
 
 public class UserEntity {
 	private User userId;
-	private Roles role;
+	private UserRoles role;
 	private String username;
 	private String avatar;
 	private boolean isDeleted;
@@ -19,7 +18,7 @@ public class UserEntity {
 	
 	
 	
-	public UserEntity(User userId, Roles role, String username, String avatar) {
+	public UserEntity(User userId, UserRoles role, String username, String avatar) {
 		this.userId = userId;
 		this.role = role;
 		this.username = username;
@@ -36,11 +35,11 @@ public class UserEntity {
 		this.userId = user;
 	}
 
-	public Roles getRole() {
+	public UserRoles getRole() {
 		return role;
 	}
 	
-	public void setRole(Roles role) {
+	public void setRole(UserRoles role) {
 		this.role = role;
 	}
 
