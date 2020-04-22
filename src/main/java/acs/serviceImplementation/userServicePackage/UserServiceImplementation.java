@@ -52,12 +52,6 @@ public class UserServiceImplementation implements UserService {
 		if (user.getRole() == null) {
 			user.setRole(Roles.PLAYER.toString());
 		}
-		
-		if (user.getDetails() == null) {
-			user.setDetails(new HashMap<>());
-		}
-		user.setDeleted(false);
-		user.setTimestamp(new Date());
 		UserEntity newUserEntity = this.converter.boundaryToEntity(user);
 		UserEntity exiting = this.userDatabase.get(newUserEntity.getUserId());
 
@@ -110,9 +104,6 @@ public class UserServiceImplementation implements UserService {
 			existingUser.setRole(this.converter.boundaryToEntityRole(update.getRole()));
 
 		}
-		if (update.getDeleted() != null) {
-			existingUser.setDeleted(update.getDeleted());
-		}
 
 		if (update.getUsername() != null) {
 			existingUser.setUsername(update.getUsername());
@@ -122,12 +113,6 @@ public class UserServiceImplementation implements UserService {
 			existingUser.setAvatar(update.getAvatar());
 
 		}
-
-		if (update.getDetails() != null) {
-			existingUser.setDetails(update.getDetails());
-
-		}
-
 		this.userDatabase.replace(existingUser.getUserId(), existingUser);
 		return this.converter.entityToBoundary(existingUser);
 	}
