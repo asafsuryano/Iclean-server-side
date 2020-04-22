@@ -24,7 +24,7 @@ public class UserEntityBoundaryConvertor {
 		return newUserBoundary;
 	}
 
-	public UserEntity boundarytoEntity(UserBoundary boundary) {
+	public UserEntity boundaryToEntity(UserBoundary boundary) {
 		UserEntity newUserEntity = new UserEntity();
 		newUserEntity.setAvatar(boundary.getAvatar());
 		newUserEntity.setUsername(boundary.getUsername());

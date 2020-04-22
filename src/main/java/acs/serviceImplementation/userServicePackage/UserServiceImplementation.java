@@ -5,13 +5,13 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import acs.Utils.StringUtil;
 import acs.data.UserEntity;
 import acs.data.UserEntityBoundaryConvertor;
 import acs.data.userEntityProperties.User;
@@ -39,11 +39,13 @@ public class UserServiceImplementation implements UserService {
 	@PostConstruct
 	public void init() {
 		// since this class is a singleton, we generate a thread safe collection
-		this.userDatabase = Collections.synchronizedMap(new TreeMap<>());
+		this.userDatabase = Collections.synchronizedMap(new HashMap<>());
 	}
 
 	@Override
 	public UserBoundary createUser(UserBoundary user) {
+		if(StringUtil.isNullOrEmpty(user.getUserId().getEmail()))
+			throw new RuntimeException("email invalid");
 		user.getUserId().setDomain(this.projectName);
 		if (user.getRole() == null) {
 			user.setRole(Roles.PLAYER.toString());
@@ -54,7 +56,7 @@ public class UserServiceImplementation implements UserService {
 		}
 		user.setDeleted(false);
 		user.setTimestamp(new Date());
-		UserEntity newUserEntity = this.converter.boundarytoEntity(user);
+		UserEntity newUserEntity = this.converter.boundaryToEntity(user);
 		UserEntity exiting = this.userDatabase.get(newUserEntity.getUserId());
 
 		if (exiting != null) {
@@ -93,7 +95,7 @@ public class UserServiceImplementation implements UserService {
 			throw new NoPermissionsExeption("This user is not an admin or manager");
 		}
 		// THE USER TO UPDATE
-		UserEntity existingUser = this.userDatabase.get(this.converter.boundarytoEntity(update).getUserId());
+		UserEntity existingUser = this.userDatabase.get(this.converter.boundaryToEntity(update).getUserId());
 
 		if (existingUser == null || existingUser.getDeleted()) {
 			throw new UserNotFoundException("Update Fail, User to update is not exist");
