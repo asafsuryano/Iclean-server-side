@@ -158,7 +158,7 @@ public class ElementServiceImplementation implements ElementService {
 	}
 
 	@Override
-	public void deleteAllElements(String userDomain, String adminEmail) {
+	public void deleteAllElements(String adminDomain, String adminEmail) {
 		this.elementsDatabase.clear();
 	}
 

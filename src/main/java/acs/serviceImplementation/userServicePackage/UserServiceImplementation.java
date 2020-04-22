@@ -142,8 +142,8 @@ public class UserServiceImplementation implements UserService {
 			}
 			else throw new NoPermissionsExeption("This user is not a admin");
 		}
-
-		throw new UserNotFoundException("user is not exist in the system");
+		else
+			throw new UserNotFoundException("user is not exist in the system");
 	}
 
 }
