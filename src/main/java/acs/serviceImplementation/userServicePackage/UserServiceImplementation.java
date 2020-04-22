@@ -140,7 +140,7 @@ public class UserServiceImplementation implements UserService {
 		if (admin != null) {//if the user that create the request is exist
 			if (admin.getRole() == acs.data.userEntityProperties.Roles.ADMIN) {//is user have right permissions 
 				return this.userDatabase.values().stream().map(this.converter::entityToBoundary)
-						.filter(e -> e.getDeleted() == false).collect(Collectors.toList());
+						.collect(Collectors.toList());
 			}
 			else throw new NoPermissionsExeption("This user is not a admin");
 		}
