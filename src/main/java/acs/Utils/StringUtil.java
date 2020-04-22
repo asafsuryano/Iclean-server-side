@@ -3,6 +3,10 @@ package acs.Utils;
 public class StringUtil {
 	public static boolean isNullOrEmpty(String str)
 	{
-		return str != null || !str.trim().isEmpty();
+		if (str == null)
+			return true;
+		if (str.trim().isEmpty())
+			return true;
+		return false;
 	}
 }
