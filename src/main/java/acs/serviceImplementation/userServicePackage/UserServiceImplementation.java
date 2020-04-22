@@ -46,6 +46,8 @@ public class UserServiceImplementation implements UserService {
 	public UserBoundary createUser(UserBoundary user) {
 		if(StringUtil.isNullOrEmpty(user.getUserId().getEmail()))
 			throw new RuntimeException("email invalid");
+		else if (StringUtil.isNullOrEmpty(user.getUsername()))
+			throw new RuntimeException("username invalid");
 		user.getUserId().setDomain(this.projectName);
 		if (user.getRole() == null) {
 			user.setRole(Roles.PLAYER.toString());
@@ -92,7 +94,10 @@ public class UserServiceImplementation implements UserService {
 		}
 
 		if (updaterUser.getRole() != Roles.ADMIN ||updaterUser.getRole() != Roles.MANAGER  ) {
-			throw new NoPermissionsExeption("This user is not an admin or manager");
+			//updater not MANAGER or ADMIN
+			if ((!userDomain.equals(update.getUserId().getDomain())) || (!userEmail.equals(update.getUserId().getEmail())))
+				//updater is not update
+				throw new NoPermissionsExeption("This user does not have permission");
 		}
 		// THE USER TO UPDATE
 		UserEntity existingUser = this.userDatabase.get(this.converter.boundaryToEntity(update).getUserId());
