@@ -5,13 +5,13 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import acs.Utils.StringUtil;
 import acs.data.UserEntity;
 import acs.data.UserEntityBoundaryConvertor;
 import acs.data.userEntityProperties.User;
@@ -39,11 +39,15 @@ public class UserServiceImplementation implements UserService {
 	@PostConstruct
 	public void init() {
 		// since this class is a singleton, we generate a thread safe collection
-		this.userDatabase = Collections.synchronizedMap(new TreeMap<>());
+		this.userDatabase = Collections.synchronizedMap(new HashMap<>());
 	}
 
 	@Override
 	public UserBoundary createUser(UserBoundary user) {
+		if(StringUtil.isNullOrEmpty(user.getUserId().getEmail()))
+			throw new RuntimeException("email invalid");
+		else if (StringUtil.isNullOrEmpty(user.getUsername()))
+			throw new RuntimeException("username invalid");
 		user.getUserId().setDomain(this.projectName);
 		if (user.getRole() == null) {
 			user.setRole(Roles.PLAYER.toString());
@@ -54,7 +58,7 @@ public class UserServiceImplementation implements UserService {
 		}
 		user.setDeleted(false);
 		user.setTimestamp(new Date());
-		UserEntity newUserEntity = this.converter.boundarytoEntity(user);
+		UserEntity newUserEntity = this.converter.boundaryToEntity(user);
 		UserEntity exiting = this.userDatabase.get(newUserEntity.getUserId());
 
 		if (exiting != null) {
@@ -89,11 +93,14 @@ public class UserServiceImplementation implements UserService {
 			throw new UserNotFoundException("Update Fail, the updater details is incorrect");
 		}
 
-		if (updaterUser.getRole() != Roles.ADMIN) {
-			throw new NotAdminExeption("This user is not an admin");
+		if (updaterUser.getRole() != Roles.ADMIN ||updaterUser.getRole() != Roles.MANAGER  ) {
+			//updater not MANAGER or ADMIN
+			if ((!userDomain.equals(update.getUserId().getDomain())) || (!userEmail.equals(update.getUserId().getEmail())))
+				//updater is not update
+				throw new NoPermissionsExeption("This user does not have permission");
 		}
-
-		UserEntity existingUser = this.userDatabase.get(this.converter.boundarytoEntity(update).getUserId());
+		// THE USER TO UPDATE
+		UserEntity existingUser = this.userDatabase.get(this.converter.boundaryToEntity(update).getUserId());
 
 		if (existingUser == null || existingUser.getDeleted()) {
 			throw new UserNotFoundException("Update Fail, User to update is not exist");
@@ -130,13 +137,14 @@ public class UserServiceImplementation implements UserService {
 		User adminUser = new User(adminDomain, adminEmail);
 		UserEntity admin = this.userDatabase.get(adminUser);
 
-		if (admin != null) {
-			if (admin.getRole() == acs.data.userEntityProperties.Roles.ADMIN) {
+		if (admin != null) {//if the user that create the request is exist
+			if (admin.getRole() == acs.data.userEntityProperties.Roles.ADMIN) {//is user have right permissions 
 				return this.userDatabase.values().stream().map(this.converter::entityToBoundary)
 						.filter(e -> e.getDeleted() == false).collect(Collectors.toList());
 			}
+			else throw new NoPermissionsExeption("This user is not a admin");
 		}
-		throw new NotAdminExeption("This user is not a admin");
+		throw new UserNotFoundException("user is not exist in the system");
 	}
 
 	@Override
@@ -148,9 +156,10 @@ public class UserServiceImplementation implements UserService {
 			if (admin.getRole() == acs.data.userEntityProperties.Roles.ADMIN) {
 				this.userDatabase.clear();
 			}
+			else throw new NoPermissionsExeption("This user is not a admin");
 		}
 
-		throw new NotAdminExeption("This user is not a admin");
+		throw new UserNotFoundException("user is not exist in the system");
 	}
 
 }

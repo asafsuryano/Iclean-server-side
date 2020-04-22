@@ -1,10 +1,15 @@
 package acs.data;
 
 import acs.elementBoundaryPackage.*;
+
+import org.springframework.stereotype.Component;
+
 import acs.data.elementEntityProperties.ElementId;
 import acs.data.elementEntityProperties.Location;
 import acs.data.elementEntityProperties.Type;
 import acs.data.elementEntityProperties.UserId;
+
+@Component
 public class ElementEntityBoundaryConverter {
 	public ElementBoundary entityToBoundary(ElementEntity entity) {
 		ElementBoundary eb=new ElementBoundary();

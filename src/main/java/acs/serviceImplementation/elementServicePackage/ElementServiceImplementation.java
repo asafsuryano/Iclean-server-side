@@ -30,8 +30,8 @@ public class ElementServiceImplementation implements ElementService {
 	private Map<acs.data.elementEntityProperties.ElementId, ElementEntity> elementsDatabase;
 	private ElementEntityBoundaryConverter converter; 
 	
-	public ElementServiceImplementation() {
-		this.converter =  new ElementEntityBoundaryConverter();
+	public ElementServiceImplementation(ElementEntityBoundaryConverter converter) {
+		this.converter = converter;
 	}
 
 	@PostConstruct
