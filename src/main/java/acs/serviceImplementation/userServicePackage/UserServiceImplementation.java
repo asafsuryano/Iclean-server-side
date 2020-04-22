@@ -1,7 +1,6 @@
 package acs.serviceImplementation.userServicePackage;
 
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,12 +51,6 @@ public class UserServiceImplementation implements UserService {
 		if (user.getRole() == null) {
 			user.setRole(UserRoles.PLAYER.toString());
 		}
-		
-		if (user.getDetails() == null) {
-			user.setDetails(new HashMap<>());
-		}
-		user.setDeleted(false);
-		user.setTimestamp(new Date());
 		UserEntity newUserEntity = this.converter.boundaryToEntity(user);
 		UserEntity exiting = this.userDatabase.get(newUserEntity.getUserId());
 
@@ -110,9 +103,6 @@ public class UserServiceImplementation implements UserService {
 			existingUser.setRole(this.converter.boundaryToEntityRole(update.getRole()));
 
 		}
-		if (update.getDeleted() != null) {
-			existingUser.setDeleted(update.getDeleted());
-		}
 
 		if (update.getUsername() != null) {
 			existingUser.setUsername(update.getUsername());
@@ -122,12 +112,6 @@ public class UserServiceImplementation implements UserService {
 			existingUser.setAvatar(update.getAvatar());
 
 		}
-
-		if (update.getDetails() != null) {
-			existingUser.setDetails(update.getDetails());
-
-		}
-
 		this.userDatabase.replace(existingUser.getUserId(), existingUser);
 		return this.converter.entityToBoundary(existingUser);
 	}
@@ -140,7 +124,7 @@ public class UserServiceImplementation implements UserService {
 		if (admin != null) {//if the user that create the request is exist
 			if (admin.getRole() == acs.data.UserRoles.ADMIN) {//is user have right permissions 
 				return this.userDatabase.values().stream().map(this.converter::entityToBoundary)
-						.filter(e -> e.getDeleted() == false).collect(Collectors.toList());
+						.collect(Collectors.toList());
 			}
 			else throw new NoPermissionsExeption("This user is not a admin");
 		}

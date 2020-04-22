@@ -13,10 +13,6 @@ public class UserEntityBoundaryConvertor {
 		newUserBoundary.setAvatar(entity.getAvatar());
 		newUserBoundary.setUsername(entity.getUsername());
 		newUserBoundary.setUserId(new User(entity.getUserId().getDomain(), entity.getUserId().getEmail()));
-		newUserBoundary.setDetails(entity.getDetails());
-		newUserBoundary.setDeleted(entity.getDeleted());
-		newUserBoundary.setTimestamp(entity.getTimestemp());
-
 		if (entity.getRole() != null) {
 			newUserBoundary.setRole(entityToBoundaryRole(entity.getRole()));
 		}
@@ -30,12 +26,6 @@ public class UserEntityBoundaryConvertor {
 		newUserEntity.setUsername(boundary.getUsername());
 		newUserEntity.setUserId(new acs.data.userEntityProperties.User(boundary.getUserId().getDomain(),
 				boundary.getUserId().getEmail()));
-
-		if (boundary.getDeleted() != null) {
-			newUserEntity.setDeleted(boundary.getDeleted());
-		} else {
-			newUserEntity.setDeleted(false);
-		}
 
 		if (boundary.getRole() != null) {
 			newUserEntity.setRole(boundaryToEntityRole(boundary.getRole()));

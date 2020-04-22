@@ -1,7 +1,6 @@
 package acs.data;
 
 import java.util.Date;
-import java.util.Map;
 
 import acs.data.userEntityProperties.User;
 
@@ -14,7 +13,6 @@ public class UserEntity {
 	private String avatar;
 	private boolean isDeleted;
 	private Date timestemp;
-	private Map<String, Object> details;
 	
 	
 	
@@ -74,13 +72,6 @@ public class UserEntity {
 		this.timestemp = timestemp;
 	}
 
-	public Map<String, Object> getDetails() {
-		return details;
-	}
-
-	public void setDetails(Map<String, Object> details) {
-		this.details = details;
-	}
 
 
 }
