@@ -1,5 +1,7 @@
 package acs.demo;
 
+import javax.management.RuntimeErrorException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -8,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import acs.Utils.StringUtil;
 import acs.logic.UserService;
 import acs.newUserDetailsBoundaryPackage.NewUserDetails;
 import acs.usersBoundaryPackage.User;
@@ -55,6 +58,10 @@ public class UserController {
 	public void updateUser(@RequestBody  UserBoundary user, 
 									@PathVariable("userDomain") String domain,
 									@PathVariable("userEmail") String email) {
+		if(StringUtil.isNullOrEmpty(domain)|| StringUtil.isNullOrEmpty(email))
+		{
+			throw new RuntimeException("domain or email null/empty");
+		}
 		this.userService.updateUser(domain, email, user);
 	}
 	
@@ -63,6 +70,10 @@ public class UserController {
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public UserBoundary login(@PathVariable("userDomain") String domain,
 									@PathVariable("userEmail") String email) {
+		if(StringUtil.isNullOrEmpty(domain)|| StringUtil.isNullOrEmpty(email))
+		{
+			throw new RuntimeException("domain or email null/empty");
+		}
 		return this.userService.login(domain, email);
 	}
 		

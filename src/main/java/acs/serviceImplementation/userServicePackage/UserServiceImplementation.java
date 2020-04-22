@@ -89,10 +89,10 @@ public class UserServiceImplementation implements UserService {
 			throw new UserNotFoundException("Update Fail, the updater details is incorrect");
 		}
 
-		if (updaterUser.getRole() != Roles.ADMIN) {
-			throw new NotAdminExeption("This user is not an admin");
+		if (updaterUser.getRole() != Roles.ADMIN ||updaterUser.getRole() != Roles.MANAGER  ) {
+			throw new NoPermissionsExeption("This user is not an admin or manager");
 		}
-
+		// THE USER TO UPDATE
 		UserEntity existingUser = this.userDatabase.get(this.converter.boundarytoEntity(update).getUserId());
 
 		if (existingUser == null || existingUser.getDeleted()) {
@@ -130,13 +130,14 @@ public class UserServiceImplementation implements UserService {
 		User adminUser = new User(adminDomain, adminEmail);
 		UserEntity admin = this.userDatabase.get(adminUser);
 
-		if (admin != null) {
-			if (admin.getRole() == acs.data.userEntityProperties.Roles.ADMIN) {
+		if (admin != null) {//if the user that create the request is exist
+			if (admin.getRole() == acs.data.userEntityProperties.Roles.ADMIN) {//is user have right permissions 
 				return this.userDatabase.values().stream().map(this.converter::entityToBoundary)
 						.filter(e -> e.getDeleted() == false).collect(Collectors.toList());
 			}
+			else throw new NoPermissionsExeption("This user is not a admin");
 		}
-		throw new NotAdminExeption("This user is not a admin");
+		throw new UserNotFoundException("user is not exist in the system");
 	}
 
 	@Override
@@ -148,9 +149,10 @@ public class UserServiceImplementation implements UserService {
 			if (admin.getRole() == acs.data.userEntityProperties.Roles.ADMIN) {
 				this.userDatabase.clear();
 			}
+			else throw new NoPermissionsExeption("This user is not a admin");
 		}
 
-		throw new NotAdminExeption("This user is not a admin");
+		throw new UserNotFoundException("user is not exist in the system");
 	}
 
 }

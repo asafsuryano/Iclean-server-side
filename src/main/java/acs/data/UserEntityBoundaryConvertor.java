@@ -1,8 +1,11 @@
 package acs.data;
 
 import acs.usersBoundaryPackage.UserBoundary;
-import acs.usersBoundaryPackage.User;
 
+import org.springframework.stereotype.Component;
+
+import acs.usersBoundaryPackage.User;
+@Component
 public class UserEntityBoundaryConvertor {
 
 	public UserBoundary entityToBoundary(UserEntity entity) {

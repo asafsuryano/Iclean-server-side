@@ -1,5 +1,7 @@
 package acs.data;
 
+import org.springframework.stereotype.Component;
+
 import acs.actionBoundaryPackage.ActionBoundary;
 
 import acs.actionBoundaryPackage.ActionId;
@@ -8,7 +10,7 @@ import acs.actionBoundaryPackage.ElementId;
 import acs.actionBoundaryPackage.InvokedBy;
 import acs.actionBoundaryPackage.UserId;
 
-
+@Component
 public class ActionEntityBoundaryConverter {
 	
 	public ActionBoundary entityToBoundary(ActionEntity entity) {
