@@ -3,7 +3,7 @@ package acs.logic;
 import java.util.List;
 
 import acs.actionBoundaryPackage.ActionBoundary;
-
+//action service
 public interface ActionService {
 	public Object invokeAction(ActionBoundary action);
 	public List<ActionBoundary> getAllActions(String adminDomain, String adminEmail);
