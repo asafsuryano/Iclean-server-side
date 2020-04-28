@@ -78,7 +78,7 @@ public class ElementServiceImplementation implements ElementService {
 		
 		ElementEntity el = this.converter.boundaryToEntity(element);
 		
-		this.elementsDatabase.put(el.getElementId(), el);
+		this.elementsDatabase.replace(el.getElementId(), el);
 		
 		return element;
 	}
