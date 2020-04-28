@@ -7,6 +7,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 public class ApplicationTests {
 	@Test
 	public void testContext() {
-		//ben test
+		//ben test one
 	}
 }
