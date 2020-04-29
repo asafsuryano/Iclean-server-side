@@ -2,6 +2,7 @@
 
 import java.util.Date;
 import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class ElementBoundary {
    private String name;
@@ -11,7 +12,7 @@ public class ElementBoundary {
    private Date date;
    private CreatedBy createdby;
    private Location location;
-   private LinkedHashMap<String,Object> elementAttributes;
+   private Map<String,Object> elementAttributes;
    
   
 public ElementBoundary(String name, ElementId eID,String type,Boolean active,Date date,CreatedBy CBy,Location location, LinkedHashMap<String, Object> elementAttributes) {
@@ -73,10 +74,10 @@ public ElementBoundary(String name, ElementId eID,String type,Boolean active,Dat
 		this.name = name;
 	}
 	 
-   public LinkedHashMap<String,Object> getElementAttributes() {
+   public Map<String,Object> getElementAttributes() {
 	   	return elementAttributes;
 	}
-	public void setElementAttributes(LinkedHashMap<String,Object> elementAttributes) {
+	public void setElementAttributes(Map<String,Object> elementAttributes) {
 		this.elementAttributes = elementAttributes;
 	}
 	   

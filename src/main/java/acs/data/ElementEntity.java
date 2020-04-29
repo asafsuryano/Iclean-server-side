@@ -2,6 +2,7 @@ package acs.data;
 
 import java.util.Date;
 import java.util.LinkedHashMap;
+import java.util.Map;
 
 import acs.data.elementEntityProperties.*;
 import acs.data.elementEntityProperties.ElementId;
@@ -15,7 +16,7 @@ public class ElementEntity {
 	private Location location;
 	private UserId createdBy;
 	private boolean isActive;
-	private LinkedHashMap<String,Object> elementAttributes;
+	private Map<String,Object> elementAttributes;
 	
 	public ElementEntity() {
 		//ben test12
@@ -64,10 +65,10 @@ public class ElementEntity {
 	public void setActive(boolean isActive) {
 		this.isActive = isActive;
 	}
-	public LinkedHashMap<String, Object> getElementAttributes() {
+	public Map<String, Object> getElementAttributes() {
 		return elementAttributes;
 	}
-	public void setElementAttributes(LinkedHashMap<String, Object> elementAttributes) {
+	public void setElementAttributes(Map<String, Object> elementAttributes) {
 		this.elementAttributes = elementAttributes;
 	}
 	
