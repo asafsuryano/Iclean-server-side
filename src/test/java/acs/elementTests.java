@@ -49,7 +49,6 @@ public class elementTests {
 		
 		ElementBoundary elementBoundary = new ElementBoundary();		
 		elementBoundary.setCreatedby(new CreatedBy(new UserId("kaba","sol@ba")));
-		elementBoundary.setType("DEMO_ELEMENT");
 		elementBoundary.setName("ban");
 		elementBoundary.setActive(true);
 		
@@ -65,17 +64,19 @@ public class elementTests {
 		String elementId = boundaryOnServer.getElementId().getElementId();
 	
 		ElementBoundary update = new ElementBoundary();
-		update.setElementId(boundaryOnServer.getElementId());
+		update.setCreatedby(boundaryOnServer.getCreatedby());
+		update.setActive(true);
 		update.setName("workedd");
 		
-		this.restTemplate.put(this.elementUrl + "/{userDomain}/{userEmail}/{elementDomain}/{elementID}" ,
-				update,userDomain,userEmail,elementDomain,elementId);
+		this.restTemplate.put(
+				this.elementUrl + "/{userDomain}/{userEmail}/{elementDomain}/{elementID}" ,
+				update,
+				userDomain,userEmail,elementDomain,elementId);
 		
 		ElementBoundary updatedNameInElementBoundary = this.restTemplate
 				.getForObject(this.elementUrl + "/{userDomain}/{userEmail}/{elementDomain}/{elementID}",
 						ElementBoundary.class,
 						userDomain,userEmail,elementDomain,elementId);
-		System.err.println(updatedNameInElementBoundary.getType());
 		
 		assertThat(updatedNameInElementBoundary.getName()).isNotNull().isEqualTo(update.getName());						
 	}
@@ -83,10 +84,9 @@ public class elementTests {
 	@Test
 	public void testPostNewElementThenTheDatabaseHasAnElementWithTheSameElementIdAsPosted() { 
 		
-		ElementBoundary elementBoundary = new ElementBoundary();	
-		//elementBoundary.setElementId(new ElementId(" "," "));
+		ElementBoundary elementBoundary = new ElementBoundary();
 		elementBoundary.setCreatedby(new CreatedBy(new UserId("kaba","sol@ba")));
-		elementBoundary.setType("DEMO_ELEMENT");
+		elementBoundary.setActive(true);
 		
 		ElementBoundary newElementBoundary =
 				this.restTemplate
