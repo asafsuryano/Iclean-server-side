@@ -17,7 +17,9 @@ public class ElementEntity {
 	private boolean isActive;
 	private LinkedHashMap<String,Object> elementAttributes;
 	
-	public ElementEntity() {}
+	public ElementEntity() {
+		//ben test
+	}
 	
 	
 	public ElementId getElementId() {
