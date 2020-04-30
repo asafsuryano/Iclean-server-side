@@ -12,7 +12,7 @@ import acs.data.elementEntityProperties.UserId;
 public class ElementEntityBoundaryConverter {
 	public ElementBoundary entityToBoundary(ElementEntity entity) {
 		ElementBoundary eb=new ElementBoundary();
-		eb.setElementId(new acs.elementBoundaryPackage.ElementId(entity.getElementId().getElementDomain(),
+		eb.setElementId(new acs.elementBoundaryPackage.ElementIdBoundary(entity.getElementId().getElementDomain(),
 				entity.getElementId().getElementId()));
 		eb.setLocation(new acs.elementBoundaryPackage.Location(entity.getLocation().getLat(),
 				entity.getLocation().getIng()));

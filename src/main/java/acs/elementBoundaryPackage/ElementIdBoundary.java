@@ -1,33 +1,30 @@
-package acs.data.elementEntityProperties;
+package acs.elementBoundaryPackage;
 
-import javax.persistence.Embeddable;
-
-@Embeddable
-public class ElementId implements Comparable<ElementId> {
+public class ElementIdBoundary {
 	private String domain;
 	private String id;
 
-	public ElementId(String domain, String id) {
+	public ElementIdBoundary(String domain, String id) {
 		this.domain = domain;
 		this.id = id;
 	}
 
-	public ElementId() {}
+	public ElementIdBoundary() {}
 
 	public String getElementDomain() {
 		return domain;
 	}
 
-	public void setElementDomain(String elementDomain) {
-		this.domain = elementDomain;
+	public void setElementDomain(String domain) {
+		this.domain = domain;
 	}
 
 	public String getElementId() {
 		return id;
 	}
 
-	public void setElementId(String elementId) {
-		id = elementId;
+	public void setElementId(String id) {
+		this.id = id;
 	}
 
 	@Override
@@ -47,7 +44,7 @@ public class ElementId implements Comparable<ElementId> {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		ElementId other = (ElementId) obj;
+		ElementIdBoundary other = (ElementIdBoundary) obj;
 		if (id == null) {
 			if (other.id != null)
 				return false;
@@ -59,12 +56,6 @@ public class ElementId implements Comparable<ElementId> {
 		} else if (!domain.equals(other.domain))
 			return false;
 		return true;
-	}
-
-	@Override
-	public int compareTo(ElementId o) {
-		// TODO Auto-generated method stub
-		return 0;
 	}
 	
 	

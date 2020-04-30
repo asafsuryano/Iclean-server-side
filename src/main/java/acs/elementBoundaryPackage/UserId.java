@@ -1,24 +1,24 @@
 package acs.elementBoundaryPackage;
 
 public class UserId {
-	private String Userdomain;
-	private String UserEmail;
+	private String domain;
+	private String email;
 
 	public UserId(String domain, String email) {
-		this.Userdomain = domain;
-		this.UserEmail = email;
+		this.domain = domain;
+		this.email = email;
 	}
 	public String getUserdomain() {
-		return Userdomain;
+		return domain;
 	}
 	public void setUserdomain(String userdomain) {
-		Userdomain = userdomain;
+		domain = userdomain;
 	}
 	public String getUserEmail() {
-		return UserEmail;
+		return email;
 	}
 	public void setUserEmail(String userEmail) {
-		UserEmail = userEmail;
+		email = userEmail;
 	}
 	public UserId() {}
 }

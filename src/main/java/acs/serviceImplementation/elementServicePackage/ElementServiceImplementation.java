@@ -1,24 +1,23 @@
 package acs.serviceImplementation.elementServicePackage;
 
-import java.util.Collections;
+
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
-import javax.annotation.PostConstruct;
-
+import java.util.stream.StreamSupport;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
+import org.springframework.transaction.annotation.Transactional;
+import acs.dal.ElementDao;
 import acs.data.ElementEntity;
 import acs.data.ElementEntityBoundaryConverter;
 import acs.elementBoundaryPackage.CreatedBy;
 import acs.elementBoundaryPackage.ElementBoundary;
-import acs.elementBoundaryPackage.ElementId;
+import acs.elementBoundaryPackage.ElementIdBoundary;
 import acs.elementBoundaryPackage.Location;
 import acs.elementBoundaryPackage.UserId;
 import acs.logic.ElementService;
@@ -27,18 +26,21 @@ import acs.logic.ElementService;
 @Service
 public class ElementServiceImplementation implements ElementService {
 	private String projectName;
-	private Map<acs.data.elementEntityProperties.ElementId, ElementEntity> elementsDatabase;
 	private ElementEntityBoundaryConverter converter; 
+	private ElementDao elementDaoDatabase;
 	
-	public ElementServiceImplementation(ElementEntityBoundaryConverter converter) {
+	public ElementServiceImplementation(ElementDao elementDao,ElementEntityBoundaryConverter converter) {
 		this.converter = converter;
+		this.elementDaoDatabase=elementDao;
 	}
 
+	/*
 	@PostConstruct
 	public void init() {
 		// since this class is a singleton, we generate a thread safe collection
 		this.elementsDatabase = Collections.synchronizedMap(new HashMap<>());
 	}
+	*/
 	
 	// injection of value from the spring boot configuration
 	@Value("${spring.application.name:demo}")
@@ -47,8 +49,9 @@ public class ElementServiceImplementation implements ElementService {
 	}
 
 	@Override
+	@Transactional
 	public ElementBoundary create(String managerDomain, String managerEmail, ElementBoundary element) {
-		ElementId elementId = new ElementId(this.projectName, UUID.randomUUID().toString());
+		ElementIdBoundary elementId = new ElementIdBoundary(this.projectName, UUID.randomUUID().toString());
 		element.setElementId(elementId);
 	
 		if(element.getType() == null) {
@@ -78,88 +81,95 @@ public class ElementServiceImplementation implements ElementService {
 		
 		ElementEntity el = this.converter.boundaryToEntity(element);
 		
-		this.elementsDatabase.put(el.getElementId(), el);
-		
+		this.elementDaoDatabase.save(el);
 		return element;
 	}
 
 	@Override
+	@Transactional
 	public ElementBoundary update(String managerDomain, String managerEmail, String elementDomain, String elementId,
 			ElementBoundary update) {
 		
 		acs.data.elementEntityProperties.ElementId id = new acs.data.elementEntityProperties.ElementId(elementDomain, elementId);
-		ElementEntity element = this.elementsDatabase.get(id);
-		if(element == null) {
+		Optional<ElementEntity> element = this.elementDaoDatabase.findById(id);
+		if(!element.isPresent()) {
 			throw new RuntimeException("Invalid Element");
 		}
-		if(element.isActive() == false && (update.isActive() == null || update.isActive() == false)) {
+		if(element.get().isActive() == false && (update.isActive() == null || update.isActive() == false)) {
 			throw new RuntimeException("Element Not Active! Cannot update...");
 		}
 		
 		boolean dirty = false;
 		
 		if(update.getType() != null) {
-			element.setType(update.getType());
+			element.get().setType(update.getType());
 			dirty = true;
 		}
 		
 		if(update.isActive() != null) {
-			element.setActive(update.isActive());
+			element.get().setActive(update.isActive());
 			dirty = true;
 		}
 
 				
 		if(update.getName() != null) {
-			element.setName(update.getName());
+			element.get().setName(update.getName());
 			dirty = true;
 		}
 		
 		
 		if(update.getElementAttributes() != null) {
-			element.setElementAttributes(update.getElementAttributes());
+			element.get().setElementAttributes(update.getElementAttributes());
 			dirty = true;
 		}
 		
 		if(update.getLocation() != null) {
-			element.setLocation(new acs.data.elementEntityProperties.Location(update.getLocation().getLat(),update.getLocation().getLng()));
+			element.get().setLocation(new acs.data.elementEntityProperties.Location(update.getLocation().getLat(),update.getLocation().getLng()));
 			dirty = true;
 		}
 		if(dirty) {
-			this.elementsDatabase.put(id, element);
+			this.elementDaoDatabase.save(element.get());
 		}
 		
 			
-		return this.converter.entityToBoundary(element);
+		return this.converter.entityToBoundary(element.get());
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public List<ElementBoundary> getAll(String userDomain, String userEmail) {
-		return this.elementsDatabase // Map<String, ElementEntity>
-				.values()           // Collection<ElementEntity>
-				.stream()		    // Stream<ElementEntity>				
-				.map(this.converter::entityToBoundary)	
-				.filter(el -> el.isActive() == true)
-				.collect(Collectors.toList()); // List<DummyBoundaries>
+		List<ElementEntity> elementEntities=
+				StreamSupport.stream(this.elementDaoDatabase.findAll().spliterator(), false)
+				.collect(Collectors.toList());
+		List<ElementBoundary> elementBoundaries=new ArrayList<>();
+		for (int i=0;i<elementEntities.size();i++)
+		{
+			elementBoundaries.add(this.converter.entityToBoundary(elementEntities.get(i)));
+		}
+		return elementBoundaries;
+
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public ElementBoundary getSpecificElement(String userDomain, String userEmail, String elementDomain,
 			String elementId) {
 		acs.data.elementEntityProperties.ElementId id = new acs.data.elementEntityProperties.ElementId(elementDomain, elementId);
-		ElementEntity elEntity =  this.elementsDatabase.get(id);
-		if(elEntity != null && elEntity.isActive() == true) {
-			return this.converter
-					.entityToBoundary(
-							elEntity);
+		Optional<ElementEntity> elEntity =  this.elementDaoDatabase.findById(id);
+		if (elEntity.isPresent())
+		{
+			if (elEntity.get().isActive())
+				return this.converter.entityToBoundary(elEntity.get());
+			else
+				throw new RuntimeException("the element is not active");
 		}
-		else {
-			throw new RuntimeException("Could no find Element");
-		}
+		else
+			throw new RuntimeException("the element does not exist");
 	}
 
 	@Override
 	public void deleteAllElements(String adminDomain, String adminEmail) {
-		this.elementsDatabase.clear();
+		this.elementDaoDatabase.deleteAll();
 	}
 
 }

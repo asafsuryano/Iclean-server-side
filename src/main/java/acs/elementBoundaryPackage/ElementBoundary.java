@@ -1,25 +1,24 @@
 	package acs.elementBoundaryPackage;
 
 import java.util.Date;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class ElementBoundary {
    private String name;
-   private ElementId elementId; 
+   private ElementIdBoundary elementId; 
    private String type;
    private Boolean active;
-   private Date date;
+   private Date createdTimeStamp;
    private CreatedBy createdby;
    private Location location;
    private Map<String,Object> elementAttributes;
    
   
-public ElementBoundary(String name, ElementId eID,String type,Boolean active,Date date,CreatedBy CBy,Location location, LinkedHashMap<String, Object> elementAttributes) {
+public ElementBoundary(String name, ElementIdBoundary eID,String type,Boolean active,Date date,CreatedBy CBy,Location location, Map<String, Object> elementAttributes) {
 	   this.elementId=eID;
 	   this.active=active;
 	   this.type=type;
-	   this.date=date;
+	   this.createdTimeStamp=date;
 	   this.createdby=CBy;
 	   this.location=location;
 	   this.elementAttributes=elementAttributes;
@@ -30,10 +29,10 @@ public ElementBoundary(String name, ElementId eID,String type,Boolean active,Dat
 	   
    }
 
-	public ElementId getElementId() {
+	public ElementIdBoundary getElementId() {
 		return elementId;
 	}
-	public void setElementId(ElementId elementId) {
+	public void setElementId(ElementIdBoundary elementId) {
 		this.elementId = elementId;
 	}
 	public String getType() {
@@ -50,10 +49,10 @@ public ElementBoundary(String name, ElementId eID,String type,Boolean active,Dat
 		this.active = active;
 	}
 	public Date getDate() {
-		return date;
+		return createdTimeStamp;
 	}
-	public void setDate(Date date) {
-		this.date = date;
+	public void setDate(Date createdTimeStamp) {
+		this.createdTimeStamp = createdTimeStamp;
 	}
 	public CreatedBy getCreatedby() {
 		return createdby;

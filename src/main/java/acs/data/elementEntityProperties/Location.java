@@ -1,5 +1,8 @@
 package acs.data.elementEntityProperties;
 
+import javax.persistence.Embeddable;
+
+@Embeddable
 public class Location {
 	private double  lat;
 	private double ing;
