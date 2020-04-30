@@ -3,6 +3,10 @@ package acs.data;
 import java.util.Date;
 import java.util.HashMap;
 
+import javax.persistence.EmbeddedId;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
 import acs.data.actionEntityProperties.ActionId;
 import acs.data.actionEntityProperties.Element;
 import acs.data.actionEntityProperties.InvokedBy;
@@ -34,12 +38,16 @@ public class ActionEntity {
 	public void setType(String type) {
 		this.type = type;
 	}
+	
+	@Temporal(TemporalType.TIMESTAMP)
 	public Date getCreatedTimestamp() {
 		return createdTimestamp;
 	}
 	public void setCreatedTimestamp(Date createdTimestamp) {
 		this.createdTimestamp = createdTimestamp;
 	}
+	
+	@EmbeddedId
 	public ActionId getActionId() {
 		return actionId;
 	}

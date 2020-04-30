@@ -1,6 +1,12 @@
 package acs.data.userEntityProperties;
 
-public class User {
+import java.io.Serializable;
+
+import javax.persistence.Embeddable;
+
+@Embeddable
+public class User implements Serializable {
+	private static final long serialVersionUID = 4634424177767814131L;
 	private String domain;
 	private String email;
 	

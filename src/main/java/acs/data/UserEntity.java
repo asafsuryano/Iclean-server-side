@@ -2,10 +2,22 @@ package acs.data;
 
 import java.util.Date;
 
+import javax.persistence.Embedded;
+import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.Id;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
+import org.assertj.core.util.diff.Delta.TYPE;
+
+import acs.data.elementEntityProperties.Type;
 import acs.data.userEntityProperties.User;
 
 
-
+@Entity
 public class UserEntity {
 	private User userId;
 	private UserRoles role;
@@ -18,13 +30,15 @@ public class UserEntity {
 	
 	public UserEntity(User userId, UserRoles role, String username, String avatar) {
 		this.userId = userId;
-		this.role = role;
+		//this.role = role;
 		this.username = username;
 		this.avatar = avatar;
+		this.role=UserRoles.PLAYER;
 	}
 	public UserEntity() {};
 
 
+	@EmbeddedId
 	public User getUserId() {
 		return userId;
 	}
@@ -32,7 +46,7 @@ public class UserEntity {
 	public void setUserId(User user) {
 		this.userId = user;
 	}
-
+    @Enumerated(EnumType.ORDINAL)
 	public UserRoles getRole() {
 		return role;
 	}
@@ -63,7 +77,7 @@ public class UserEntity {
 	public void setDeleted(boolean isDeleted) {
 		this.isDeleted = isDeleted;
 	}
-
+	@Temporal(TemporalType.TIMESTAMP)
 	public Date getTimestemp() {
 		return timestemp;
 	}

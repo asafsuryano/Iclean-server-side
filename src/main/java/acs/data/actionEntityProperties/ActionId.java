@@ -1,6 +1,12 @@
 package acs.data.actionEntityProperties;
 
-public class ActionId {
+import java.io.Serializable;
+
+import javax.persistence.Embeddable;
+
+@Embeddable
+public class ActionId implements Serializable  {
+	private static final long serialVersionUID = 162648946937469637L;
 	private String domain;
 	private String id;
 	public ActionId() {
