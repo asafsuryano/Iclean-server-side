@@ -18,8 +18,8 @@ public class ActionEntityBoundaryConverter {
 		ab.setType(entity.getType());
 		ab.setCreatedTimestamp(entity.getCreatedTimestamp());
 		ab.setActionId(new ActionId(entity.getActionId().getDomain(), entity.getActionId().getId()));
-		ab.setElement(new Element(new ElementId(entity.getElement().getElementId().getDomain(), entity.getElement().getElementId().getId())));		
-		ab.setInvokedBy(new InvokedBy(new UserId(entity.getInvokedBy().getUserId().getDomain(), entity.getInvokedBy().getUserId().getEmail())));	
+		ab.setElement(new Element(new ElementId(entity.getElement())));		
+		ab.setInvokedBy(new InvokedBy(new UserId(entity.getInvokedBy())));	
 		ab.setActionAttributes(entity.getActionAttributes());
 		return ab;
 	}

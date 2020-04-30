@@ -2,12 +2,15 @@ package acs.data;
 
 import java.util.Date;
 import java.util.Map;
+import java.util.Set;
 
 import javax.persistence.Convert;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -28,6 +31,9 @@ public class ElementEntity {
 	private UserId createdBy;
 	private boolean isActive;
 	private Map<String,Object> elementAttributes;
+	private Set<ElementEntity> children;
+	
+	private ElementEntity parent;
 	
 	public ElementEntity() {
 		//ben test12
@@ -99,4 +105,24 @@ public class ElementEntity {
 		this.elementAttributes = elementAttributes;
 	}
 	
+	
+	@ManyToOne
+	public ElementEntity getParent() {
+		return parent;
+	}
+
+	public void setParent(ElementEntity parent) {
+		this.parent = parent;
+	}
+	
+	
+	@OneToMany(mappedBy = "parent")
+	public Set<ElementEntity> getChildren() {
+		return children;
+	}
+
+	public void setChildren(Set<ElementEntity> children) {
+		this.children = children;
+	}
+
 }

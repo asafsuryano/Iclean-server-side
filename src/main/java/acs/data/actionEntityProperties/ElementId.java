@@ -1,5 +1,8 @@
 package acs.data.actionEntityProperties;
 
+import javax.persistence.Embeddable;
+
+@Embeddable
 public class ElementId {
 	private String domain;
 	private String id;
@@ -10,6 +13,7 @@ public class ElementId {
 		this.domain = domain;
 		this.id = id;
 	}
+	
 	public String getDomain() {
 		return domain;
 	}

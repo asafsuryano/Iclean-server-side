@@ -10,4 +10,5 @@ public interface ElementService {
 	public List<ElementBoundary> getAll(String userDomain, String userEmail);
 	public ElementBoundary getSpecificElement(String userDomain, String userEmail, String elementDomain, String elementId);
 	public void deleteAllElements(String adminDomain, String adminEmail);
+	
 }

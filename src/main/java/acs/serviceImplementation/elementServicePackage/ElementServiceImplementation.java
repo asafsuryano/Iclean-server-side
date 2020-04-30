@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -15,23 +16,25 @@ import org.springframework.transaction.annotation.Transactional;
 import acs.dal.ElementDao;
 import acs.data.ElementEntity;
 import acs.data.ElementEntityBoundaryConverter;
+import acs.data.elementEntityProperties.ElementId;
 import acs.elementBoundaryPackage.CreatedBy;
 import acs.elementBoundaryPackage.ElementBoundary;
 import acs.elementBoundaryPackage.ElementIdBoundary;
 import acs.elementBoundaryPackage.Location;
 import acs.elementBoundaryPackage.UserId;
 import acs.logic.ElementService;
+import acs.logic.ExtraElementsService;
 
 
 @Service
-public class ElementServiceImplementation implements ElementService {
+public class ElementServiceImplementation implements ExtraElementsService {
 	private String projectName;
 	private ElementEntityBoundaryConverter converter; 
-	private ElementDao elementDaoDatabase;
+	private ElementDao elementDatabase;
 	
 	public ElementServiceImplementation(ElementDao elementDao,ElementEntityBoundaryConverter converter) {
 		this.converter = converter;
-		this.elementDaoDatabase=elementDao;
+		this.elementDatabase=elementDao;
 	}
 
 	/*
@@ -81,7 +84,7 @@ public class ElementServiceImplementation implements ElementService {
 		
 		ElementEntity el = this.converter.boundaryToEntity(element);
 		
-		this.elementDaoDatabase.save(el);
+		this.elementDatabase.save(el);
 		return element;
 	}
 
@@ -91,7 +94,7 @@ public class ElementServiceImplementation implements ElementService {
 			ElementBoundary update) {
 		
 		acs.data.elementEntityProperties.ElementId id = new acs.data.elementEntityProperties.ElementId(elementDomain, elementId);
-		Optional<ElementEntity> element = this.elementDaoDatabase.findById(id);
+		Optional<ElementEntity> element = this.elementDatabase.findById(id);
 		if(!element.isPresent()) {
 			throw new RuntimeException("Invalid Element");
 		}
@@ -128,7 +131,7 @@ public class ElementServiceImplementation implements ElementService {
 			dirty = true;
 		}
 		if(dirty) {
-			this.elementDaoDatabase.save(element.get());
+			this.elementDatabase.save(element.get());
 		}
 		
 			
@@ -138,15 +141,8 @@ public class ElementServiceImplementation implements ElementService {
 	@Override
 	@Transactional(readOnly = true)
 	public List<ElementBoundary> getAll(String userDomain, String userEmail) {
-		List<ElementEntity> elementEntities=
-				StreamSupport.stream(this.elementDaoDatabase.findAll().spliterator(), false)
-				.collect(Collectors.toList());
-		List<ElementBoundary> elementBoundaries=new ArrayList<>();
-		for (int i=0;i<elementEntities.size();i++)
-		{
-			elementBoundaries.add(this.converter.entityToBoundary(elementEntities.get(i)));
-		}
-		return elementBoundaries;
+		return StreamSupport.stream(this.elementDatabase.findAll().spliterator(),false).
+				map(this.converter::entityToBoundary).collect(Collectors.toList());
 
 	}
 
@@ -155,7 +151,7 @@ public class ElementServiceImplementation implements ElementService {
 	public ElementBoundary getSpecificElement(String userDomain, String userEmail, String elementDomain,
 			String elementId) {
 		acs.data.elementEntityProperties.ElementId id = new acs.data.elementEntityProperties.ElementId(elementDomain, elementId);
-		Optional<ElementEntity> elEntity =  this.elementDaoDatabase.findById(id);
+		Optional<ElementEntity> elEntity =  this.elementDatabase.findById(id);
 		if (elEntity.isPresent())
 		{
 			if (elEntity.get().isActive())
@@ -169,7 +165,19 @@ public class ElementServiceImplementation implements ElementService {
 
 	@Override
 	public void deleteAllElements(String adminDomain, String adminEmail) {
-		this.elementDaoDatabase.deleteAll();
+		this.elementDatabase.deleteAll();
+	}
+
+	@Override
+	@Transactional
+	public void bindParenToChildElements(String parentElement, String childId) {
+		//TODO Auto-generated method stub
+	}
+
+	@Override
+	public Set<ElementBoundary> getAllChildren(String originId) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

@@ -7,6 +7,7 @@ import java.util.stream.StreamSupport;
 import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import acs.Utils.StringUtil;
 import acs.data.UserEntity;
@@ -17,7 +18,7 @@ import acs.data.userEntityProperties.User;
 import acs.logic.UserService;
 import acs.usersBoundaryPackage.UserBoundary;
 
-//@Service
+@Service
 public class UserServiceImplementation implements UserService {
 	private UserEntityBoundaryConvertor converter;
 	private String projectName;

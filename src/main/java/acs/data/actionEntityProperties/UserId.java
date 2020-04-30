@@ -1,5 +1,8 @@
 package acs.data.actionEntityProperties;
 
+import javax.persistence.Embeddable;
+
+@Embeddable
 public class UserId {
 	private String domain;
 	private String email;

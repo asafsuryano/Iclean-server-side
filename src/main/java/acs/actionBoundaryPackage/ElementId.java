@@ -10,6 +10,11 @@ public class ElementId {
 		this.domain = domain;
 		this.id = id;
 	}
+	public ElementId(String allInfo) {
+		String [] array=allInfo.split("#");
+		this.domain=array[0];
+		this.id=array[1];
+	}
 	public String getDomain() {
 		return domain;
 	}

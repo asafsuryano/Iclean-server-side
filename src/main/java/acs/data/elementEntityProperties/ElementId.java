@@ -1,9 +1,12 @@
 package acs.data.elementEntityProperties;
 
+import java.io.Serializable;
+
 import javax.persistence.Embeddable;
 
 @Embeddable
-public class ElementId implements Comparable<ElementId> {
+public class ElementId implements Comparable<ElementId>,Serializable {
+	private static final long serialVersionUID = -1916704765505760714L;
 	private String domain;
 	private String id;
 

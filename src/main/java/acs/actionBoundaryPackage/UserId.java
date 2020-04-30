@@ -11,6 +11,11 @@ public class UserId {
 	public UserId()
 	{
 	}
+	public UserId(String allInfo) {
+		String [] array=allInfo.split("#");
+		this.domain=array[0];
+		this.email=array[1];
+	}
 	public String getDomain() {
 		return domain;
 	}
