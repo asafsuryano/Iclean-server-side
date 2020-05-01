@@ -113,6 +113,7 @@ public class ElementEntity {
 
 	public void setParent(ElementEntity parent) {
 		this.parent = parent;
+		parent.getChildren().add(this);
 	}
 	
 	

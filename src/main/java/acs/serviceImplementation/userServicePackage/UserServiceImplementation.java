@@ -45,7 +45,7 @@ public class UserServiceImplementation implements UserService {
 	@Override
 	@Transactional
 	public UserBoundary createUser(UserBoundary user) {
-		if (StringUtil.isNullOrEmpty(user.getUserId().getEmail()))
+		if (!StringUtil.isEmailGood(user.getUserId().getEmail()))
 			throw new RuntimeException("email invalid");
 		
 		else if (StringUtil.isNullOrEmpty(user.getUsername()))
@@ -55,6 +55,9 @@ public class UserServiceImplementation implements UserService {
 		if (user.getRole() == null) {
 			user.setRole(UserRoles.PLAYER.toString());
 		}
+		
+		if (StringUtil.isNullOrEmpty(user.getAvatar()))
+			throw new RuntimeException("invalid avatar");
 		
 		 UserEntity newUserEntity = this.converter.boundaryToEntity(user);		
 		 Optional<UserEntity> exiting = this.userDatabase.findById(newUserEntity.getUserId());
@@ -88,7 +91,9 @@ public class UserServiceImplementation implements UserService {
 		// THE UPDATER OF THE USER
 		User updater = new User(userDomain, userEmail);
 		Optional<UserEntity> updaterUser = this.userDatabase.findById(updater);
-		
+		if (!update.getUserId().getEmail().isEmpty())
+			if (!StringUtil.isEmailGood(update.getUserId().getEmail()))
+				throw new RuntimeException("email invalid");
 		if (!updaterUser.isPresent() || updaterUser.get().getDeleted()) {
 			throw new UserNotFoundException("Update Fail, the updater details is incorrect");
 		}
@@ -109,16 +114,16 @@ public class UserServiceImplementation implements UserService {
 			throw new UserNotFoundException("Update Fail, User to update is not exist");
 		}
 
-		if (update.getRole() != null) {
+		if (!StringUtil.isNullOrEmpty(update.getRole())) {
 			existingUser.get().setRole(this.converter.boundaryToEntityRole(update.getRole()));
 
 		}
 
-		if (update.getUsername() != null) {
+		if (!StringUtil.isNullOrEmpty(update.getUsername())) {
 			existingUser.get().setUsername(update.getUsername());
 		}
 
-		if (update.getAvatar() != null) {
+		if (!StringUtil.isNullOrEmpty(update.getAvatar())) {
 			existingUser.get().setAvatar(update.getAvatar());
 
 		}

@@ -6,6 +6,6 @@ import acs.elementBoundaryPackage.ElementBoundary;
 
 public interface ExtraElementsService extends ElementService {
 
-	public void bindParenToChildElements (String parentElement, String childId);
-	public Set<ElementBoundary> getAllChildren(String originId);
+	public void bindParentToChildElements (ElementBoundary parentElement, ElementBoundary childElement);
+	public Set<ElementBoundary> getAllChildren(ElementBoundary originId);
 }

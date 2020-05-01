@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import acs.Utils.StringUtil;
 import acs.actionBoundaryPackage.ActionBoundary;
 import acs.data.ActionEntity;
 import acs.data.ActionEntityBoundaryConverter;
@@ -51,6 +52,14 @@ public class ActionServiceImplementation implements ActionService {
 
 	@Override
 	public Object invokeAction(ActionBoundary action) {
+		if (StringUtil.isNullOrEmpty(action.getType()))
+			throw new RuntimeException("empty type");
+		if (StringUtil.isNullOrEmpty(action.getElement().getElementId().getDomain())
+				||(StringUtil.isNullOrEmpty(action.getElement().getElementId().getId())))
+				throw new RuntimeException("invalid elementId");
+		if (StringUtil.isNullOrEmpty(action.getInvokedBy().getUserId().getDomain())
+				|| (StringUtil.isNullOrEmpty(action.getInvokedBy().getUserId().getEmail())))
+			throw new RuntimeException("invalid user details");
 		action.setActionId(new acs.actionBoundaryPackage.ActionId(projectName, UUID.randomUUID().toString()));
 		action.setCreatedTimestamp(new Date());
 		this.invoke = this.converter.boundaryToEntity(action);

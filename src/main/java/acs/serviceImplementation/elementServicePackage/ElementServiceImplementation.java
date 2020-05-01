@@ -1,7 +1,6 @@
 package acs.serviceImplementation.elementServicePackage;
 
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -22,7 +21,6 @@ import acs.elementBoundaryPackage.ElementBoundary;
 import acs.elementBoundaryPackage.ElementIdBoundary;
 import acs.elementBoundaryPackage.Location;
 import acs.elementBoundaryPackage.UserId;
-import acs.logic.ElementService;
 import acs.logic.ExtraElementsService;
 
 
@@ -169,15 +167,28 @@ public class ElementServiceImplementation implements ExtraElementsService {
 	}
 
 	@Override
-	@Transactional
-	public void bindParenToChildElements(String parentElement, String childId) {
-		//TODO Auto-generated method stub
+	public void bindParentToChildElements(ElementBoundary parentElement, ElementBoundary childElement) {
+		// TODO Auto-generated method stub
+		
+		ElementEntity parentEntity=this.elementDatabase.findById(new ElementId
+				(parentElement.getElementId().getElementDomain(),parentElement.getElementId().getElementId()))
+				.orElseThrow(()->new RuntimeException("the element does not exist"));
+		ElementEntity childEntity=this.elementDatabase.findById(new ElementId
+				(childElement.getElementId().getElementDomain(),childElement.getElementId().getElementId()))
+				.orElseThrow(()->new RuntimeException("the element does not exist"));
+		childEntity.setParent(parentEntity);
+		this.elementDatabase.save(childEntity);
 	}
 
 	@Override
-	public Set<ElementBoundary> getAllChildren(String originId) {
-		// TODO Auto-generated method stub
-		return null;
+	public Set<ElementBoundary> getAllChildren(ElementBoundary originId) {
+		ElementEntity entity=this.elementDatabase.findById
+				(new ElementId(originId.getElementId().getElementDomain(),originId.getElementId().getElementId()))
+				.orElseThrow(()->new RuntimeException("the element does not exist"));
+		return entity.getChildren().stream()
+				.map(this.converter::entityToBoundary)
+				.collect(Collectors.toSet());
 	}
+
 
 }

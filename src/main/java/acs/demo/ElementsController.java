@@ -14,24 +14,25 @@ import acs.Utils.StringUtil;
 import acs.elementBoundaryPackage.ElementBoundary;
 import acs.elementBoundaryPackage.ElementIdBoundary;
 import acs.logic.ElementService;
+import acs.logic.ExtraElementsService;
 
 @RestController
 public class ElementsController {
-	private ElementService elementService;
-
-	public ElementsController(ElementService elementService) {
+	private ExtraElementsService elementService;
+	@Autowired
+	public ElementsController(ExtraElementsService elementService) {
 		super();
 		this.elementService = elementService;
 	}
 
-	@Autowired
-	public ElementsController() {
-	}
-
-	@Autowired
-	public void setElementService(ElementService elementService) {
-		this.elementService = elementService;
-	}
+	
+//	public ElementsController() {
+//	}
+//
+//	@Autowired
+//	public void setElementService(ElementService elementService) {
+//		this.elementService = elementService;
+//	}
 
 	@RequestMapping(path = "/acs/elements/{userDomain}/{userEmail}/{elementDomain}/{elementID}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ElementBoundary retreiveSpecificElement(@PathVariable("userDomain") String userDomain,
@@ -90,7 +91,7 @@ public class ElementsController {
 		this.elementService.update(userDomain, userEmail, elementDomain, elementID, element);
 	}
 	
-	@RequestMapping(path="/acs/elements/{managerDomain}/{managerEmail}/{elementDomain}/{elementID}/children",
+	@RequestMapping(path="/acs/elements/{managerDomain}/{managerEmail}/{elementDomain}/{elementId}/children",
 			method=RequestMethod.PUT,
 			consumes=MediaType.APPLICATION_JSON_VALUE)
 	public void bindExistingElementToChildElement(@PathVariable("managerDomain") String managerDomain,
@@ -104,22 +105,26 @@ public class ElementsController {
 			throw new RuntimeException("userEmail,elementID,elementDomain,userDomain null/empty");
 		}
 		// TODO
+		ElementBoundary parent = this.elementService.getSpecificElement(managerDomain, managerEmail, elementDomain, elementID);
+		ElementBoundary child = this.elementService.getSpecificElement(managerDomain, managerEmail, elementDomain, elementID);
+		
+		this.elementService.bindParentToChildElements(parent, child);
 	}
-	@RequestMapping(path="/acs/elements/{userDomain}/{userEmail}/{elementDomain}/{elementID}/children",
+	@RequestMapping(path="/acs/elements/{userDomain}/{userEmail}/{elementDomain}/{elementId}/children",
 			method=RequestMethod.GET,
 			produces=MediaType.APPLICATION_JSON_VALUE)
 	public ElementBoundary[] getAllChildrenOfExistingElement(@PathVariable("userDomain") String userDomain,
 			@PathVariable("userEmail") String userEmail, @PathVariable("elementDomain") String elementDomain,
-			@PathVariable("elementID") String elementID) {
+			@PathVariable("elementID") String elementId) {
 		if(StringUtil.isNullOrEmpty(userEmail)|| 
-				StringUtil.isNullOrEmpty(elementID) ||
+				StringUtil.isNullOrEmpty(elementId) ||
 				StringUtil.isNullOrEmpty(elementDomain)|| 
 				StringUtil.isNullOrEmpty(userDomain))
 		{
 			throw new RuntimeException("userEmail,elementID,elementDomain,userDomain null/empty");
 		}
-		// TODO
-		return null;
+		ElementBoundary elementBundary=this.elementService.getSpecificElement(userDomain, userEmail, elementDomain, elementId);
+		return this.elementService.getAllChildren(elementBundary).toArray(new ElementBoundary[0]);
 	}
 	@RequestMapping(path="/acs/elements/{userDomain}/{userEmail}/{elementDomain}/{elementID}/parents",
 			method=RequestMethod.GET,
