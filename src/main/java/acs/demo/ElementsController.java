@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 import acs.Utils.StringUtil;
 import acs.elementBoundaryPackage.ElementBoundary;
 import acs.elementBoundaryPackage.ElementIdBoundary;
-import acs.logic.ElementService;
 import acs.logic.ExtraElementsService;
 
 @RestController
