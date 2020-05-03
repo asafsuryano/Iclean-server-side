@@ -4,6 +4,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
 import javax.annotation.PostConstruct;
 
 import org.junit.jupiter.api.AfterEach;
@@ -15,6 +19,7 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
+
 import acs.newUserDetailsBoundaryPackage.NewUserDetails;
 import acs.usersBoundaryPackage.User;
 import acs.usersBoundaryPackage.UserBoundary;
@@ -24,6 +29,7 @@ public class userTests {
 
 	private RestTemplate restTemplate;
 	private String userUrl;
+	private String adminUrl;
 	private int port;
 	
 	@LocalServerPort
@@ -34,18 +40,30 @@ public class userTests {
 	@PostConstruct
 	public void init() {
 		this.restTemplate = new RestTemplate();
-		this.userUrl =    "http://localhost:" + this.port + "/acs/users";
+		this.userUrl  ="http://localhost:" + this.port + "/acs/users";
+		this.adminUrl = "http://localhost:" + this.port +"/acs/admin/users";
+		
 	}
 	
 	@BeforeEach
 	public void setup() {
 		
 	}
-//	@AfterEach
-//	public void tearDown() {
-//		this.restTemplate
-//			.delete(this.userUrl);
-//	}
+	@AfterEach
+	public void tearDown() {
+		// post admin
+		UserBoundary admin = 
+				this.restTemplate
+				.postForObject(this.userUrl,
+						new NewUserDetails("ba@na","dana",":)","ADMIN"),
+						UserBoundary.class);
+		
+		//then delete all after every test
+		this.restTemplate
+		.delete(this.adminUrl + "/{adminDomain}/{adminEmail}",
+				admin.getUserId().getDomain(),
+				admin.getUserId().getEmail());
+	}
 	
 	@Test
 	public void testContext() {
@@ -101,11 +119,12 @@ public class userTests {
 						UserBoundary.class, "2020b.ben.halfon",newUserPosted.getUserId().getEmail())
 				.getUserId();
 		
-		assertThat(currentUserEmailPosted.getEmail()).isNotNull().isEqualTo(newUserPosted.getUserId().getEmail());
+		assertThat(currentUserEmailPosted.getEmail()).isNotNull()
+			.isEqualTo(newUserPosted.getUserId().getEmail());
 	}
 	
 	@Test
-	public void testPostAnUserThatAlreadyExistInTheDataBaseThenThrowAnException() {
+	public void testPostAnUserThatAlreadyExistInTheDataBaseThenThrowAnException() throws Exception {
 		
 		//GEVEN the server is up
 		//And the dataBase Contains User
@@ -129,7 +148,7 @@ public class userTests {
 	}
 	
 	@Test
-	public void tsetPostANewUserWithInvalidRoleThenWeGetAnException(){
+	public void tsetPostANewUserWithInvalidRoleThenWeGetAnException() throws Exception {
 		
 		//GEVEN the server is up
 		
@@ -149,7 +168,7 @@ public class userTests {
 	
 	
 	@Test
-	public void tsetPostANewUserWithACorrectRoleAttributeButOneCharacterIsNotInUpperCaseThenWeGetAnException(){
+	public void tsetPostANewUserWithACorrectRoleAttributeButOneCharacterIsNotInUpperCaseThenWeGetAnException() throws Exception {
 		
 		//GEVEN the server is up
 		
@@ -168,7 +187,7 @@ public class userTests {
 	}
 	
 	@Test
-	public void testPostAnUserWithEmptyEmailAndThatWillThrowAnException() {
+	public void testPostAnUserWithEmptyEmailAndThatWillThrowAnException() throws Exception {
 		
 	//GEVEN the server is up
 		
@@ -191,7 +210,7 @@ public class userTests {
 	}
 		
 	@Test
-	public void tsetPostUserWithEmptyNameAndThatWillThrowAnException() {
+	public void tsetPostUserWithEmptyNameAndThatWillThrowAnException () throws Exception {
 		
 		//GEVEN the server is up
 		
@@ -214,7 +233,7 @@ public class userTests {
 	}
 	
 	@Test
-	public void testPostNewUserAndTryingToLoginWithInCorrectUserEmailAndThatWillThrowAnException() {
+	public void testPostNewUserAndTryingToLoginWithInCorrectUserEmailAndThatWillThrowAnException () throws Exception {
 		//GEVEN the server is up
 		//ANd the DB contains an user
 		
@@ -244,7 +263,7 @@ public class userTests {
 	}
 	
 	@Test
-	public void testPostNewUserAndTryingToLoginWithInCorrectUserDomainAndThatWillThrowAnException() {
+	public void testPostNewUserAndTryingToLoginWithInCorrectUserDomainAndThatWillThrowAnException() throws Exception {
 		//GEVEN the server is up
 		//ANd the DB contains an user
 		
@@ -273,7 +292,7 @@ public class userTests {
 	}
 	
 	@Test
-	public void tsetTryingToUpdateRoleOfUserThatDoesNotExistInTheDataBase() {
+	public void tsetTryingToUpdateRoleOfUserThatDoesNotExistInTheDataBase() throws Exception {
 		
 		//GEVEN the server is up
 		
@@ -295,7 +314,7 @@ public class userTests {
 	}
 	
 	@Test
-	public void testPostNewUserWithEmptyAvatarAndThatWillThrowAnException() {
+	public void testPostNewUserWithEmptyAvatarAndThatWillThrowAnException() throws Exception {
 		
 		//GEVEN the server is up
 		
@@ -314,7 +333,7 @@ public class userTests {
 	}
 		
 	@Test
-	public void testPostNewUserWithNullAvatarAttributeAndThatWillThrowAnException() {
+	public void testPostNewUserWithNullAvatarAttributeAndThatWillThrowAnException() throws Exception {
 		
 	//GEVEN the server is up
 		
@@ -333,7 +352,80 @@ public class userTests {
 		
 	}
 	
-	
+	@Test
+	public void testInitTheServerWithTwoUsersAndCheckThatTheyExistsInTheDataBase() throws Exception {
 		
+		//GEVEN the server is up
+		//AND the DB contains 2 users 
+		List<UserBoundary> AllUsersInDataBase =
+		IntStream.range(1,3)
+		.mapToObj(i->(i==2)?"ADMIN":"PLAYER")
+		.map(userRole-> new NewUserDetails("te@st"+userRole,"dan"+userRole,":)",userRole))
+		.map(boundary-> this.restTemplate
+				.postForObject(this.userUrl,
+						boundary,
+						UserBoundary.class))
+		.collect(Collectors.toList()); 
+		
+		UserBoundary[] results = 
+				this.restTemplate.
+				getForObject(this.adminUrl + "/{adminDomain}/{adminEmail}",
+				UserBoundary[].class,
+				AllUsersInDataBase.get(1).getUserId().getDomain(),
+				AllUsersInDataBase.get(1).getUserId().getEmail());
+		
+		assertThat(results)
+		.hasSize(AllUsersInDataBase.size())
+		.usingRecursiveFieldByFieldElementComparator()
+		.containsExactlyInAnyOrderElementsOf(AllUsersInDataBase);
+	}
+	
+	@Test
+	public void testInitTheServerWithTwoUsersAndWhenWeDeleteThemTheDataBaseIsEmpty() throws Exception {
+		
+		//GEVEN the server is up
+		//AND the DB contains 2 users 
+		List<UserBoundary> AllUsersInDataBase =
+		IntStream.range(1,3)
+		.mapToObj(i->(i==2)?"ADMIN":"PLAYER")
+		.map(userRole-> new NewUserDetails("te@st"+userRole,"dan"+userRole,":)",userRole))
+		.map(boundary-> this.restTemplate
+				.postForObject(this.userUrl,
+						boundary,
+						UserBoundary.class))
+		.collect(Collectors.toList()); 
+		
+		//WHEN i delete them
+		this.restTemplate
+		.delete(this.adminUrl + "/{adminDomain}/{adminEmail}",
+				AllUsersInDataBase.get(1).getUserId().getDomain(),
+				AllUsersInDataBase.get(1).getUserId().getEmail());
+		
+		//THEN the DB is empty
+		//to check that its empty we post an admin to get the array of users in DB
+		
+		UserBoundary admin =
+				this.restTemplate
+				.postForObject(this.userUrl,
+						new NewUserDetails("te@st","ban",":)","ADMIN"),
+						UserBoundary.class);
+		
+		UserBoundary[] results = 
+				this.restTemplate.
+				getForObject(this.adminUrl + "/{adminDomain}/{adminEmail}",
+				UserBoundary[].class,
+				admin.getUserId().getDomain(),
+				admin.getUserId().getEmail());
+		
+		
+		
+		assertThat(results)
+		.hasSize(1)  // the DB contain just the admin that we post
+		.usingRecursiveFieldByFieldElementComparator()
+		.containsExactly(admin);
+		
+	}
+		
+	
 	
 }
