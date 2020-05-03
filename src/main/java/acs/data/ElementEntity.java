@@ -1,14 +1,19 @@
 package acs.data;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Convert;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinTable;
+import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -32,6 +37,21 @@ public class ElementEntity {
 	private boolean isActive;
 	private Map<String,Object> elementAttributes;
 	private Set<ElementEntity> children;
+	@ManyToMany
+	@JoinTable(name="id",
+    joinColumns=@JoinColumn(name="parent"),
+    inverseJoinColumns=@JoinColumn(name="children2")
+    )
+	private Collection<ElementEntity> parents ; 
+	
+	@ManyToMany(mappedBy = "Parents",cascade = CascadeType.PERSIST)
+	private Collection<ElementEntity> children2;
+
+
+
+	
+	
+	
 	
 	private ElementEntity parent;
 	
@@ -125,5 +145,5 @@ public class ElementEntity {
 	public void setChildren(Set<ElementEntity> children) {
 		this.children = children;
 	}
-
+	
 }
