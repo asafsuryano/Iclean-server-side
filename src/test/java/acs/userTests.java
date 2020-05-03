@@ -162,7 +162,7 @@ public class userTests {
 		
 		//THEN we get an exception
 		catch(HttpServerErrorException ex) {
-			assertTrue(ex.getMessage().contains("No enum constant acs.data.UserRoles.magnom"));
+			assertTrue(ex.getMessage().contains("No enum constant"));
 		}
 	}
 	
@@ -182,7 +182,7 @@ public class userTests {
 		
 		//THEN we get an exception
 		catch(HttpServerErrorException ex) {
-			assertTrue(ex.getMessage().contains("No enum constant acs.data.UserRoles.PLAYEr"));
+			assertTrue(ex.getMessage().contains("No enum constant"));
 		}
 	}
 	
@@ -257,7 +257,7 @@ public class userTests {
 		
 		//THEN he get an exception
 		catch(HttpServerErrorException ex) {
-			assertTrue(ex instanceof HttpServerErrorException);
+			assertTrue(ex.getMessage().contains("User Not Found"));
 		}
 		
 	}
@@ -287,7 +287,7 @@ public class userTests {
 		
 		//THEN he get an exception
 		catch(HttpServerErrorException ex) {
-			assertTrue(ex instanceof HttpServerErrorException);
+			assertTrue(ex.getMessage().contains("User Not Found"));
 		}
 	}
 	
@@ -304,10 +304,9 @@ public class userTests {
 				"blabla","bla@bla");
 		fail();
 		}
-		//THEN i get an exception  
+		//THEN i got an exception  
 		catch(HttpServerErrorException ex) {
-			System.err.println(ex.getMessage());
-			assertTrue(ex instanceof HttpServerErrorException);
+			assertTrue(ex.getMessage().contains("Update Fail"));
 			
 		}
 		
@@ -332,25 +331,6 @@ public class userTests {
 		}
 	}
 		
-	@Test
-	public void testPostNewUserWithNullAvatarAttributeAndThatWillThrowAnException() throws Exception {
-		
-	//GEVEN the server is up
-		
-		//When i put user with empty avatar
-		try {
-		this.restTemplate
-		.postForObject(this.userUrl,
-				new NewUserDetails("as@ba","bbabn",null,"PLAYER"), // null avatar
-				UserBoundary.class);
-		fail();
-		}
-		//THEN i get an exception
-		catch(HttpServerErrorException ex) {
-			assertTrue(ex instanceof HttpServerErrorException);
-		}
-		
-	}
 	
 	@Test
 	public void testInitTheServerWithTwoUsersAndCheckThatTheyExistsInTheDataBase() throws Exception {
@@ -367,6 +347,7 @@ public class userTests {
 						UserBoundary.class))
 		.collect(Collectors.toList()); 
 		
+		//WHEN we get them
 		UserBoundary[] results = 
 				this.restTemplate.
 				getForObject(this.adminUrl + "/{adminDomain}/{adminEmail}",
@@ -374,6 +355,7 @@ public class userTests {
 				AllUsersInDataBase.get(1).getUserId().getDomain(),
 				AllUsersInDataBase.get(1).getUserId().getEmail());
 		
+		//THEN they contained in DB
 		assertThat(results)
 		.hasSize(AllUsersInDataBase.size())
 		.usingRecursiveFieldByFieldElementComparator()
