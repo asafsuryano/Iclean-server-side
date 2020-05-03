@@ -1,15 +1,11 @@
 package acs;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import javax.annotation.PostConstruct;
@@ -23,25 +19,21 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import com.sun.xml.internal.bind.v2.schemagen.xmlschema.List;
 
-import acs.data.ElementEntity;
 import acs.elementBoundaryPackage.CreatedBy;
 import acs.elementBoundaryPackage.ElementBoundary;
 import acs.elementBoundaryPackage.ElementId;
 import acs.elementBoundaryPackage.UserId;
 import acs.newUserDetailsBoundaryPackage.NewUserDetails;
-import acs.serviceImplementation.elementServicePackage.ElementServiceImplementation;
 import acs.usersBoundaryPackage.UserBoundary;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 public class elementTests {
 	private RestTemplate restTemplate;
 	private String elementUrl;
-	private int port;
-	private ElementServiceImplementation elementservice;
 	private String adminUrl;
 	private String userUrl;
+	private int port;
 	
 	@LocalServerPort
 	public void setPort(int port) {
@@ -52,7 +44,7 @@ public class elementTests {
 	public void init() {
 		this.restTemplate = new RestTemplate();
 		this.elementUrl = "http://localhost:" + this.port + "/acs/elements";
-		this.adminUrl = "http://localhost:" + this.port +"/acs/admin/users";
+		this.adminUrl = "http://localhost:" + this.port +"/acs/admin";
 		this.userUrl  ="http://localhost:" + this.port + "/acs/users";
 		
 	}
@@ -71,11 +63,17 @@ public class elementTests {
 					new NewUserDetails("ba@na","dana",":)","ADMIN"),
 					UserBoundary.class);
 	
-	//then delete all after every test
+	//then delete all users/elements after every test
 	this.restTemplate
-	.delete(this.adminUrl + "/{adminDomain}/{adminEmail}",
+	.delete(this.adminUrl + "/users/{adminDomain}/{adminEmail}",
 			admin.getUserId().getDomain(),
 			admin.getUserId().getEmail());
+	
+	this.restTemplate
+	.delete(this.adminUrl + "/elements/{adminDomain}/{adminEmail}",
+			admin.getUserId().getDomain(),
+			admin.getUserId().getEmail());
+
 	}
 
 	
@@ -83,9 +81,9 @@ public class elementTests {
 	public void testPutOfElementAndUpdateItsNameThenTheNameIsUpdatedInTheDataBase() throws Exception {
 		
 		ElementBoundary elementBoundary = new ElementBoundary();		
-		elementBoundary.setCreatedby(new CreatedBy(new UserId("c","sol@ba")));
 		elementBoundary.setName("ban");
 		elementBoundary.setActive(true);
+		elementBoundary.setType("DEMO_ELEMENT");
 		
 		ElementBoundary boundaryOnServer =
 				this.restTemplate
@@ -120,8 +118,10 @@ public class elementTests {
 	public void testPostNewElementThenTheDatabaseHasAnElementWithTheSameElementIdAsPosted() { 
 		
 		ElementBoundary elementBoundary = new ElementBoundary();
-		elementBoundary.setCreatedby(new CreatedBy(new UserId("kaba","sol@ba")));
+		elementBoundary.setName("ban");
 		elementBoundary.setActive(true);
+		elementBoundary.setType("DEMO_ELEMENT");
+		
 		
 		ElementBoundary newElementBoundary =
 				this.restTemplate
@@ -147,68 +147,34 @@ public class elementTests {
 	@Test
 	public void testGetSpecificElementWithEmptyDatabase()throws Exception{
 
-		// GIVEN the database is clean
+		// GIVEN the server is up
+		
+		
 		//WHEN we Get element when there are no elements in DB
-		assertThrows(Exception.class, () ->this.restTemplate.getForObject(this.elementUrl+ "/{userDomain}/{userEmail}/{elementDomain}/{elementID}",
-				ElementBoundary.class,"userDomain","userEmail","a","b"));
-		
+		try {
+			//trying to get element that not exist
+			this.restTemplate
+			.getForObject(this.elementUrl + "/{userDomain}/{userEmail}/{elementDomain}/{elementID}",
+					ElementBoundary.class,
+					"a","b","2020b.ben.halfon","11514");  
+			
+			fail();
+		}
+		//THEN we got an exception
+		catch(HttpServerErrorException ex) {
+			assertTrue(ex.getMessage().contains("Could no find Element"));
+		}
 	}
 	
-	
-	
-
-	
-	@Test
-	public void testCreateManyElementsWithTheSameUserIdAndCheckIfJustOneStoredInTheDataBase()throws Exception{
-		//GIVEN clear database
-		// WHEN I create number Of Users
-
-	//	assertThat(actualUsers).is(numberOfUsers);
-	
-		
-		
-		
-		// THEN the list Of Element is stored with size 1 
-	
-		
-	}
-	
-	
-	
-	@Test
-	public void testGetAllElementsWithEmptyDatabase()throws Exception{
-		// GIVEN the database is clean
-		//WHEN we Get all elements when there are no elements in DB
-		
-		
-		
-		
-		
-	}
-	
-
-	@Test
-	public void testCreateElementAndCheckIfTypeOfElementNotNull() throws Exception {
-	//GIVEN database is empty
-		//WHEN 
-		
-	
-		
-	}
-	
-	@Test
-	public void testGetOnlyActiveElements()throws Exception{
-		
-	}
-	
-
 	@Test
 	public void testUpdateInactiveElement()throws Exception{
+
 		//GIVEN database with inactive element
 		
 		ElementBoundary elementBoundary = new ElementBoundary();
-		elementBoundary.setCreatedby(new CreatedBy(new UserId("kaba","sol@ba")));
+		elementBoundary.setName("ban");
 		elementBoundary.setActive(false);
+		elementBoundary.setType("DEMO_ELEMENT");
 		
 		ElementBoundary newElementBoundary =
 				this.restTemplate
@@ -235,20 +201,139 @@ public class elementTests {
 		fail();// when we reach this line thats mean the test failed
 		}
 		//THEN we got an exception
-				catch(HttpServerErrorException ex) {
-					assertTrue(ex.getMessage().contains("Element Not Active"));
-				}
+		catch(HttpServerErrorException ex) {
+			assertTrue(ex.getMessage().contains("Element Not Active"));
+		}
 		
-		
-	}
-	@Test
-	public void testUpdateCertainPropertiesInElement()throws Exception{
 		
 	}
 	
 	@Test
-	public void testDeleteAllElementsWihtAdminUser()throws Exception{
+	public void testPostFiveElementsAndCheckIfTheyExistInTheDataBase()throws Exception{
+		// GIVEN the server is up
+		//AND the DB contains 5 elements
+		
+		List<ElementBoundary> AllElementsInDataBase =
+				IntStream.range(1,6)
+				.mapToObj(i-> "test"+i)
+				.map(userId -> new ElementBoundary
+						("ban",null,"DEMO_ELEMENT",true,null,null,null,null))
+				.map(boundary-> this.restTemplate
+						.postForObject(this.elementUrl + "/{managerDomain}/{managerEmail}",
+								boundary,
+								ElementBoundary.class,
+								"aaa","bbb"))
+				.collect(Collectors.toList());
+		
+		//WHEN we get all elements
+		
+		ElementBoundary[] results =
+				this.restTemplate
+				.getForObject(this.elementUrl + "/{userDomain}/{userEmail}",
+						ElementBoundary[].class,
+						AllElementsInDataBase.get(0).getCreatedby().getUserId().getUserdomain(),
+						AllElementsInDataBase.get(0).getCreatedby().getUserId().getUserEmail());
+		
+		//THEN they exists in DB
+		assertThat(results)
+		.hasSize(AllElementsInDataBase.size())
+		.usingRecursiveFieldByFieldElementComparator()
+		.containsExactlyInAnyOrderElementsOf(AllElementsInDataBase);
+				
+	}
+	
+	@Test
+	public void testPostThreeElementsThenDeleteAllThemsWihtAdminUser()throws Exception{
+		// GIVEN the server is up
+		//AND the DB contains 3 elements and an admin
+		
+		UserBoundary adminBoundary =
+		this.restTemplate
+		.postForObject(this.userUrl,
+				new NewUserDetails("te@sst","baan",":)","ADMIN"),
+				UserBoundary.class);
+				
+		List<ElementBoundary> AllElementsInDataBase =
+		IntStream.range(1,4)
+		.mapToObj(i-> "test"+i)
+		.map(userId -> new ElementBoundary
+				("ban",null,"DEMO_ELEMENT",true,null,null,null,null))
+						.map(boundary-> this.restTemplate
+								.postForObject(this.elementUrl + "/{managerDomain}/{managerEmail}",
+										boundary,
+										ElementBoundary.class,
+										"aaa","bbb"))
+		.collect(Collectors.toList());
+		
+		//WHEN we delete all elements in DB
+		this.restTemplate
+		.delete(this.adminUrl + "/elements/{adminDomain}/{adminEmail}",
+				adminBoundary.getUserId().getDomain(),
+				adminBoundary.getUserId().getEmail());
+		
+		//THEN the DB is empty
+				
+		UserBoundary[] results = 
+				this.restTemplate.
+				getForObject(this.elementUrl + "/{userDomain}/{userEmail}",
+						UserBoundary[].class,
+						AllElementsInDataBase.get(0).getCreatedby().getUserId().getUserdomain(),
+						AllElementsInDataBase.get(0).getCreatedby().getUserId().getUserEmail ());
+		
+		assertThat(results).isEmpty();  
 		
 	}
+	
+	@Test
+	public void testPostAnElementWithEmptyNameAndThenThrowAnException() throws Exception {
+	//GIVEN server is up
+	
+	//WHEN i post an element with empty name
+	ElementBoundary newElementPosted = new ElementBoundary();
+	newElementPosted.setActive(true);
+	newElementPosted.setType("DEMO_ELEMENT");
+	newElementPosted.setName(""); // empty name
+	try {
+		this.restTemplate
+		.postForObject(this.elementUrl + "/{managerDomain}/{managerEmail}" ,
+				newElementPosted,
+				ElementBoundary.class,
+				"a","b");
+		fail();
+	}
+	
+	catch(HttpServerErrorException ex) {
+			assertTrue(ex instanceof HttpServerErrorException);
+	}
+	
+	
+	}
+	
+	@Test
+	public void testPostAnElementWithEmptyTypeAndThenThrowAnException() throws Exception {
+	//GIVEN server is up
+	
+	//WHEN i post an element with empty type
+	ElementBoundary newElementPosted = new ElementBoundary();
+	newElementPosted.setActive(true);
+	newElementPosted.setType("");
+	newElementPosted.setName("jhon"); // empty name
+	try {
+		this.restTemplate
+		.postForObject(this.elementUrl + "/{managerDomain}/{managerEmail}" ,
+				newElementPosted,
+				ElementBoundary.class,
+				"a","b");
+		fail();
+	}
+	
+	catch(HttpServerErrorException ex) {
+			assertTrue(ex instanceof HttpServerErrorException);
+	}
+	
+	
+	}
+	
+	
 	
 }
