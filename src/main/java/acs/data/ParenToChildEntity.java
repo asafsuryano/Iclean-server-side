@@ -8,7 +8,7 @@ import javax.persistence.ManyToOne;
 import acs.data.elementEntityProperties.ElementId;
 
 
-
+/*
 @Entity
 public class ParenToChildEntity {
 	public ParenToChildEntity() {}
@@ -40,3 +40,4 @@ public void setChildId(ElementId childId) {
 	this.childId = childId;
 }
 }
+*/
