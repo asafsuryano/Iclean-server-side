@@ -1,11 +1,8 @@
 
 package acs.serviceImplementation.actionServicePackage;
 
-import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -21,7 +18,6 @@ import acs.Utils.StringUtil;
 import acs.actionBoundaryPackage.ActionBoundary;
 import acs.data.ActionEntity;
 import acs.data.ActionEntityBoundaryConverter;
-import acs.data.actionEntityProperties.ActionId;
 import acs.data.dal.ActionDao;
 import acs.logic.ActionService;
 
@@ -35,8 +31,9 @@ public class ActionServiceImplementation implements ActionService {
 	private String projectName;
 
 	@Autowired
-	public ActionServiceImplementation(ActionEntityBoundaryConverter converter) {
+	public ActionServiceImplementation(ActionEntityBoundaryConverter converter,ActionDao actionsDatabase) {
 		this.converter = converter;
+		this.actionsDatabase=actionsDatabase;
 	}
 
 	@PostConstruct
@@ -63,6 +60,7 @@ public class ActionServiceImplementation implements ActionService {
 		action.setActionId(new acs.actionBoundaryPackage.ActionId(projectName, UUID.randomUUID().toString()));
 		action.setCreatedTimestamp(new Date());
 		this.invoke = this.converter.boundaryToEntity(action);
+		this.actionsDatabase.save(this.invoke);
 		return action;
 	}
 

@@ -2,18 +2,14 @@ package acs.data;
 
 import java.util.Date;
 
-import javax.persistence.Embedded;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.Id;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import org.assertj.core.util.diff.Delta.TYPE;
 
-import acs.data.elementEntityProperties.Type;
 import acs.data.userEntityProperties.User;
 
 

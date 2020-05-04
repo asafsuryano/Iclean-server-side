@@ -29,8 +29,10 @@ public class ActionEntityBoundaryConverter {
 		ae.setType(boundary.getType());
 		ae.setCreatedTimestamp(boundary.getCreatedTimestamp());
 		ae.setActionId(new acs.data.actionEntityProperties.ActionId(boundary.getActionId().getDomain(), boundary.getActionId().getId()));
-		ae.setElement(new acs.data.actionEntityProperties.Element(new acs.data.actionEntityProperties.ElementId(boundary.getElement().getElementId().getDomain(), boundary.getElement().getElementId().getId())));		
-		ae.setInvokedBy(new acs.data.actionEntityProperties.InvokedBy(new acs.data.actionEntityProperties.UserId(boundary.getInvokedBy().getUserId().getDomain(), boundary.getInvokedBy().getUserId().getEmail())));	
+		//ae.setElement(new acs.data.actionEntityProperties.Element(new acs.data.actionEntityProperties.ElementId(boundary.getElement().getElementId().getDomain(), boundary.getElement().getElementId().getId())));		
+		//ae.setInvokedBy(new acs.data.actionEntityProperties.InvokedBy(new acs.data.actionEntityProperties.UserId(boundary.getInvokedBy().getUserId().getDomain(), boundary.getInvokedBy().getUserId().getEmail())));
+		ae.setElement(boundary.getElement().getElementId().getDomain()+"#"+boundary.getElement().getElementId().getId());
+		ae.setInvokedBy(boundary.getInvokedBy().getUserId().getDomain()+"#"+boundary.getInvokedBy().getUserId().getEmail());
 		ae.setActionAttributes(boundary.getActionAttributes());
 		return ae;
 	}

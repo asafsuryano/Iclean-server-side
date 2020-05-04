@@ -67,6 +67,9 @@ public class ElementsController {
 		{
 			throw new RuntimeException("managerEmail or managerDomain null/empty");
 		}
+		if (StringUtil.isNullOrEmpty(element.getName())||
+				StringUtil.isNullOrEmpty(element.getType()))
+			throw new RuntimeException("empty name or type");
 		return this.elementService.create(managerDomain, managerEmail, element);
 	}
 

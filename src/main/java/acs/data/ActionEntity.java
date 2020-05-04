@@ -4,7 +4,6 @@ import java.util.Date;
 import java.util.HashMap;
 
 import javax.persistence.Convert;
-import javax.persistence.Embedded;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Lob;
@@ -68,8 +67,9 @@ public class ActionEntity {
 	public String getElement() {
 		return element;
 	}
-	public void setElement(Element element) {
-		this.element = element.toString();
+	public void setElement(String element) {
+		if (element!=null)
+			this.element = element.toString();
 	}
 	
 	
@@ -77,8 +77,9 @@ public class ActionEntity {
 	public String getInvokedBy() {
 		return invokedBy;
 	}
-	public void setInvokedBy(InvokedBy invokedBy) {
-		this.invokedBy = invokedBy.toString();
+	public void setInvokedBy(String invokedBy) {
+		if (invokedBy!=null)
+			this.invokedBy = invokedBy.toString();
 	}
 	
 	
