@@ -58,7 +58,7 @@ public class elementTests {
 	UserBoundary admin = 
 			this.restTemplate
 			.postForObject(this.userUrl,
-					new NewUserDetails("ba@na","dana",":)","ADMIN"),
+					new NewUserDetails("ba@na.com","dana",":)","ADMIN"),
 					UserBoundary.class);
 	
 	//then delete all users/elements after every test
@@ -88,14 +88,13 @@ public class elementTests {
 				.postForObject(this.elementUrl + "/{managerDomain}/{managerEmail}",
 						elementBoundary
 						, ElementBoundary.class,
-						"a","b");
+						"a","te@st.com");
 		String userDomain = boundaryOnServer.getCreatedby().getUserId().getUserdomain();
 		String userEmail = boundaryOnServer.getCreatedby().getUserId().getUserEmail();
 		String elementDomain = boundaryOnServer.getElementId().getElementDomain();
 		String elementId = boundaryOnServer.getElementId().getElementId();
 	
 		ElementBoundary update = new ElementBoundary();
-		update.setCreatedby(boundaryOnServer.getCreatedby());
 		update.setActive(true);
 		update.setName("workedd");
 		
@@ -126,7 +125,7 @@ public class elementTests {
 				.postForObject(this.elementUrl + "/{managerDomain}/{managerEmail}",
 						elementBoundary
 						, ElementBoundary.class,
-						"a","b");
+						"test","te@st.com");
 		
 		ElementIdBoundary currentElementIdPosted =
 				this.restTemplate
@@ -154,13 +153,13 @@ public class elementTests {
 			this.restTemplate
 			.getForObject(this.elementUrl + "/{userDomain}/{userEmail}/{elementDomain}/{elementID}",
 					ElementBoundary.class,
-					"a","b","2020b.ben.halfon","11514");  
+					"test","te@st.com","2020b.ben.halfon","11514");  
 			
 			fail();
 		}
 		//THEN we got an exception
 		catch(HttpServerErrorException ex) {
-			assertTrue(ex.getMessage().contains("Could no find Element"));
+			assertTrue(ex.getMessage().contains("the element does not exist"));
 		}
 	}
 	
@@ -179,7 +178,7 @@ public class elementTests {
 				.postForObject(this.elementUrl + "/{managerDomain}/{managerEmail}",
 						elementBoundary
 						, ElementBoundary.class,
-						"a","b");
+						"test","te@st.com");
 		
 		String userDomain = newElementBoundary.getCreatedby().getUserId().getUserdomain();
 		String userEmail = newElementBoundary.getCreatedby().getUserId().getUserEmail();
@@ -190,7 +189,8 @@ public class elementTests {
 		try {
 		ElementBoundary update = new ElementBoundary();
 		update.setCreatedby(newElementBoundary.getCreatedby());
-		update.setName("workedd"); //update name
+		update.setName("workedd"); //updated name
+		
 		this.restTemplate.put(
 				this.elementUrl + "/{userDomain}/{userEmail}/{elementDomain}/{elementID}" ,
 				update,
@@ -214,13 +214,13 @@ public class elementTests {
 		List<ElementBoundary> AllElementsInDataBase =
 				IntStream.range(1,6)
 				.mapToObj(i-> "test"+i)
-				.map(userId -> new ElementBoundary
-						("ban",null,"DEMO_ELEMENT",true,null,null,null,null))
+				.map(userName -> new ElementBoundary
+						(userName,null,"DEMO_ELEMENT",true,null,null,null,null))
 				.map(boundary-> this.restTemplate
 						.postForObject(this.elementUrl + "/{managerDomain}/{managerEmail}",
 								boundary,
 								ElementBoundary.class,
-								"aaa","bbb"))
+								"test","te@st.com"))
 				.collect(Collectors.toList());
 		
 		//WHEN we get all elements
@@ -248,19 +248,19 @@ public class elementTests {
 		UserBoundary adminBoundary =
 		this.restTemplate
 		.postForObject(this.userUrl,
-				new NewUserDetails("te@sst","baan",":)","ADMIN"),
+				new NewUserDetails("te@sst.com","baan",":)","ADMIN"),
 				UserBoundary.class);
 				
 		List<ElementBoundary> AllElementsInDataBase =
 		IntStream.range(1,4)
 		.mapToObj(i-> "test"+i)
-		.map(userId -> new ElementBoundary
-				("ban",null,"DEMO_ELEMENT",true,null,null,null,null))
+		.map(userName -> new ElementBoundary
+				(userName,null,"DEMO_ELEMENT",true,null,null,null,null))
 						.map(boundary-> this.restTemplate
 								.postForObject(this.elementUrl + "/{managerDomain}/{managerEmail}",
 										boundary,
 										ElementBoundary.class,
-										"aaa","bbb"))
+										"test","te@st.com"))
 		.collect(Collectors.toList());
 		
 		//WHEN we delete all elements in DB
@@ -296,7 +296,7 @@ public class elementTests {
 		.postForObject(this.elementUrl + "/{managerDomain}/{managerEmail}" ,
 				newElementPosted,
 				ElementBoundary.class,
-				"a","b");
+				"test","te@st.com");
 		fail();
 	}
 	
@@ -314,14 +314,14 @@ public class elementTests {
 	//WHEN i post an element with empty type
 	ElementBoundary newElementPosted = new ElementBoundary();
 	newElementPosted.setActive(true);
-	newElementPosted.setType("");
-	newElementPosted.setName("jhon"); // empty name
+	newElementPosted.setType("");  //empty type
+	newElementPosted.setName("jhon"); 
 	try {
 		this.restTemplate
 		.postForObject(this.elementUrl + "/{managerDomain}/{managerEmail}" ,
 				newElementPosted,
 				ElementBoundary.class,
-				"a","b");
+				"test","te@st.com");
 		fail();
 	}
 	

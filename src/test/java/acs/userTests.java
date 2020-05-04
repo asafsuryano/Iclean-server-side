@@ -55,7 +55,7 @@ public class userTests {
 		UserBoundary admin = 
 				this.restTemplate
 				.postForObject(this.userUrl,
-						new NewUserDetails("ba@na","dana",":)","ADMIN"),
+						new NewUserDetails("ba@neww.com","dana",":)","ADMIN"),
 						UserBoundary.class);
 		
 		//then delete all after every test
@@ -74,7 +74,7 @@ public class userTests {
 	public void testPutOfUserAndUpdateItsRoleToAdminThenTheRoleIsUpdatedInTheDatabase() throws Exception {
 		//GEVEN the server is up
 		//AND the DB contains an user with roleAttribute : PLAYER
-		NewUserDetails newUserDetails = new NewUserDetails("mola@be","tam", ":))", "PLAYER");
+		NewUserDetails newUserDetails = new NewUserDetails("ba@new.com","tamsas", ":))", "PLAYER");
 
 		UserBoundary boundaryOnServer =
 				this.restTemplate
@@ -109,7 +109,7 @@ public class userTests {
 		UserBoundary newUserPosted =
 				this.restTemplate
 				.postForObject(this.userUrl,
-						new NewUserDetails("nasas@beaar","sam", "((:))", "ADMIN"),
+						new NewUserDetails("ba@new.com","sam", "((:))", "ADMIN"),
 						UserBoundary.class);
 		
 		//THEN the DB contains the same userEmail
@@ -131,13 +131,13 @@ public class userTests {
 	
 		this.restTemplate
 		.postForObject(this.userUrl,
-				new NewUserDetails("nasas@ss","saam", ":)", "PLAYER"),
+				new NewUserDetails("ba@new.com","saam", ":)", "PLAYER"),
 				UserBoundary.class);
 		
 		//When I put an user that already exist in DB
 		try {
 		this.restTemplate.postForObject(this.userUrl,
-				new NewUserDetails("nasas@ss","saam", ":)", "PLAYER"),
+				new NewUserDetails("ba@new.com","saam", ":)", "PLAYER"),
 				UserBoundary.class);
 		fail();
 		}
@@ -155,7 +155,7 @@ public class userTests {
 		//WHEN i put an user with invalid role
 		try {
 			this.restTemplate.postForObject(this.userUrl,
-					new NewUserDetails("nasas@sss","saam", ":)", "magnom"),
+					new NewUserDetails("ba@new.com","saam", ":)", "magnom"),
 					UserBoundary.class);	
 			fail();
 		}
@@ -175,7 +175,7 @@ public class userTests {
 		//WHEN i put an user with incorrect role
 		try {
 			this.restTemplate.postForObject(this.userUrl,
-					new NewUserDetails("asas@sss","saam", ":)", "PLAYEr"),
+					new NewUserDetails("ba@new.com","saam", ":)", "PLAYEr"),
 					UserBoundary.class);	
 			fail();
 		}
@@ -197,6 +197,7 @@ public class userTests {
 			newUser.setUsername("saam");
 			newUser.setAvatar(":");
 			newUser.setRole("PLAYER");
+			newUser.setEmail("");
 			this.restTemplate.postForObject(this.userUrl,
 					newUser,
 					UserBoundary.class);	
@@ -216,7 +217,7 @@ public class userTests {
 		
 		//WHEN i post an user with empty name
 		try {
-			NewUserDetails newUser = new NewUserDetails("te@st","",":)","PLAYER");
+			NewUserDetails newUser = new NewUserDetails("ba@new.com","",":)","PLAYER");
 			
 			this.restTemplate.postForObject(this.userUrl,
 					newUser,
@@ -233,11 +234,11 @@ public class userTests {
 	}
 	
 	@Test
-	public void testPostNewUserAndTryingToLoginWithInCorrectUserEmailAndThatWillThrowAnException () throws Exception {
+	public void testPostNewUserAndTryingToLoginWithValidCorrectUserEmailAndThatWillThrowAnException () throws Exception {
 		//GEVEN the server is up
 		//ANd the DB contains an user
 		
-		NewUserDetails newUser = new NewUserDetails("te@st","ban",":)","PLAYER");
+		NewUserDetails newUser = new NewUserDetails("ba@new.com","ban",":)","PLAYER");
 		
 		UserBoundary boundaryOnServer =
 				this.restTemplate
@@ -251,7 +252,7 @@ public class userTests {
 			.getForObject(this.userUrl + "/login/{userDomain}/{userEmail}",
 					UserBoundary.class,
 					boundaryOnServer.getUserId().getDomain(),
-					"bla@bla"); //incorrect email
+					"bla@bla.com"); //incorrect email
 			fail();
 		}
 		
@@ -267,7 +268,7 @@ public class userTests {
 		//GEVEN the server is up
 		//ANd the DB contains an user
 		
-		NewUserDetails newUser = new NewUserDetails("te@sst","baan",":)","PLAYER");
+		NewUserDetails newUser = new NewUserDetails("ba@new.com","baan",":)","PLAYER");
 		
 		UserBoundary boundaryOnServer =
 				this.restTemplate
@@ -300,13 +301,13 @@ public class userTests {
 		try {
 		this.restTemplate
 		.put(this.userUrl + "/{userDomain}/{userEmail}",
-				new NewUserDetails("tes@t","ban",":)","PLAYER"),
-				"blabla","bla@bla");
+				new NewUserDetails("ba@new.com","ban",":)","PLAYER"),
+				"blabla","bla@bla.com");
 		fail();
 		}
 		//THEN i got an exception  
 		catch(HttpServerErrorException ex) {
-			assertTrue(ex.getMessage().contains("Update Fail"));
+			assertTrue(ex instanceof HttpServerErrorException);
 			
 		}
 		
@@ -321,7 +322,7 @@ public class userTests {
 		try {
 		this.restTemplate
 		.postForObject(this.userUrl,
-				new NewUserDetails("tssses@ttt","bbana","","PLAYER"), // empty avatar
+				new NewUserDetails("ba@new.com","bbana","","PLAYER"), // empty avatar
 				UserBoundary.class);
 		fail();
 		}
@@ -340,7 +341,7 @@ public class userTests {
 		List<UserBoundary> AllUsersInDataBase =
 		IntStream.range(1,3)
 		.mapToObj(i->(i==2)?"ADMIN":"PLAYER")
-		.map(userRole-> new NewUserDetails("te@st"+userRole,"dan"+userRole,":)",userRole))
+		.map(userRole-> new NewUserDetails("te@st"+userRole + ".com","dan"+userRole,":)",userRole))
 		.map(boundary-> this.restTemplate
 				.postForObject(this.userUrl,
 						boundary,
@@ -370,7 +371,7 @@ public class userTests {
 		List<UserBoundary> AllUsersInDataBase =
 		IntStream.range(1,3)
 		.mapToObj(i->(i==2)?"ADMIN":"PLAYER")
-		.map(userRole-> new NewUserDetails("te@st"+userRole,"dan"+userRole,":)",userRole))
+		.map(userRole-> new NewUserDetails("te@st"+userRole + ".com","dan"+userRole,":)",userRole))
 		.map(boundary-> this.restTemplate
 				.postForObject(this.userUrl,
 						boundary,
@@ -389,7 +390,7 @@ public class userTests {
 		UserBoundary admin =
 				this.restTemplate
 				.postForObject(this.userUrl,
-						new NewUserDetails("te@st","ban",":)","ADMIN"),
+						new NewUserDetails("ba@new.com","ban",":)","ADMIN"),
 						UserBoundary.class);
 		
 		UserBoundary[] results = 

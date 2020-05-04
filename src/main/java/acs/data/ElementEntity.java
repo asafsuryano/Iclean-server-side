@@ -37,15 +37,15 @@ public class ElementEntity {
 	private boolean isActive;
 	private Map<String,Object> elementAttributes;
 	private Set<ElementEntity> children;
-	@ManyToMany
-	@JoinTable(name="id",
-    joinColumns=@JoinColumn(name="parent"),
-    inverseJoinColumns=@JoinColumn(name="children2")
-    )
-	private Collection<ElementEntity> parents ; 
-	
-	@ManyToMany(mappedBy = "Parents",cascade = CascadeType.PERSIST)
-	private Collection<ElementEntity> children2;
+//	@ManyToMany
+//	@JoinTable(name="id",
+//    joinColumns=@JoinColumn(name="parent"),
+//    inverseJoinColumns=@JoinColumn(name="children2")
+//    )
+//	private Collection<ElementEntity> parents ; 
+//	
+//	@ManyToMany(mappedBy = "Parents",cascade = CascadeType.PERSIST)
+//	private Collection<ElementEntity> children2;
 
 
 
@@ -132,8 +132,10 @@ public class ElementEntity {
 	}
 
 	public void setParent(ElementEntity parent) {
-		this.parent = parent;
-		parent.getChildren().add(this);
+		if(parent != null) {
+			this.parent = parent;
+			parent.getChildren().add(this);
+		}
 	}
 	
 	
