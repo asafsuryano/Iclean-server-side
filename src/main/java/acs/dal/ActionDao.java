@@ -1,4 +1,4 @@
-package acs.data.dal;
+package acs.dal;
 
 import org.springframework.data.repository.CrudRepository;
 

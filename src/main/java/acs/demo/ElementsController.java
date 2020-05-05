@@ -98,7 +98,7 @@ public class ElementsController {
 			consumes=MediaType.APPLICATION_JSON_VALUE)
 	public void bindExistingElementToChildElement(@PathVariable("managerDomain") String managerDomain,
 			@PathVariable("managerEmail") String managerEmail, @PathVariable("elementDomain") String elementDomain,
-			@PathVariable("elementID") String elementID, @RequestBody ElementIdBoundary element) {
+			@PathVariable("elementId") String elementID, @RequestBody ElementIdBoundary element) {
 		if(StringUtil.isNullOrEmpty(managerEmail)|| 
 				StringUtil.isNullOrEmpty(elementID) ||
 				StringUtil.isNullOrEmpty(elementDomain)|| 
@@ -108,7 +108,7 @@ public class ElementsController {
 		}
 		// TODO
 		ElementBoundary parent = this.elementService.getSpecificElement(managerDomain, managerEmail, elementDomain, elementID);
-		ElementBoundary child = this.elementService.getSpecificElement(managerDomain, managerEmail, elementDomain, elementID);
+		ElementBoundary child = this.elementService.getSpecificElement(managerDomain, managerEmail, element.getElementDomain(), element.getElementId());
 		
 		this.elementService.bindParentToChildElements(parent, child);
 	}
@@ -117,7 +117,7 @@ public class ElementsController {
 			produces=MediaType.APPLICATION_JSON_VALUE)
 	public ElementBoundary[] getAllChildrenOfExistingElement(@PathVariable("userDomain") String userDomain,
 			@PathVariable("userEmail") String userEmail, @PathVariable("elementDomain") String elementDomain,
-			@PathVariable("elementID") String elementId) {
+			@PathVariable("elementId") String elementId) {
 		if(StringUtil.isNullOrEmpty(userEmail)|| 
 				StringUtil.isNullOrEmpty(elementId) ||
 				StringUtil.isNullOrEmpty(elementDomain)|| 

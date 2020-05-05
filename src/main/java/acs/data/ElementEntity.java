@@ -1,6 +1,8 @@
 package acs.data;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -31,27 +33,12 @@ public class ElementEntity {
 	private UserId createdBy;
 	private boolean isActive;
 	private Map<String,Object> elementAttributes;
-	private Set<ElementEntity> children;
-//	@ManyToMany
-//	@JoinTable(name="id",
-//    joinColumns=@JoinColumn(name="parent"),
-//    inverseJoinColumns=@JoinColumn(name="children2")
-//    )
-//	private Collection<ElementEntity> parents ; 
-//	
-//	@ManyToMany(mappedBy = "Parents",cascade = CascadeType.PERSIST)
-//	private Collection<ElementEntity> children2;
-
-
-
-	
-	
-	
-	
+	private Set<ElementEntity> children;	
 	private ElementEntity parent;
 	
 	public ElementEntity() {
-		//ben test12
+		children = new HashSet<ElementEntity>();
+		elementAttributes = new HashMap<String, Object>();
 	}
 	
 	@Id
@@ -120,6 +107,10 @@ public class ElementEntity {
 		this.elementAttributes = elementAttributes;
 	}
 	
+	//public void addChildren(ElementEntity child) {
+		//this.children.contains(z)
+	//}
+	
 	
 	@ManyToOne
 	public ElementEntity getParent() {
@@ -127,10 +118,16 @@ public class ElementEntity {
 	}
 
 	public void setParent(ElementEntity parent) {
+		
 		if(parent != null) {
-			this.parent = parent;
+			if (this.parent!=null)
+				if (this.parent.getChildren().contains(this))
+					this.parent.getChildren().remove(this);
 			parent.getChildren().add(this);
-		}
+		}//else {
+			//this.parent=null;
+		//}
+		this.parent = parent;
 	}
 	
 	
@@ -140,6 +137,9 @@ public class ElementEntity {
 	}
 
 	public void setChildren(Set<ElementEntity> children) {
+		//for (ElementEntity elementEntity : this.children) {
+			//elementEntity.setParent(null);
+		//}
 		this.children = children;
 	}
 	
