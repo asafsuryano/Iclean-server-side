@@ -18,7 +18,7 @@ public class ElementEntityBoundaryConverter {
 				entity.getLocation().getIng()));
 		eb.setDate(entity.getCreatedTimeStamp());
 		eb.setActive(entity.isActive());
-		eb.setCreatedby(new CreatedBy(new acs.elementBoundaryPackage.UserId(entity.getCreatedBy().getDomain(),
+		eb.setCreatedBy(new CreatedBy(new acs.elementBoundaryPackage.UserId(entity.getCreatedBy().getDomain(),
 				entity.getCreatedBy().getEmail())));
 		eb.setElementAttributes(entity.getElementAttributes());
 		eb.setType(entity.getType().toString());
@@ -27,16 +27,16 @@ public class ElementEntityBoundaryConverter {
 	}
 	public ElementEntity boundaryToEntity(ElementBoundary boundary) {
 		ElementEntity entity=new ElementEntity();
-		entity.setElementId(new ElementId(boundary.getElementId().getElementDomain(),
-				boundary.getElementId().getElementId()));
+		entity.setElementId(new ElementId(boundary.getElementId().getDomain(),
+				boundary.getElementId().getId()));
 		entity.setName(boundary.getName());
 		entity.setLocation(new Location(boundary.getLocation().getLat(), boundary.getLocation().getLng()));
 		entity.setCreatedTimeStamp(boundary.getDate());
 		
 		entity.setType(boundary.getType());
 		
-		entity.setCreatedBy(new UserId(boundary.getCreatedby().getUserId().getUserdomain(),
-				boundary.getCreatedby().getUserId().getUserEmail()));
+		entity.setCreatedBy(new UserId(boundary.getCreatedBy().getUserId().getDomain(),
+				boundary.getCreatedBy().getUserId().getEmail()));
 		entity.setElementAttributes(boundary.getElementAttributes());
 		entity.setActive(boundary.isActive());
 		return entity;

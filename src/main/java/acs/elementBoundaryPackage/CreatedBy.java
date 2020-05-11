@@ -1,7 +1,6 @@
 package acs.elementBoundaryPackage;
 
 public class CreatedBy {
-//need to add user id;\
 
 	private UserId userId;
 

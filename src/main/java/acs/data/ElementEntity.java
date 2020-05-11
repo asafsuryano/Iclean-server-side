@@ -8,8 +8,9 @@ import java.util.Set;
 
 import javax.persistence.Convert;
 import javax.persistence.Embedded;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.FetchType;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -41,8 +42,8 @@ public class ElementEntity {
 		elementAttributes = new HashMap<String, Object>();
 	}
 	
-	@Id
-	@Embedded
+	
+	@EmbeddedId
 	public ElementId getElementId() {
 		return elementId;
 	}
@@ -112,7 +113,7 @@ public class ElementEntity {
 	//}
 	
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	public ElementEntity getParent() {
 		return parent;
 	}
@@ -131,7 +132,7 @@ public class ElementEntity {
 	}
 	
 	
-	@OneToMany(mappedBy = "parent")
+	@OneToMany(mappedBy = "parent" ,fetch = FetchType.LAZY)
 	public Set<ElementEntity> getChildren() {
 		return children;
 	}

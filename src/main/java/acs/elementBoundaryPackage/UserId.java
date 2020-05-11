@@ -8,16 +8,16 @@ public class UserId {
 		this.domain = domain;
 		this.email = email;
 	}
-	public String getUserdomain() {
+	public String getDomain() {
 		return domain;
 	}
-	public void setUserdomain(String userdomain) {
+	public void setDomain(String userdomain) {
 		domain = userdomain;
 	}
-	public String getUserEmail() {
+	public String getEmail() {
 		return email;
 	}
-	public void setUserEmail(String userEmail) {
+	public void setEmail(String userEmail) {
 		email = userEmail;
 	}
 	public UserId() {}

@@ -11,19 +11,19 @@ public class ElementIdBoundary {
 
 	public ElementIdBoundary() {}
 
-	public String getElementDomain() {
+	public String getDomain() {
 		return domain;
 	}
 
-	public void setElementDomain(String domain) {
+	public void setDomain(String domain) {
 		this.domain = domain;
 	}
 
-	public String getElementId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setElementId(String id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 

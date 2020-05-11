@@ -67,7 +67,7 @@ public class ElementServiceImplementation implements ExtraElementsService {
 		}
 		
 		element.setDate(new Date());
-		element.setCreatedby(new CreatedBy(new UserId(managerDomain, managerEmail)));
+		element.setCreatedBy(new CreatedBy(new UserId(managerDomain, managerEmail)));
 		
 		if(element.getElementAttributes() == null) {
 			element.setElementAttributes(new LinkedHashMap<>());
@@ -171,10 +171,10 @@ public class ElementServiceImplementation implements ExtraElementsService {
 		// TODO Auto-generated method stub
 		
 		ElementEntity parentEntity=this.elementDatabase.findById(new ElementId
-				(parentElement.getElementId().getElementDomain(),parentElement.getElementId().getElementId()))
+				(parentElement.getElementId().getDomain(),parentElement.getElementId().getId()))
 				.orElseThrow(()->new RuntimeException("the element does not exist"));
 		ElementEntity childEntity=this.elementDatabase.findById(new ElementId
-				(childElement.getElementId().getElementDomain(),childElement.getElementId().getElementId()))
+				(childElement.getElementId().getDomain(),childElement.getElementId().getId()))
 				.orElseThrow(()->new RuntimeException("the element does not exist"));
 		childEntity.setParent(parentEntity);
 		this.elementDatabase.save(childEntity);
@@ -183,7 +183,7 @@ public class ElementServiceImplementation implements ExtraElementsService {
 	@Override
 	public Set<ElementBoundary> getAllChildren(ElementBoundary originId) {
 		ElementEntity entity=this.elementDatabase.findById
-				(new ElementId(originId.getElementId().getElementDomain(),originId.getElementId().getElementId()))
+				(new ElementId(originId.getElementId().getDomain(),originId.getElementId().getId()))
 				.orElseThrow(()->new RuntimeException("the element does not exist"));
 		return entity.getChildren().stream()
 				.map(this.converter::entityToBoundary)

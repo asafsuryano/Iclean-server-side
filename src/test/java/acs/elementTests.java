@@ -89,10 +89,10 @@ public class elementTests {
 						elementBoundary
 						, ElementBoundary.class,
 						"a","te@st.com");
-		String userDomain = boundaryOnServer.getCreatedby().getUserId().getUserdomain();
-		String userEmail = boundaryOnServer.getCreatedby().getUserId().getUserEmail();
-		String elementDomain = boundaryOnServer.getElementId().getElementDomain();
-		String elementId = boundaryOnServer.getElementId().getElementId();
+		String userDomain = boundaryOnServer.getCreatedBy().getUserId().getDomain();
+		String userEmail = boundaryOnServer.getCreatedBy().getUserId().getEmail();
+		String elementDomain = boundaryOnServer.getElementId().getDomain();
+		String elementId = boundaryOnServer.getElementId().getId();
 	
 		ElementBoundary update = new ElementBoundary();
 		update.setActive(true);
@@ -131,14 +131,14 @@ public class elementTests {
 				this.restTemplate
 				.getForObject(this.elementUrl + "/{userDomain}/{userEmail}/{elementDomain}/{elementID}",
 						ElementBoundary.class, 
-						newElementBoundary.getCreatedby().getUserId().getUserdomain(),
-						newElementBoundary.getCreatedby().getUserId().getUserEmail(),
-						newElementBoundary.getElementId().getElementDomain(),
-						newElementBoundary.getElementId().getElementId())
+						newElementBoundary.getCreatedBy().getUserId().getDomain(),
+						newElementBoundary.getCreatedBy().getUserId().getEmail(),
+						newElementBoundary.getElementId().getDomain(),
+						newElementBoundary.getElementId().getId())
 				.getElementId();
 	
-		assertThat(currentElementIdPosted.getElementId()).isNotNull()
-					.isEqualTo(newElementBoundary.getElementId().getElementId());
+		assertThat(currentElementIdPosted.getId()).isNotNull()
+					.isEqualTo(newElementBoundary.getElementId().getId());
 	}
 
 	@Test
@@ -180,15 +180,15 @@ public class elementTests {
 						, ElementBoundary.class,
 						"test","te@st.com");
 		
-		String userDomain = newElementBoundary.getCreatedby().getUserId().getUserdomain();
-		String userEmail = newElementBoundary.getCreatedby().getUserId().getUserEmail();
-		String elementDomain = newElementBoundary.getElementId().getElementDomain();
-		String elementId = newElementBoundary.getElementId().getElementId();
+		String userDomain = newElementBoundary.getCreatedBy().getUserId().getDomain();
+		String userEmail = newElementBoundary.getCreatedBy().getUserId().getEmail();
+		String elementDomain = newElementBoundary.getElementId().getDomain();
+		String elementId = newElementBoundary.getElementId().getId();
 		
 		//WHEN we put an updated element 
 		try {
 		ElementBoundary update = new ElementBoundary();
-		update.setCreatedby(newElementBoundary.getCreatedby());
+		update.setCreatedBy(newElementBoundary.getCreatedBy());
 		update.setName("workedd"); //updated name
 		
 		this.restTemplate.put(
@@ -229,8 +229,8 @@ public class elementTests {
 				this.restTemplate
 				.getForObject(this.elementUrl + "/{userDomain}/{userEmail}",
 						ElementBoundary[].class,
-						AllElementsInDataBase.get(0).getCreatedby().getUserId().getUserdomain(),
-						AllElementsInDataBase.get(0).getCreatedby().getUserId().getUserEmail());
+						AllElementsInDataBase.get(0).getCreatedBy().getUserId().getDomain(),
+						AllElementsInDataBase.get(0).getCreatedBy().getUserId().getEmail());
 		
 		//THEN they exists in DB
 		assertThat(results)
@@ -275,8 +275,8 @@ public class elementTests {
 				this.restTemplate.
 				getForObject(this.elementUrl + "/{userDomain}/{userEmail}",
 						UserBoundary[].class,
-						AllElementsInDataBase.get(0).getCreatedby().getUserId().getUserdomain(),
-						AllElementsInDataBase.get(0).getCreatedby().getUserId().getUserEmail ());
+						AllElementsInDataBase.get(0).getCreatedBy().getUserId().getDomain(),
+						AllElementsInDataBase.get(0).getCreatedBy().getUserId().getEmail ());
 		
 		assertThat(results).isEmpty();  
 		

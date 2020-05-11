@@ -108,7 +108,7 @@ public class ElementsController {
 		}
 		// TODO
 		ElementBoundary parent = this.elementService.getSpecificElement(managerDomain, managerEmail, elementDomain, elementID);
-		ElementBoundary child = this.elementService.getSpecificElement(managerDomain, managerEmail, element.getElementDomain(), element.getElementId());
+		ElementBoundary child = this.elementService.getSpecificElement(managerDomain, managerEmail, element.getDomain(), element.getId());
 		
 		this.elementService.bindParentToChildElements(parent, child);
 	}
