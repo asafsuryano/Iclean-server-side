@@ -13,4 +13,5 @@ public interface ElementDao extends PagingAndSortingRepository<ElementEntity,Ele
 	public  List<ElementEntity>  findAllByParent(@Param("parentDomain") String parentDomain,
 			@Param("parentId") String parentId,
 			Pageable pageable);
+
 }

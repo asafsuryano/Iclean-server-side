@@ -1,5 +1,6 @@
 package acs.demo;
 
+import org.postgresql.shaded.com.ongres.scram.common.bouncycastle.pbkdf2.RuntimeCryptoException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,10 +14,14 @@ import acs.Utils.StringUtil;
 import acs.elementBoundaryPackage.ElementBoundary;
 import acs.elementBoundaryPackage.ElementIdBoundary;
 import acs.logic.ExtraElementsService;
+import acs.logic.UserService;
+import acs.serviceImplementation.userServicePackage.UserServiceImplementation;
+import acs.usersBoundaryPackage.UserBoundary;
 
 @RestController
 public class ElementsController {
 	private ExtraElementsService elementService;
+	private UserService userService;
 
 	@Autowired
 	public ElementsController(ExtraElementsService elementService) {
@@ -53,7 +58,15 @@ public class ElementsController {
 		if (StringUtil.isNullOrEmpty(userDomain) || StringUtil.isNullOrEmpty(userEmail)) {
 			throw new RuntimeException("userDomain or userEmail null/empty");
 		}
-		return this.elementService.getAllElementsWithPaganation(size, page);
+		boolean isManager;
+		UserBoundary user=this.userService.login(userDomain, userEmail);
+		if (user.getRole().equals("PLAYER"))
+			isManager=false;
+		else if (user.getRole().equals("MANAGER"))
+			isManager=true;
+		else
+			throw new RuntimeException("the user does not has permission");
+		return this.elementService.getAllElementsWithPagination(size, page,isManager);
 
 	}
 
