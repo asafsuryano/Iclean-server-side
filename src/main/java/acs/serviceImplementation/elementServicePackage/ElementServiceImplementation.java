@@ -7,9 +7,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
+import java.util.stream.StreamSupport;import javax.naming.directory.DirContext;
+
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import acs.dal.ElementDao;
@@ -34,14 +38,6 @@ public class ElementServiceImplementation implements ExtraElementsService {
 		this.converter = converter;
 		this.elementDatabase=elementDao;
 	}
-
-	/*
-	@PostConstruct
-	public void init() {
-		// since this class is a singleton, we generate a thread safe collection
-		this.elementsDatabase = Collections.synchronizedMap(new HashMap<>());
-	}
-	*/
 	
 	// injection of value from the spring boot configuration
 	@Value("${spring.application.name:demo}")
@@ -50,7 +46,7 @@ public class ElementServiceImplementation implements ExtraElementsService {
 	}
 
 	@Override
-	@Transactional
+	@Transactional(readOnly = true)
 	public ElementBoundary create(String managerDomain, String managerEmail, ElementBoundary element) {
 		ElementIdBoundary elementId = new ElementIdBoundary(this.projectName, UUID.randomUUID().toString());
 		element.setElementId(elementId);
@@ -87,7 +83,7 @@ public class ElementServiceImplementation implements ExtraElementsService {
 	}
 
 	@Override
-	@Transactional
+	@Transactional(readOnly = true)	
 	public ElementBoundary update(String managerDomain, String managerEmail, String elementDomain, String elementId,
 			ElementBoundary update) {
 		
@@ -190,5 +186,39 @@ public class ElementServiceImplementation implements ExtraElementsService {
 				.collect(Collectors.toSet());
 	}
 
+	@Override
+	@Transactional(readOnly = true)
+	//return all elements with paganation
+	public ElementBoundary[] getAllElementsWithPaganation(int size, int page) {
+		return this.elementDatabase.findAll(PageRequest.of(page, size,Direction.DESC,"id"))
+		.getContent().stream().map(this.converter::entityToBoundary).collect(Collectors.toList()).toArray(new ElementBoundary[0]);
+		
+	}
 
+	@Override
+	@Transactional(readOnly = true)
+	//return children of parent element with paganation
+	public ElementBoundary[] getChildrenElements(String parentDomain, String parentId, int size, int page) {
+    return this.elementDatabase.
+      findAllByParent(parentDomain, parentId, 
+      PageRequest.of(page, size, Direction.DESC, "timestamp", "id"))
+     .stream().
+      map(converter::entityToBoundary).
+      collect(Collectors.toList()).toArray(new ElementBoundary[0]);
+	
+	}
+	
+	
+		
+		
+		
 }
+	
+	
+	
+	
+	
+	
+
+
+
