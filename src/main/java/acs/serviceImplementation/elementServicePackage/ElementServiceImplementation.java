@@ -3,8 +3,10 @@ package acs.serviceImplementation.elementServicePackage;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.forwardedUrl;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Optional;
@@ -13,6 +15,8 @@ import java.util.UUID;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
+
+import javax.lang.model.util.Elements;
 import javax.naming.directory.DirContext;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -23,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 import acs.dal.ElementDao;
 import acs.data.ElementEntity;
 import acs.data.ElementEntityBoundaryConverter;
+import acs.data.actionEntityProperties.Element;
 import acs.data.elementEntityProperties.ElementId;
 import acs.elementBoundaryPackage.CreatedBy;
 import acs.elementBoundaryPackage.ElementBoundary;
@@ -30,6 +35,7 @@ import acs.elementBoundaryPackage.ElementIdBoundary;
 import acs.elementBoundaryPackage.Location;
 import acs.elementBoundaryPackage.UserId;
 import acs.logic.ExtraElementsService;
+
 
 @Service
 public class ElementServiceImplementation implements ExtraElementsService {
@@ -226,19 +232,23 @@ public class ElementServiceImplementation implements ExtraElementsService {
 	@Override
 	@Transactional(readOnly = true)
 	public ElementBoundary[] getAllParentsOfElement(String childDomain, String childId, int size, int page,boolean isManager) {
-		ElementEntity element=this.elementDatabase.findById(new ElementId(childDomain,childId))
+		//need to check if its manager or player
+
+		ElementEntity elementChild=this.elementDatabase.findById(new ElementId(childDomain,childId))
 				.orElseThrow(()->new RuntimeException("the element does not exist"));
 		if (size < 1)
 			throw new RuntimeException("size cannot be less then 1");
 		if (page < 0)
 			throw new RuntimeException("page cannot be negative");
-		ElementEntity parentElement=this.elementDatabase.findAllById(element.getParent().getElementId())
-				.orElseThrow(()->new RuntimeException("a parent does not exist"));
-				if (isManager==false && parentElement.isActive()==false)
-					throw new RuntimeException("the parent is not active");
-				else
-					return this.converter.entityToBoundary(parentElement)
-					
+		
+		ElementEntity parentElement=elementChild.getParent();
+		Collection<ElementBoundary> elementsBoundry = new HashSet<>();
+		
+		if (parentElement!=null &&page==0) {
+		 ElementBoundary rvBoundary=this.converter.entityToBoundary(parentElement);
+             elementsBoundry.add(rvBoundary);	
+		 }
+		return elementsBoundry.toArray(new ElementBoundary[0]);
 	}
-
 }
+
