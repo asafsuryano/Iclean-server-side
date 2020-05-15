@@ -232,8 +232,6 @@ public class ElementServiceImplementation implements ExtraElementsService {
 	@Override
 	@Transactional(readOnly = true)
 	public ElementBoundary[] getAllParentsOfElement(String childDomain, String childId, int size, int page,boolean isManager) {
-		//need to check if its manager or player
-
 		ElementEntity elementChild=this.elementDatabase.findById(new ElementId(childDomain,childId))
 				.orElseThrow(()->new RuntimeException("the element does not exist"));
 		if (size < 1)
@@ -242,6 +240,8 @@ public class ElementServiceImplementation implements ExtraElementsService {
 			throw new RuntimeException("page cannot be negative");
 		
 		ElementEntity parentElement=elementChild.getParent();
+		if (isManager==false && parentElement.isActive()==false)
+			throw new RuntimeException("the parent is not active");
 		Collection<ElementBoundary> elementsBoundry = new HashSet<>();
 		
 		if (parentElement!=null &&page==0) {
@@ -249,6 +249,44 @@ public class ElementServiceImplementation implements ExtraElementsService {
              elementsBoundry.add(rvBoundary);	
 		 }
 		return elementsBoundry.toArray(new ElementBoundary[0]);
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public List<ElementBoundary> getElementsWithSpecificNameWithPagination(String name, int size, int page,
+			boolean isManager) {
+		return this.elementDatabase.findAllByName(name, PageRequest.of(page, size, Direction.DESC, "elementId"))
+				.stream()
+				.map(this.converter::entityToBoundary)
+				.collect(Collectors.toList());
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public List<ElementBoundary> getElementsWithSpecificTypeWithPagination(String Type, int size, int page,
+			boolean isManager) {
+		return this.elementDatabase.findAllByType(Type, PageRequest.of(page, size, Direction.DESC, "elementId"))
+				.stream()
+				.map(this.converter::entityToBoundary)
+				.collect(Collectors.toList());
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public List<ElementBoundary> getElementsNearWithPagination(double lat, double lng, double distance, int size,
+			int page, boolean isManager) {
+		List<ElementBoundary> allElements=new ArrayList<>();
+		allElements = this.elementDatabase.findAllByLatBetweenAndLngBetween(lat-distance, lat+distance, lng-distance, lng+distance,PageRequest.of(page, size, Direction.DESC, "elementId"))
+				.stream()
+				.map(this.converter::entityToBoundary)
+				.collect(Collectors.toList());
+		if (isManager==false) {
+			for (int i=0;i<allElements.size();i++) {
+				if (allElements.get(i).isActive()==false)
+					allElements.remove(i);
+			}
+		}
+		return allElements;
 	}
 }
 

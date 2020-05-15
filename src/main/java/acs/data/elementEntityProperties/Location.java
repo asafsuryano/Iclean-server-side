@@ -5,11 +5,11 @@ import javax.persistence.Embeddable;
 @Embeddable
 public class Location {
 	private double  lat;
-	private double ing;
+	private double lng;
 
-	public Location(double lat,double ing) {
+	public Location(double lat,double lng) {
 		this.lat=lat;
-		this.ing=ing;
+		this.lng=lng;
 	}
 	public Location() {}
 	public double getLat() {
@@ -19,9 +19,9 @@ public class Location {
 		this.lat = lat;
 	}
 	public double getIng() {
-		return ing;
+		return lng;
 	}
 	public void setIng(double ing) {
-		this.ing = ing;
+		this.lng = ing;
 	}
 }

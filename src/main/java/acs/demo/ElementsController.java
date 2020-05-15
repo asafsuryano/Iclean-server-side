@@ -51,22 +51,21 @@ public class ElementsController {
 
 	@RequestMapping(path = "/acs/elements/{userDomain}/{userEmail}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ElementBoundary[] getAllelements(@RequestBody @PathVariable("userDomain") String userDomain,
-			@PathVariable("userEmail") String userEmail,  @RequestParam (name = "size", required = false, defaultValue = "4") int size,
-			@RequestParam (name = "page", required = false, defaultValue = "0") int page) {
-		
-		
+			@PathVariable("userEmail") String userEmail,
+			@RequestParam(name = "size", required = false, defaultValue = "4") int size,
+			@RequestParam(name = "page", required = false, defaultValue = "0") int page) {
 		if (StringUtil.isNullOrEmpty(userDomain) || StringUtil.isNullOrEmpty(userEmail)) {
 			throw new RuntimeException("userDomain or userEmail null/empty");
 		}
 		boolean isManager;
-		UserBoundary user=this.userService.login(userDomain, userEmail);
+		UserBoundary user = this.userService.login(userDomain, userEmail);
 		if (user.getRole().equals("PLAYER"))
-			isManager=false;
+			isManager = false;
 		else if (user.getRole().equals("MANAGER"))
-			isManager=true;
+			isManager = true;
 		else
 			throw new RuntimeException("the user does not has permission");
-		return this.elementService.getAllElementsWithPagination(size, page,isManager);
+		return this.elementService.getAllElementsWithPagination(size, page, isManager);
 
 	}
 
@@ -112,26 +111,97 @@ public class ElementsController {
 	@RequestMapping(path = "/acs/elements/{userDomain}/{userEmail}/{elementDomain}/{elementId}/children", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ElementBoundary[] getAllChildrenOfExistingElement(@PathVariable("userDomain") String userDomain,
 			@PathVariable("userEmail") String userEmail, @PathVariable("elementDomain") String elementDomain,
-			@PathVariable("elementId") String elementId) {
+			@PathVariable("elementId") String elementId,
+			@RequestParam(name = "size", required = false, defaultValue = "4") int size,
+			@RequestParam(name = "page", required = false, defaultValue = "0") int page) {
 		if (StringUtil.isNullOrEmpty(userEmail) || StringUtil.isNullOrEmpty(elementId)
 				|| StringUtil.isNullOrEmpty(elementDomain) || StringUtil.isNullOrEmpty(userDomain)) {
 			throw new RuntimeException("userEmail,elementID,elementDomain,userDomain null/empty");
 		}
-		ElementBoundary elementBundary = this.elementService.getSpecificElement(userDomain, userEmail, elementDomain,
-				elementId);
-		return this.elementService.getAllChildren(elementBundary).toArray(new ElementBoundary[0]);
+		UserBoundary user = this.userService.login(userDomain, userEmail);
+		boolean isManager;
+		if (user.getRole().equals("MANAGER"))
+			isManager = true;
+		else
+			isManager = false;
+		return this.elementService.getChildrenElements(elementDomain, elementId, size, page, isManager);
 	}
 
 	@RequestMapping(path = "/acs/elements/{userDomain}/{userEmail}/{elementDomain}/{elementID}/parents", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ElementBoundary[] getAllParentsOfElement(@PathVariable("userDomain") String userDomain,
 			@PathVariable("userEmail") String userEmail, @PathVariable("elementDomain") String elementDomain,
-			@PathVariable("elementID") String elementID) {
+			@PathVariable("elementID") String elementID,
+			@RequestParam(name = "size", required = false, defaultValue = "4") int size,
+			@RequestParam(name = "page", required = false, defaultValue = "0") int page) {
 		if (StringUtil.isNullOrEmpty(userEmail) || StringUtil.isNullOrEmpty(elementID)
 				|| StringUtil.isNullOrEmpty(elementDomain) || StringUtil.isNullOrEmpty(userDomain)) {
 			throw new RuntimeException("userEmail,elementID,elementDomain,userDomain null/empty");
 		}
-		// TODO
-		return null;
+		UserBoundary user = this.userService.login(userDomain, userEmail);
+		boolean isManager;
+		if (user.getRole().equals("MANAGER"))
+			isManager = true;
+		else
+			isManager = false;
+		return this.elementService.getAllParentsOfElement(elementDomain, elementID, size, page, isManager);
 	}
+
+	@RequestMapping(path = "/acs/elements/{userDomain}/{userEmail}/search/byName/{name}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ElementBoundary[] searchElementsByName(@PathVariable("userDomain") String userDomain,
+			@PathVariable("userEmail") String userEmail, @PathVariable("name") String name,
+			@RequestParam(name = "size", required = false, defaultValue = "4") int size,
+			@RequestParam(name = "page", required = false, defaultValue = "0") int page) {
+		if (StringUtil.isNullOrEmpty(name) || StringUtil.isNullOrEmpty(userEmail)
+				|| StringUtil.isNullOrEmpty(userDomain)) {
+			throw new RuntimeException("invalid url");
+		}
+		UserBoundary user = this.userService.login(userDomain, userEmail);
+		boolean isManager;
+		if (user.getRole().equals("MANAGER"))
+			isManager = true;
+		else
+			isManager = false;
+		return this.elementService.getElementsWithSpecificNameWithPagination(name, size, page, isManager)
+				.toArray(new ElementBoundary[0]);
+	}
+
+	@RequestMapping(path = "/acs/elements/{userDomain}/{userEmail}/search/byType/{type}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ElementBoundary[] searchElementsByType(@PathVariable("userDomain") String userDomain,
+			@PathVariable("userEmail") String userEmail, @PathVariable("type") String type,
+			@RequestParam(name = "size", required = false, defaultValue = "4") int size,
+			@RequestParam(name = "page", required = false, defaultValue = "0") int page) {
+		if (StringUtil.isNullOrEmpty(type) || StringUtil.isNullOrEmpty(userEmail)
+				|| StringUtil.isNullOrEmpty(userDomain)) {
+			throw new RuntimeException("invalid url");
+		}
+		UserBoundary user = this.userService.login(userDomain, userEmail);
+		boolean isManager;
+		if (user.getRole().equals("MANAGER"))
+			isManager = true;
+		else
+			isManager = false;
+		return this.elementService.getElementsWithSpecificTypeWithPagination(type, size, page, isManager)
+				.toArray(new ElementBoundary[0]);
+	}
+
+	@RequestMapping(path = "/acs/elements/{userDomain}/{userEmail}/search/near/{lat}/{lng}/{distance}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ElementBoundary[] searchElementsByName(@PathVariable("userDomain") String userDomain,
+			@PathVariable("userEmail") String userEmail, @PathVariable("lat") double lat,
+			@PathVariable("lng") double lng, @PathVariable("distance") double distance,
+			@RequestParam(name = "size", required = false, defaultValue = "4") int size,
+			@RequestParam(name = "page", required = false, defaultValue = "0") int page) {
+		if (Double.isNaN(lat)||Double.isNaN(lng)||Double.isNaN(distance) || StringUtil.isNullOrEmpty(userEmail)
+				|| StringUtil.isNullOrEmpty(userDomain)) {
+			throw new RuntimeException("invalid url");
+		}
+		UserBoundary user = this.userService.login(userDomain, userEmail);
+		boolean isManager;
+		if (user.getRole().equals("MANAGER"))
+			isManager = true;
+		else
+			isManager = false;
+		return this.elementService.getElementsNearWithPagination(lat, lng, distance, size, page, isManager)
+				.toArray(new ElementBoundary[0]);
+		}
 
 }
