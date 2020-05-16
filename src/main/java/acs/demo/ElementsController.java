@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import acs.Utils.StringUtil;
+import acs.data.UserRoles;
 import acs.elementBoundaryPackage.ElementBoundary;
 import acs.elementBoundaryPackage.ElementIdBoundary;
 import acs.logic.ExtraElementsService;
@@ -24,9 +25,10 @@ public class ElementsController {
 	private UserService userService;
 
 	@Autowired
-	public ElementsController(ExtraElementsService elementService) {
+	public ElementsController(ExtraElementsService elementService,UserService userService ) {
 		super();
 		this.elementService = elementService;
+		this.userService=userService;
 	}
 
 //	public ElementsController() {
@@ -119,12 +121,8 @@ public class ElementsController {
 			throw new RuntimeException("userEmail,elementID,elementDomain,userDomain null/empty");
 		}
 		UserBoundary user = this.userService.login(userDomain, userEmail);
-		boolean isManager;
-		if (user.getRole().equals("MANAGER"))
-			isManager = true;
-		else
-			isManager = false;
-		return this.elementService.getChildrenElements(elementDomain, elementId, size, page, isManager);
+		UserRoles role=UserRoles.valueOf(user.getRole());
+		return this.elementService.getChildrenElements(elementDomain, elementId, size, page, role);
 	}
 
 	@RequestMapping(path = "/acs/elements/{userDomain}/{userEmail}/{elementDomain}/{elementID}/parents", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -138,12 +136,9 @@ public class ElementsController {
 			throw new RuntimeException("userEmail,elementID,elementDomain,userDomain null/empty");
 		}
 		UserBoundary user = this.userService.login(userDomain, userEmail);
-		boolean isManager;
-		if (user.getRole().equals("MANAGER"))
-			isManager = true;
-		else
-			isManager = false;
-		return this.elementService.getAllParentsOfElement(elementDomain, elementID, size, page, isManager);
+		UserRoles role=UserRoles.valueOf(user.getRole());
+
+		return this.elementService.getAllParentsOfElement(elementDomain, elementID, size, page, role);
 	}
 
 	@RequestMapping(path = "/acs/elements/{userDomain}/{userEmail}/search/byName/{name}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -156,12 +151,9 @@ public class ElementsController {
 			throw new RuntimeException("invalid url");
 		}
 		UserBoundary user = this.userService.login(userDomain, userEmail);
-		boolean isManager;
-		if (user.getRole().equals("MANAGER"))
-			isManager = true;
-		else
-			isManager = false;
-		return this.elementService.getElementsWithSpecificNameWithPagination(name, size, page, isManager)
+		UserRoles role=UserRoles.valueOf(user.getRole());
+
+		return this.elementService.getElementsWithSpecificNameWithPagination(name, size, page, role)
 				.toArray(new ElementBoundary[0]);
 	}
 
@@ -175,12 +167,9 @@ public class ElementsController {
 			throw new RuntimeException("invalid url");
 		}
 		UserBoundary user = this.userService.login(userDomain, userEmail);
-		boolean isManager;
-		if (user.getRole().equals("MANAGER"))
-			isManager = true;
-		else
-			isManager = false;
-		return this.elementService.getElementsWithSpecificTypeWithPagination(type, size, page, isManager)
+		UserRoles role=UserRoles.valueOf(user.getRole());
+
+		return this.elementService.getElementsWithSpecificTypeWithPagination(type, size, page, role)
 				.toArray(new ElementBoundary[0]);
 	}
 
@@ -195,12 +184,9 @@ public class ElementsController {
 			throw new RuntimeException("invalid url");
 		}
 		UserBoundary user = this.userService.login(userDomain, userEmail);
-		boolean isManager;
-		if (user.getRole().equals("MANAGER"))
-			isManager = true;
-		else
-			isManager = false;
-		return this.elementService.getElementsNearWithPagination(lat, lng, distance, size, page, isManager)
+		UserRoles role=UserRoles.valueOf(user.getRole());
+
+		return this.elementService.getElementsNearWithPagination(lat, lng, distance, size, page, role)
 				.toArray(new ElementBoundary[0]);
 		}
 

@@ -14,7 +14,6 @@ public interface ExtraElementsService extends ElementService {
 	public 	ElementBoundary[] getChildrenElements(String parentDomain,String parentId,int size,int page,UserRoles role);
 	public ElementBoundary[] getAllParentsOfElement(String childDomain,String childId,int size,int page,UserRoles role);
 	public List<ElementBoundary> getElementsWithSpecificNameWithPagination(String name, int size,int page,UserRoles role);
-	public List<ElementBoundary> getElementsWithSpecificTypeWithPagination(String Type, int size,int page,UserRoles role);
+	public List<ElementBoundary> getElementsWithSpecificTypeWithPagination(String type, int size,int page,UserRoles role);
 	public List<ElementBoundary> getElementsNearWithPagination(double lat,double lng,double distance, int size,int page,UserRoles role);
-	public ElementBoundary getSpecificElementWithRoleChecking(String elementDomain, String elementId,UserRoles role);
 }
