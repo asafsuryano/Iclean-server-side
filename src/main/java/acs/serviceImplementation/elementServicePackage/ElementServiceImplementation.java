@@ -27,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 import acs.dal.ElementDao;
 import acs.data.ElementEntity;
 import acs.data.ElementEntityBoundaryConverter;
+import acs.data.UserRoles;
 import acs.data.actionEntityProperties.Element;
 import acs.data.elementEntityProperties.ElementId;
 import acs.elementBoundaryPackage.CreatedBy;
@@ -152,6 +153,7 @@ public class ElementServiceImplementation implements ExtraElementsService {
 	@Transactional(readOnly = true)
 	public ElementBoundary getSpecificElement(String userDomain, String userEmail, String elementDomain,
 			String elementId) {
+		
 		acs.data.elementEntityProperties.ElementId id = new acs.data.elementEntityProperties.ElementId(elementDomain,
 				elementId);
 		Optional<ElementEntity> elEntity = this.elementDatabase.findById(id);
@@ -165,11 +167,13 @@ public class ElementServiceImplementation implements ExtraElementsService {
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public void deleteAllElements(String adminDomain, String adminEmail) {
 		this.elementDatabase.deleteAll();
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public void bindParentToChildElements(ElementBoundary parentElement, ElementBoundary childElement) {
 		// TODO Auto-generated method stub
 
@@ -184,6 +188,7 @@ public class ElementServiceImplementation implements ExtraElementsService {
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public Set<ElementBoundary> getAllChildren(ElementBoundary originId) {
 		ElementEntity entity = this.elementDatabase
 				.findById(new ElementId(originId.getElementId().getDomain(), originId.getElementId().getId()))
@@ -215,7 +220,7 @@ public class ElementServiceImplementation implements ExtraElementsService {
 	@Transactional(readOnly = true)
 	// return children of parent element with paganation
 	public ElementBoundary[] getChildrenElements(String parentDomain, String parentId, int size, int page,
-			boolean isManager) {
+			UserRoles role) {
 		List<ElementBoundary> allElements = new ArrayList<ElementBoundary>();
 		allElements = this.elementDatabase
 				.findAllByParent(parentDomain, parentId, PageRequest.of(page, size, Direction.DESC, "timestamp", "id"))
@@ -231,7 +236,7 @@ public class ElementServiceImplementation implements ExtraElementsService {
 
 	@Override
 	@Transactional(readOnly = true)
-	public ElementBoundary[] getAllParentsOfElement(String childDomain, String childId, int size, int page,boolean isManager) {
+	public ElementBoundary[] getAllParentsOfElement(String childDomain, String childId, int size, int page,UserRoles role) {
 		ElementEntity elementChild=this.elementDatabase.findById(new ElementId(childDomain,childId))
 				.orElseThrow(()->new RuntimeException("the element does not exist"));
 		if (size < 1)
@@ -254,7 +259,7 @@ public class ElementServiceImplementation implements ExtraElementsService {
 	@Override
 	@Transactional(readOnly = true)
 	public List<ElementBoundary> getElementsWithSpecificNameWithPagination(String name, int size, int page,
-			boolean isManager) {
+			UserRoles role) {
 		return this.elementDatabase.findAllByName(name, PageRequest.of(page, size, Direction.DESC, "elementId"))
 				.stream()
 				.map(this.converter::entityToBoundary)
@@ -264,7 +269,7 @@ public class ElementServiceImplementation implements ExtraElementsService {
 	@Override
 	@Transactional(readOnly = true)
 	public List<ElementBoundary> getElementsWithSpecificTypeWithPagination(String Type, int size, int page,
-			boolean isManager) {
+			UserRoles role) {
 		return this.elementDatabase.findAllByType(Type, PageRequest.of(page, size, Direction.DESC, "elementId"))
 				.stream()
 				.map(this.converter::entityToBoundary)
@@ -274,7 +279,7 @@ public class ElementServiceImplementation implements ExtraElementsService {
 	@Override
 	@Transactional(readOnly = true)
 	public List<ElementBoundary> getElementsNearWithPagination(double lat, double lng, double distance, int size,
-			int page, boolean isManager) {
+			int page, UserRoles role) {
 		List<ElementBoundary> allElements=new ArrayList<>();
 		allElements = this.elementDatabase.findAllByLatBetweenAndLngBetween(lat-distance, lat+distance, lng-distance, lng+distance,PageRequest.of(page, size, Direction.DESC, "elementId"))
 				.stream()
@@ -287,6 +292,12 @@ public class ElementServiceImplementation implements ExtraElementsService {
 			}
 		}
 		return allElements;
+	}
+
+	@Override
+	public ElementBoundary getSpecificElementWithRoleChecking(String elementDomain, String elementId, UserRoles role) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
 
