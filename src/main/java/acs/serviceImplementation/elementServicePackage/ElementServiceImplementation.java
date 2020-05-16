@@ -55,7 +55,7 @@ public class ElementServiceImplementation implements ExtraElementsService {
 	public ElementBoundary create(String managerDomain, String managerEmail, ElementBoundary element) {
 		UserBoundary user = this.userService.login(managerDomain, managerEmail);
 		UserRoles role = UserRoles.valueOf(user.getRole());
-		if (UserRoles.MANAGER == role) {
+		if (role == UserRoles.MANAGER) {
 
 			ElementIdBoundary elementId = new ElementIdBoundary(this.projectName, UUID.randomUUID().toString());
 			element.setElementId(elementId);
@@ -100,7 +100,7 @@ public class ElementServiceImplementation implements ExtraElementsService {
 			ElementBoundary update) {
 		UserBoundary user = this.userService.login(managerDomain, managerEmail);
 		UserRoles role = UserRoles.valueOf(user.getRole());
-		if (UserRoles.MANAGER == role) {
+		if (role == UserRoles.MANAGER) {
 
 			acs.data.elementEntityProperties.ElementId id = new acs.data.elementEntityProperties.ElementId(
 					elementDomain, elementId);
@@ -155,30 +155,30 @@ public class ElementServiceImplementation implements ExtraElementsService {
 	public List<ElementBoundary> getAll(String userDomain, String userEmail) {
 		UserBoundary user = this.userService.login(userDomain, userEmail);
 		UserRoles role = UserRoles.valueOf(user.getRole());
-		if (UserRoles.ADMIN==role) {
+		if (role == UserRoles.ADMIN) {
 			throw new RuntimeException("Admin cannot retrive all element");
 		}
-		List<ElementBoundary> allElements=StreamSupport.stream(this.elementDatabase.findAll().spliterator(), false)
+		List<ElementBoundary> allElements = StreamSupport.stream(this.elementDatabase.findAll().spliterator(), false)
 				.map(this.converter::entityToBoundary).collect(Collectors.toList());
-		if (UserRoles.PLAYER==role) {
-			for (int i=0;i<allElements.size();i++) {
-				if (allElements.get(i).isActive()==false) {
+		if (role == UserRoles.PLAYER) {
+			for (int i = 0; i < allElements.size(); i++) {
+				if (allElements.get(i).isActive() == false) {
 					allElements.remove(i);
-					i=-1;
+					i = -1;
 				}
 			}
 		}
 		return allElements;
 	}
-	
+
 	@Override
 	@Transactional(readOnly = true)
 	public ElementBoundary getSpecificElement(String userDomain, String userEmail, String elementDomain,
 			String elementId) {
-		
+
 		UserBoundary user = this.userService.login(userDomain, userEmail);
 		UserRoles role = UserRoles.valueOf(user.getRole());
-		if (UserRoles.ADMIN==role) {
+		if (role == UserRoles.ADMIN) {
 			throw new RuntimeException("Admin cannot retrive specific element");
 		}
 
@@ -186,10 +186,15 @@ public class ElementServiceImplementation implements ExtraElementsService {
 				elementId);
 		Optional<ElementEntity> elEntity = this.elementDatabase.findById(id);
 		if (elEntity.isPresent()) {
-			if (elEntity.get().isActive())
+			if (role == UserRoles.MANAGER)
 				return this.converter.entityToBoundary(elEntity.get());
-			else
-				throw new RuntimeException("the element is not active");
+			else {
+				if (role == UserRoles.PLAYER && elEntity.get().isActive())
+					return this.converter.entityToBoundary(elEntity.get());
+				else
+					throw new RuntimeException("the element does not exist");
+			}
+
 		} else
 			throw new RuntimeException("the element does not exist");
 	}
@@ -227,66 +232,44 @@ public class ElementServiceImplementation implements ExtraElementsService {
 	@Override
 	@Transactional(readOnly = true)
 	// return all elements with paganation
-	public ElementBoundary[] getAllElementsWithPagination(int size, int page, boolean isManager) {
-		if (isManager == true)
-			return this.elementDatabase.findAll(PageRequest.of(page, size, Direction.DESC, "id")).getContent().stream()
-					.map(this.converter::entityToBoundary).collect(Collectors.toList()).toArray(new ElementBoundary[0]);
-		else {
-			List<ElementBoundary> allElements = new ArrayList<ElementBoundary>();
-			allElements = this.elementDatabase.findAll(PageRequest.of(page, size, Direction.DESC, "id")).getContent()
-					.stream().map(this.converter::entityToBoundary).collect(Collectors.toList());
-			for (int i = 0; i < allElements.size(); i++) {
-				if (allElements.get(i).isActive() == false) {
-					allElements.remove(i);
-					i = -1;
-				}
-			}
-			return allElements.toArray(new ElementBoundary[0]);
-		}
-
-	}
-
-	@Override
-	@Transactional(readOnly = true)
-	// return children of parent element with paganation
-	public ElementBoundary[] getChildrenElements(String parentDomain, String parentId, int size, int page,
-			UserRoles role) {
-		if (UserRoles.ADMIN == role) {
-			throw new RuntimeException("User Admin does not have permission ");
-		}
-
+	public ElementBoundary[] getAllElementsWithPagination(String userDomain, String userEmail, int size, int page) {
+		UserBoundary user = this.userService.login(userDomain, userEmail);
+		UserRoles role = UserRoles.valueOf(user.getRole());
+		errorCheckingSizePageAndAdmin(size, page, role);
 		List<ElementBoundary> allElements = new ArrayList<ElementBoundary>();
-		allElements = this.elementDatabase
-				.findAllByParent(parentDomain, parentId, PageRequest.of(page, size, Direction.DESC, "timestamp", "id"))
-				.stream().map(converter::entityToBoundary).collect(Collectors.toList());
-		if (UserRoles.PLAYER == role) {
-			for (int i = 0; i < allElements.size(); i++) {
-				if (allElements.get(i).isActive() == false) {
-					allElements.remove(i);
-					i = -1;
-				}
-			}
-		}
+		allElements = this.elementDatabase.findAll(PageRequest.of(page, size, Direction.DESC, "id")).getContent()
+				.stream().map(this.converter::entityToBoundary).collect(Collectors.toList());
+		checkPlayerIsActive(role,allElements);
 		return allElements.toArray(new ElementBoundary[0]);
 	}
 
 	@Override
 	@Transactional(readOnly = true)
-	public ElementBoundary[] getAllParentsOfElement(String childDomain, String childId, int size, int page,
-			UserRoles role) {
-		if (UserRoles.ADMIN == role) {
-			throw new RuntimeException("User Admin does not have permission ");
-		}
+	// return children of parent element with paganation
+	public ElementBoundary[] getChildrenElements(String userDomain, String userEmail, String parentDomain,
+			String parentId, int size, int page) {
+		UserBoundary user = this.userService.login(userDomain, userEmail);
+		UserRoles role = UserRoles.valueOf(user.getRole());
+		errorCheckingSizePageAndAdmin(size, page, role);
+		List<ElementBoundary> allElements = new ArrayList<ElementBoundary>();
+		allElements = this.elementDatabase
+				.findAllByParent(parentDomain, parentId, PageRequest.of(page, size, Direction.DESC, "timestamp", "id"))
+				.stream().map(converter::entityToBoundary).collect(Collectors.toList());
+		checkPlayerIsActive(role,allElements);
+		return allElements.toArray(new ElementBoundary[0]);
+	}
 
+	@Override
+	@Transactional(readOnly = true)
+	public ElementBoundary[] getAllParentsOfElement(String userDomain, String userEmail, String childDomain,
+			String childId, int size, int page) {
+		UserBoundary user = this.userService.login(userDomain, userEmail);
+		UserRoles role = UserRoles.valueOf(user.getRole());
 		ElementEntity elementChild = this.elementDatabase.findById(new ElementId(childDomain, childId))
 				.orElseThrow(() -> new RuntimeException("the element does not exist"));
-		if (size < 1)
-			throw new RuntimeException("size cannot be less then 1");
-		if (page < 0)
-			throw new RuntimeException("page cannot be negative");
-
+		errorCheckingSizePageAndAdmin(size, page, role);
 		ElementEntity parentElement = elementChild.getParent();
-		if (UserRoles.PLAYER == role && parentElement.isActive() == false)
+		if (role == UserRoles.PLAYER && parentElement.isActive() == false)
 			throw new RuntimeException("the parent is not active");
 		Collection<ElementBoundary> elementsBoundry = new HashSet<>();
 
@@ -299,61 +282,41 @@ public class ElementServiceImplementation implements ExtraElementsService {
 
 	@Override
 	@Transactional(readOnly = true)
-	public List<ElementBoundary> getElementsWithSpecificNameWithPagination(String name, int size, int page,
-			UserRoles role) {
-		if (UserRoles.ADMIN == role) {
-			throw new RuntimeException("User Admin does not have permission ");
-		}
-
+	public List<ElementBoundary> getElementsWithSpecificNameWithPagination(String userDomain, String userEmail,
+			String name, int size, int page) {
+		UserBoundary user = this.userService.login(userDomain, userEmail);
+		UserRoles role = UserRoles.valueOf(user.getRole());
+		errorCheckingSizePageAndAdmin(size, page, role);
 		List<ElementBoundary> elements = elementDatabase
 				.findAllByName(name, PageRequest.of(page, size, Direction.DESC, "elementId")).stream()
 				.map(this.converter::entityToBoundary).collect(Collectors.toList());
 
-		if (UserRoles.PLAYER == role) {
-			for (int i = 0; i < elements.size(); i++) {
-				if (elements.get(i).isActive() == false) {
-					elements.remove(i);
-					i = -1;
-				}
-			}
-		}
-		return this.elementDatabase.findAllByName(name, PageRequest.of(page, size, Direction.DESC, "elementId"))
-				.stream().map(this.converter::entityToBoundary).collect(Collectors.toList());
+		checkPlayerIsActive(role,elements);
+		return elements;
 	}
 
 	@Override
 	@Transactional(readOnly = true)
-	public List<ElementBoundary> getElementsWithSpecificTypeWithPagination(String type, int size, int page,
-			UserRoles role) {
-
-		if (UserRoles.ADMIN == role) {
-			throw new RuntimeException("User Admin does not have permission ");
-		}
-
+	public List<ElementBoundary> getElementsWithSpecificTypeWithPagination(String userDomain, String userEmail,
+			String type, int size, int page) {
+		UserBoundary user = this.userService.login(userDomain, userEmail);
+		UserRoles role = UserRoles.valueOf(user.getRole());
+		errorCheckingSizePageAndAdmin(size, page, role);
 		List<ElementBoundary> elements = elementDatabase
 				.findAllByType(type, PageRequest.of(page, size, Direction.DESC, "elementId")).stream()
 				.map(this.converter::entityToBoundary).collect(Collectors.toList());
 
-		if (UserRoles.PLAYER == role) {
-			for (int i = 0; i < elements.size(); i++) {
-				if (elements.get(i).isActive() == false) {
-					elements.remove(i);
-					i = -1;
-				}
-			}
-		}
-
-		return this.elementDatabase.findAllByType(type, PageRequest.of(page, size, Direction.DESC, "elementId"))
-				.stream().map(this.converter::entityToBoundary).collect(Collectors.toList());
+		checkPlayerIsActive(role,elements);
+		return elements;
 	}
 
 	@Override
 	@Transactional(readOnly = true)
-	public List<ElementBoundary> getElementsNearWithPagination(double lat, double lng, double distance, int size,
-			int page, UserRoles role) {
-		if (UserRoles.ADMIN == role) {
-			throw new RuntimeException("User Admin does not have permission ");
-		}
+	public List<ElementBoundary> getElementsNearWithPagination(String userDomain, String userEmail, double lat,
+			double lng, double distance, int size, int page) {
+		UserBoundary user = this.userService.login(userDomain, userEmail);
+		UserRoles role = UserRoles.valueOf(user.getRole());
+		errorCheckingSizePageAndAdmin(size, page, role);
 
 		List<ElementBoundary> allElements = new ArrayList<>();
 		allElements = this.elementDatabase
@@ -361,7 +324,23 @@ public class ElementServiceImplementation implements ExtraElementsService {
 						PageRequest.of(page, size, Direction.DESC, "elementId"))
 				.stream().map(this.converter::entityToBoundary).collect(Collectors.toList());
 
-		if (UserRoles.PLAYER == role) {
+		checkPlayerIsActive(role,allElements);
+		return allElements;
+	}
+	
+	public void errorCheckingSizePageAndAdmin(int size,int page,UserRoles role)
+	{
+		if (role == UserRoles.ADMIN) {
+			throw new RuntimeException("User Admin does not have permission ");
+		}
+		if (size < 1)
+			throw new RuntimeException("size cannot be less then 1");
+		if (page < 0)
+			throw new RuntimeException("page cannot be negative");
+	}
+	
+	public void checkPlayerIsActive(UserRoles role,List<ElementBoundary> allElements) {
+		if (role == UserRoles.PLAYER) {
 			for (int i = 0; i < allElements.size(); i++) {
 				if (allElements.get(i).isActive() == false) {
 					allElements.remove(i);
@@ -369,7 +348,6 @@ public class ElementServiceImplementation implements ExtraElementsService {
 				}
 			}
 		}
-		return allElements;
 	}
 
 }

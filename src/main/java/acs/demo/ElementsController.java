@@ -59,15 +59,7 @@ public class ElementsController {
 		if (StringUtil.isNullOrEmpty(userDomain) || StringUtil.isNullOrEmpty(userEmail)) {
 			throw new RuntimeException("userDomain or userEmail null/empty");
 		}
-		boolean isManager;
-		UserBoundary user = this.userService.login(userDomain, userEmail);
-		if (user.getRole().equals("PLAYER"))
-			isManager = false;
-		else if (user.getRole().equals("MANAGER"))
-			isManager = true;
-		else
-			throw new RuntimeException("the user does not has permission");
-		return this.elementService.getAllElementsWithPagination(size, page, isManager);
+		return this.elementService.getAllElementsWithPagination(userDomain,userEmail,size, page);
 
 	}
 
@@ -122,7 +114,7 @@ public class ElementsController {
 		}
 		UserBoundary user = this.userService.login(userDomain, userEmail);
 		UserRoles role=UserRoles.valueOf(user.getRole());
-		return this.elementService.getChildrenElements(elementDomain, elementId, size, page, role);
+		return this.elementService.getChildrenElements(userDomain,userEmail,elementDomain, elementId, size, page);
 	}
 
 	@RequestMapping(path = "/acs/elements/{userDomain}/{userEmail}/{elementDomain}/{elementID}/parents", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -138,7 +130,7 @@ public class ElementsController {
 		UserBoundary user = this.userService.login(userDomain, userEmail);
 		UserRoles role=UserRoles.valueOf(user.getRole());
 
-		return this.elementService.getAllParentsOfElement(elementDomain, elementID, size, page, role);
+		return this.elementService.getAllParentsOfElement(userDomain,userEmail,elementDomain, elementID, size, page);
 	}
 
 	@RequestMapping(path = "/acs/elements/{userDomain}/{userEmail}/search/byName/{name}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -153,7 +145,7 @@ public class ElementsController {
 		UserBoundary user = this.userService.login(userDomain, userEmail);
 		UserRoles role=UserRoles.valueOf(user.getRole());
 
-		return this.elementService.getElementsWithSpecificNameWithPagination(name, size, page, role)
+		return this.elementService.getElementsWithSpecificNameWithPagination(userDomain,userEmail,name, size, page)
 				.toArray(new ElementBoundary[0]);
 	}
 
@@ -169,7 +161,7 @@ public class ElementsController {
 		UserBoundary user = this.userService.login(userDomain, userEmail);
 		UserRoles role=UserRoles.valueOf(user.getRole());
 
-		return this.elementService.getElementsWithSpecificTypeWithPagination(type, size, page, role)
+		return this.elementService.getElementsWithSpecificTypeWithPagination(userDomain,userEmail,type, size, page)
 				.toArray(new ElementBoundary[0]);
 	}
 
@@ -186,7 +178,7 @@ public class ElementsController {
 		UserBoundary user = this.userService.login(userDomain, userEmail);
 		UserRoles role=UserRoles.valueOf(user.getRole());
 
-		return this.elementService.getElementsNearWithPagination(lat, lng, distance, size, page, role)
+		return this.elementService.getElementsNearWithPagination(userDomain,userEmail,lat, lng, distance, size, page)
 				.toArray(new ElementBoundary[0]);
 		}
 
