@@ -16,13 +16,7 @@ import acs.logic.ExtraUserService;
 public class ActionController {
 	
 	private ExtraActionService actionService;
-	private ExtraUserService userService;
 	
-	
-	public ActionController(ExtraActionService actionService) {
-		super();
-		this.actionService = actionService;
-	}
 
 	@Autowired
 	public ActionController() {
@@ -32,10 +26,7 @@ public class ActionController {
 	public void setActionService(ExtraActionService actionService) {
 		this.actionService = actionService;
 	}
-	@Autowired
-	public void setUserService(ExtraUserService userService) {
-	 this.userService=userService;
-	}
+
 	
 	@RequestMapping(path="/acs/actions",
 			method = RequestMethod.POST,

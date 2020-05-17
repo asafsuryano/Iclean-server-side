@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 
 import acs.data.ElementEntity;
 import acs.data.elementEntityProperties.ElementId;
+import acs.data.elementEntityProperties.Location;
 public interface ElementDao extends PagingAndSortingRepository<ElementEntity,ElementId> {
 
 	
@@ -27,7 +28,9 @@ public interface ElementDao extends PagingAndSortingRepository<ElementEntity,Ele
 	public List<ElementEntity> findByLatBetween(@Param("lat") double minLat,
 			@Param("lat") double maxLat,Pageable pageable);
 			*/ 
-     public List<ElementEntity> findByLngGreaterThanEqualAndLngLessThanEqual(@Param("lng") double minLng,
-			@Param("lng") double maxLng,Pageable pageable);
+    // public List<ElementEntity> findByLngGreaterThanEqualAndLngLessThanEqual(@Param("lng") double minLng,
+		//	@Param("lng") double maxLng,Pageable pageable);
+	public List<ElementEntity> findByLocationBetween(@Param("location1") Location minLocation,
+			@Param("location2") Location maxLocation,Pageable pageable);
 
 }

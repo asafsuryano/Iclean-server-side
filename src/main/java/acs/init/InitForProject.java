@@ -48,7 +48,6 @@ public class InitForProject implements CommandLineRunner {
 		
 		User userid3=new User(domain, "user3@gmail.com");
 		UserBoundary user3=new UserBoundary(userid3,UserRoles.PLAYER.toString() ,"hello3", "hey3");
-		
 		//init elements
 		ElementIdBoundary empty=new ElementIdBoundary();
 		

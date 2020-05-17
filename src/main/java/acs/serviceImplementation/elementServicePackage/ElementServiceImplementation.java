@@ -11,6 +11,8 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
@@ -36,7 +38,9 @@ public class ElementServiceImplementation implements ExtraElementsService {
 	private ElementEntityBoundaryConverter converter;
 	private ElementDao elementDatabase;
 	private UserService userService;
-
+	
+	
+	@Autowired
 	public ElementServiceImplementation(ElementDao elementDao, ElementEntityBoundaryConverter converter,
 			UserService userService) {
 		this.converter = converter;
@@ -51,7 +55,7 @@ public class ElementServiceImplementation implements ExtraElementsService {
 	}
 
 	@Override
-	@Transactional(readOnly = true)
+	@Transactional
 	public ElementBoundary create(String managerDomain, String managerEmail, ElementBoundary element) {
 		UserBoundary user = this.userService.login(managerDomain, managerEmail);
 		UserRoles role = UserRoles.valueOf(user.getRole());
@@ -237,7 +241,7 @@ public class ElementServiceImplementation implements ExtraElementsService {
 		UserRoles role = UserRoles.valueOf(user.getRole());
 		errorCheckingSizePageAndAdmin(size, page, role);
 		List<ElementBoundary> allElements = new ArrayList<ElementBoundary>();
-		allElements = this.elementDatabase.findAll(PageRequest.of(page, size, Direction.DESC, "id")).getContent()
+		allElements = this.elementDatabase.findAll(PageRequest.of(page, size, Direction.DESC, "elementId")).getContent()
 				.stream().map(this.converter::entityToBoundary).collect(Collectors.toList());
 		checkPlayerIsActive(role,allElements);
 		return allElements.toArray(new ElementBoundary[0]);
@@ -253,7 +257,7 @@ public class ElementServiceImplementation implements ExtraElementsService {
 		errorCheckingSizePageAndAdmin(size, page, role);
 		List<ElementBoundary> allElements = new ArrayList<ElementBoundary>();
 		allElements = this.elementDatabase
-				.findAllByParent(parentDomain, parentId, PageRequest.of(page, size, Direction.DESC, "timestamp", "id"))
+				.findAllByParent(parentDomain, parentId, PageRequest.of(page, size, Direction.DESC, "timestamp", "elementId"))
 				.stream().map(converter::entityToBoundary).collect(Collectors.toList());
 		checkPlayerIsActive(role,allElements);
 		return allElements.toArray(new ElementBoundary[0]);
@@ -320,8 +324,8 @@ public class ElementServiceImplementation implements ExtraElementsService {
 
 		List<ElementBoundary> allElements = new ArrayList<>();
 		allElements = this.elementDatabase
-				.findByLngGreaterThanEqualAndLngLessThanEqual
-				   (lng-distance ,lng+distance,
+				.findByLocationBetween(new acs.data.elementEntityProperties.Location(lat-distance,lng-distance), 
+						new acs.data.elementEntityProperties.Location(lat+distance, lng+distance),
 						PageRequest.of(page, size, Direction.DESC, "elementId"))
 				.stream().map(this.converter::entityToBoundary).collect(Collectors.toList());
 
