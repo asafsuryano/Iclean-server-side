@@ -28,8 +28,6 @@ import acs.data.UserEntity;
 import acs.data.UserRoles;
 import acs.data.elementEntityProperties.ElementId;
 import acs.data.userEntityProperties.User;
-import acs.elementBoundaryPackage.ElementBoundary;
-import acs.logic.ActionService;
 import acs.logic.ExtraActionService;
 
 
@@ -43,13 +41,13 @@ public class ActionServiceImplementation implements ExtraActionService {
 	private String projectName;
 
 	@Autowired
-	public ActionServiceImplementation(ActionEntityBoundaryConverter converter,ActionDao actionsDatabase,UserDao userDatabase,
+	public ActionServiceImplementation(ActionEntityBoundaryConverter converter,ActionDao actionsDatabase,
 			ElementDao elementDatabase) {
 		this.converter = converter;
 		this.actionsDatabase=actionsDatabase;
-		this.userDatabase=userDatabase;
 		this.elementDatabase=elementDatabase;
 	}
+	
 
 	@PostConstruct
 	public void init() {

@@ -23,7 +23,11 @@ public interface ElementDao extends PagingAndSortingRepository<ElementEntity,Ele
 	public List<ElementEntity> findAllByType(@Param("type") String name,Pageable pageable);
 	
 	// select ... from ElementEntity where lat between minLat and maxLat and lng between minlng and maxlng
-	public List<ElementEntity> findAllByLatBetweenAndLngBetween(@Param("lat") double minLat,
-			@Param("lat") double maxLat,@Param("lng") double minLng,@Param("lng") double maxLng,Pageable pageable);
+	/*/
+	public List<ElementEntity> findByLatBetween(@Param("lat") double minLat,
+			@Param("lat") double maxLat,Pageable pageable);
+			*/ 
+     public List<ElementEntity> findByLngGreaterThanEqualAndLngLessThanEqual(@Param("lng") double minLng,
+			@Param("lng") double maxLng,Pageable pageable);
 
 }

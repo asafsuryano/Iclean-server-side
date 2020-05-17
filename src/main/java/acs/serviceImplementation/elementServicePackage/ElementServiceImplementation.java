@@ -320,13 +320,15 @@ public class ElementServiceImplementation implements ExtraElementsService {
 
 		List<ElementBoundary> allElements = new ArrayList<>();
 		allElements = this.elementDatabase
-				.findAllByLatBetweenAndLngBetween(lat - distance, lat + distance, lng - distance, lng + distance,
+				.findByLngGreaterThanEqualAndLngLessThanEqual
+				   (lng-distance ,lng+distance,
 						PageRequest.of(page, size, Direction.DESC, "elementId"))
 				.stream().map(this.converter::entityToBoundary).collect(Collectors.toList());
 
 		checkPlayerIsActive(role,allElements);
 		return allElements;
 	}
+	
 	
 	public void errorCheckingSizePageAndAdmin(int size,int page,UserRoles role)
 	{

@@ -35,7 +35,7 @@ public class AdminController {
 	public AdminController() {
 	}
 
-	@Autowired
+//	@Autowired
 	public void setAdminServices(ElementService elementService, ExtraUserService userService, ExtraActionService actionService) {
 		this.elementService = elementService;
 		this.userService = userService;

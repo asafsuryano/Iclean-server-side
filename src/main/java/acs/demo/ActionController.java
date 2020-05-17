@@ -7,17 +7,19 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-
 import acs.actionBoundaryPackage.ActionBoundary;
-import acs.logic.ActionService;
+import acs.logic.ExtraActionService;
+import acs.logic.ExtraUserService;
 
 
 @RestController
 public class ActionController {
 	
-	private ActionService actionService;
+	private ExtraActionService actionService;
+	private ExtraUserService userService;
 	
-	public ActionController(ActionService actionService) {
+	
+	public ActionController(ExtraActionService actionService) {
 		super();
 		this.actionService = actionService;
 	}
@@ -27,8 +29,12 @@ public class ActionController {
 	}
 	
 	@Autowired
-	public void setActionService(ActionService actionService) {
+	public void setActionService(ExtraActionService actionService) {
 		this.actionService = actionService;
+	}
+	@Autowired
+	public void setUserService(ExtraUserService userService) {
+	 this.userService=userService;
 	}
 	
 	@RequestMapping(path="/acs/actions",

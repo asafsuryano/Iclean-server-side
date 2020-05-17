@@ -31,6 +31,7 @@ public class ElementEntity {
 	private String name;
 	private Date createdTimeStamp;
 	private Location location;
+	//private double lat;
 	private UserId createdBy;
 	private boolean isActive;
 	private Map<String,Object> elementAttributes;
@@ -41,6 +42,7 @@ public class ElementEntity {
 		children = new HashSet<ElementEntity>();
 		elementAttributes = new HashMap<String, Object>();
 	}
+	
 	
 	
 	@EmbeddedId
@@ -75,6 +77,7 @@ public class ElementEntity {
 		this.createdTimeStamp = createdTimeStamp;
 	}
 	
+	
 	@Embedded
 	public Location getLocation() {
 		return location;
@@ -82,6 +85,7 @@ public class ElementEntity {
 	public void setLocation(Location location) {
 		this.location = location;
 	}
+	
 	
 	@Embedded
 	public UserId getCreatedBy() {

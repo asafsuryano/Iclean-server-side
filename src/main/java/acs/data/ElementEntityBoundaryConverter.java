@@ -15,7 +15,7 @@ public class ElementEntityBoundaryConverter {
 		eb.setElementId(new acs.elementBoundaryPackage.ElementIdBoundary(entity.getElementId().getElementDomain(),
 				entity.getElementId().getElementId()));
 		eb.setLocation(new acs.elementBoundaryPackage.Location(entity.getLocation().getLat(),
-				entity.getLocation().getIng()));
+				entity.getLocation().getLng()));
 		eb.setDate(entity.getCreatedTimeStamp());
 		eb.setActive(entity.isActive());
 		eb.setCreatedBy(new CreatedBy(new acs.elementBoundaryPackage.UserId(entity.getCreatedBy().getDomain(),

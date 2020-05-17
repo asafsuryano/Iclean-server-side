@@ -14,7 +14,7 @@ public class ElementBoundary {
    private Map<String,Object> elementAttributes;
    
   
-public ElementBoundary(String name, ElementIdBoundary eID,String type,Boolean active,Date date,CreatedBy CBy,Location location, Map<String, Object> elementAttributes) {
+public ElementBoundary(String name, ElementIdBoundary eID,String type,boolean active,Date date,CreatedBy CBy,Location location, Map<String, Object> elementAttributes) {
 	   this.elementId=eID;
 	   this.active=active;
 	   this.type=type;
@@ -29,6 +29,7 @@ public ElementBoundary(String name, ElementIdBoundary eID,String type,Boolean ac
 	   
    }
 
+	
 	public ElementIdBoundary getElementId() {
 		return elementId;
 	}

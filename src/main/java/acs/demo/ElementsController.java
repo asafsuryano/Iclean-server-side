@@ -22,8 +22,13 @@ import acs.usersBoundaryPackage.UserBoundary;
 @RestController
 public class ElementsController {
 	private ExtraElementsService elementService;
-
+	
 	@Autowired
+	public ElementsController() {
+		
+	}
+	
+
 	public ElementsController(ExtraElementsService elementService,UserService userService ) {
 		super();
 		this.elementService = elementService;
@@ -145,7 +150,9 @@ public class ElementsController {
 		return this.elementService.getElementsWithSpecificTypeWithPagination(userDomain,userEmail,type, size, page)
 				.toArray(new ElementBoundary[0]);
 	}
-
+    
+	
+	/*
 	@RequestMapping(path = "/acs/elements/{userDomain}/{userEmail}/search/near/{lat}/{lng}/{distance}",
 			method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ElementBoundary[] searchElementsByLocation(@PathVariable("userDomain") String userDomain,
@@ -160,5 +167,6 @@ public class ElementsController {
 		return this.elementService.getElementsNearWithPagination(userDomain,userEmail,lat, lng, distance, size, page)
 				.toArray(new ElementBoundary[0]);
 		}
+		*/
 
 }
