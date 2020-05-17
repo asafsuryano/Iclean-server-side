@@ -7,6 +7,8 @@ import java.util.stream.StreamSupport;
 import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import acs.Utils.StringUtil;
@@ -15,11 +17,12 @@ import acs.data.UserEntity;
 import acs.data.UserEntityBoundaryConvertor;
 import acs.data.UserRoles;
 import acs.data.userEntityProperties.User;
+import acs.logic.ExtraUserService;
 import acs.logic.UserService;
 import acs.usersBoundaryPackage.UserBoundary;
 
 @Service
-public class UserServiceImplementation implements UserService {
+public class UserServiceImplementation implements ExtraUserService {
 	private UserEntityBoundaryConvertor converter;
 	private String projectName;
 	private UserDao userDatabase;
@@ -36,11 +39,6 @@ public class UserServiceImplementation implements UserService {
 		this.userDatabase = userDatabase;
 	}
 
-	@PostConstruct
-	public void init() {
-		// since this class is a singleton, we generate a thread safe collection
-		// this.userDatabase = Collections.synchronizedMap(new HashMap<>());
-	}
 
 	@Override
 	@Transactional
@@ -74,6 +72,7 @@ public class UserServiceImplementation implements UserService {
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public UserBoundary login(String userDomain, String userEmail) {
 		User exsistUser = new User(userDomain, userEmail);
 		Optional<UserEntity> getUser = this.userDatabase.findById(exsistUser);
@@ -86,7 +85,7 @@ public class UserServiceImplementation implements UserService {
 	}
 
 	@Override
-	@Transactional
+	@Transactional(readOnly = true)
 	public UserBoundary updateUser(String userDomain, String userEmail, UserBoundary update) {
 		// THE UPDATER OF THE USER
 		User updater = new User(userDomain, userEmail);
@@ -150,7 +149,7 @@ public class UserServiceImplementation implements UserService {
 
 	
 	@Override
-	@Transactional
+	@Transactional(readOnly = true)
 	public void deleteAllUsers(String adminDomain, String adminEmail) {
 		User adminUser = new User(adminDomain, adminEmail);
 		Optional<UserEntity> admin = this.userDatabase.findById(adminUser);
@@ -162,6 +161,20 @@ public class UserServiceImplementation implements UserService {
 				throw new NoPermissionsExeption("This user is not a admin");
 		} else
 			throw new UserNotFoundException("user is not exist in the system");
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public List<UserBoundary> getAllUsersWithPagination(String adminDomain, String adminEmail, int size, int page) {
+		UserEntity user=this.userDatabase.findById(new User(adminDomain, adminEmail))
+				.orElseThrow(()->new RuntimeException("user does not exist"));
+		if (user.getRole()!=UserRoles.ADMIN) {
+			throw new RuntimeException("the user is not admin");
+		}
+		return this.userDatabase.findAll(PageRequest.of(page, size, Direction.DESC, "email"))
+				.stream()
+				.map(this.converter::entityToBoundary)
+				.collect(Collectors.toList());
 	}
 
 }

@@ -5,12 +5,15 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import acs.Utils.StringUtil;
 import acs.actionBoundaryPackage.ActionBoundary;
 import acs.logic.ActionService;	
 import acs.logic.ElementService;
+import acs.logic.ExtraActionService;
+import acs.logic.ExtraUserService;
 import acs.logic.UserService;
 import acs.usersBoundaryPackage.UserBoundary;
 
@@ -18,10 +21,10 @@ import acs.usersBoundaryPackage.UserBoundary;
 @RestController
 public class AdminController {
 	private ElementService elementService;
-	private UserService userService;
-	private ActionService actionService;
+	private ExtraUserService userService;
+	private ExtraActionService actionService;
 
-	public AdminController(ElementService elementService, UserService userService, ActionService actionService) {
+	public AdminController(ElementService elementService, ExtraUserService userService, ExtraActionService actionService) {
 		super();
 		this.elementService = elementService;
 		this.userService = userService;
@@ -33,7 +36,7 @@ public class AdminController {
 	}
 
 	@Autowired
-	public void setAdminServices(ElementService elementService, UserService userService, ActionService actionService) {
+	public void setAdminServices(ElementService elementService, ExtraUserService userService, ExtraActionService actionService) {
 		this.elementService = elementService;
 		this.userService = userService;
 		this.actionService = actionService;
@@ -43,12 +46,14 @@ public class AdminController {
 			method = RequestMethod.GET,
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public ActionBoundary[] exportAllActions(@PathVariable("adminDomain") String adminDomain,
-			@PathVariable("adminEmail") String adminEmail) {
+			@PathVariable("adminEmail") String adminEmail,
+			@RequestParam(name = "size", required = false, defaultValue = "4") int size,
+			@RequestParam(name = "page", required = false, defaultValue = "0") int page) {
 		if(StringUtil.isNullOrEmpty(adminEmail)|| StringUtil.isNullOrEmpty(adminDomain))
 		{
 			throw new RuntimeException("adminDomain or adminEmail null/empty");
 		}
-		return this.actionService.getAllActions(adminDomain, adminEmail).toArray(new ActionBoundary[0]);
+		return this.actionService.getAllActionsWithPagination(adminDomain, adminEmail, size, page).toArray(new ActionBoundary[0]);
 	}
 
 
@@ -56,12 +61,14 @@ public class AdminController {
 			method = RequestMethod.GET,
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public UserBoundary[] exportAllUsers(@PathVariable("adminDomain") String adminDomain,
-			@PathVariable("adminEmail") String adminEmail) {
+			@PathVariable("adminEmail") String adminEmail,
+			@RequestParam(name = "size", required = false, defaultValue = "4") int size,
+			@RequestParam(name = "page", required = false, defaultValue = "0") int page) {
 		if(StringUtil.isNullOrEmpty(adminEmail)|| StringUtil.isNullOrEmpty(adminDomain))
 		{
 			throw new RuntimeException("adminDomain or adminEmail null/empty");
 		}
-		return this.userService.getAllUsers(adminDomain, adminEmail).toArray(new UserBoundary[0]);
+		return this.userService.getAllUsersWithPagination(adminDomain, adminEmail,size,page).toArray(new UserBoundary[0]);
 	}
 
 

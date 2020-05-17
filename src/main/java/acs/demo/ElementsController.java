@@ -22,23 +22,12 @@ import acs.usersBoundaryPackage.UserBoundary;
 @RestController
 public class ElementsController {
 	private ExtraElementsService elementService;
-	private UserService userService;
 
 	@Autowired
 	public ElementsController(ExtraElementsService elementService,UserService userService ) {
 		super();
 		this.elementService = elementService;
-		this.userService=userService;
 	}
-
-//	public ElementsController() {
-//	}
-//
-//	@Autowired
-//	public void setElementService(ElementService elementService) {
-//		this.elementService = elementService;
-//	}
-
 	@RequestMapping(path = "/acs/elements/{userDomain}/{userEmail}/{elementDomain}/{elementID}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ElementBoundary retreiveSpecificElement(@PathVariable("userDomain") String userDomain,
 			@PathVariable("userEmail") String userEmail, @PathVariable("elementDomain") String elementDomain,
@@ -112,12 +101,11 @@ public class ElementsController {
 				|| StringUtil.isNullOrEmpty(elementDomain) || StringUtil.isNullOrEmpty(userDomain)) {
 			throw new RuntimeException("userEmail,elementID,elementDomain,userDomain null/empty");
 		}
-		UserBoundary user = this.userService.login(userDomain, userEmail);
-		UserRoles role=UserRoles.valueOf(user.getRole());
 		return this.elementService.getChildrenElements(userDomain,userEmail,elementDomain, elementId, size, page);
 	}
 
-	@RequestMapping(path = "/acs/elements/{userDomain}/{userEmail}/{elementDomain}/{elementID}/parents", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(path = "/acs/elements/{userDomain}/{userEmail}/{elementDomain}/{elementID}/parents",
+			method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ElementBoundary[] getAllParentsOfElement(@PathVariable("userDomain") String userDomain,
 			@PathVariable("userEmail") String userEmail, @PathVariable("elementDomain") String elementDomain,
 			@PathVariable("elementID") String elementID,
@@ -127,13 +115,11 @@ public class ElementsController {
 				|| StringUtil.isNullOrEmpty(elementDomain) || StringUtil.isNullOrEmpty(userDomain)) {
 			throw new RuntimeException("userEmail,elementID,elementDomain,userDomain null/empty");
 		}
-		UserBoundary user = this.userService.login(userDomain, userEmail);
-		UserRoles role=UserRoles.valueOf(user.getRole());
-
 		return this.elementService.getAllParentsOfElement(userDomain,userEmail,elementDomain, elementID, size, page);
 	}
 
-	@RequestMapping(path = "/acs/elements/{userDomain}/{userEmail}/search/byName/{name}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(path = "/acs/elements/{userDomain}/{userEmail}/search/byName/{name}",
+			method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ElementBoundary[] searchElementsByName(@PathVariable("userDomain") String userDomain,
 			@PathVariable("userEmail") String userEmail, @PathVariable("name") String name,
 			@RequestParam(name = "size", required = false, defaultValue = "4") int size,
@@ -142,14 +128,12 @@ public class ElementsController {
 				|| StringUtil.isNullOrEmpty(userDomain)) {
 			throw new RuntimeException("invalid url");
 		}
-		UserBoundary user = this.userService.login(userDomain, userEmail);
-		UserRoles role=UserRoles.valueOf(user.getRole());
-
 		return this.elementService.getElementsWithSpecificNameWithPagination(userDomain,userEmail,name, size, page)
 				.toArray(new ElementBoundary[0]);
 	}
 
-	@RequestMapping(path = "/acs/elements/{userDomain}/{userEmail}/search/byType/{type}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(path = "/acs/elements/{userDomain}/{userEmail}/search/byType/{type}",
+			method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ElementBoundary[] searchElementsByType(@PathVariable("userDomain") String userDomain,
 			@PathVariable("userEmail") String userEmail, @PathVariable("type") String type,
 			@RequestParam(name = "size", required = false, defaultValue = "4") int size,
@@ -158,15 +142,13 @@ public class ElementsController {
 				|| StringUtil.isNullOrEmpty(userDomain)) {
 			throw new RuntimeException("invalid url");
 		}
-		UserBoundary user = this.userService.login(userDomain, userEmail);
-		UserRoles role=UserRoles.valueOf(user.getRole());
-
 		return this.elementService.getElementsWithSpecificTypeWithPagination(userDomain,userEmail,type, size, page)
 				.toArray(new ElementBoundary[0]);
 	}
 
-	@RequestMapping(path = "/acs/elements/{userDomain}/{userEmail}/search/near/{lat}/{lng}/{distance}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ElementBoundary[] searchElementsByName(@PathVariable("userDomain") String userDomain,
+	@RequestMapping(path = "/acs/elements/{userDomain}/{userEmail}/search/near/{lat}/{lng}/{distance}",
+			method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ElementBoundary[] searchElementsByLocation(@PathVariable("userDomain") String userDomain,
 			@PathVariable("userEmail") String userEmail, @PathVariable("lat") double lat,
 			@PathVariable("lng") double lng, @PathVariable("distance") double distance,
 			@RequestParam(name = "size", required = false, defaultValue = "4") int size,
@@ -175,9 +157,6 @@ public class ElementsController {
 				|| StringUtil.isNullOrEmpty(userDomain)) {
 			throw new RuntimeException("invalid url");
 		}
-		UserBoundary user = this.userService.login(userDomain, userEmail);
-		UserRoles role=UserRoles.valueOf(user.getRole());
-
 		return this.elementService.getElementsNearWithPagination(userDomain,userEmail,lat, lng, distance, size, page)
 				.toArray(new ElementBoundary[0]);
 		}
