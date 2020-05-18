@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import acs.dal.ElementDao;
@@ -75,7 +76,7 @@ public class ElementServiceImplementation implements ExtraElementsService {
 				element.setName("");
 			}
 
-			element.setDate(new Date());
+			element.setCreatedTimestamp(new Date());
 			element.setCreatedBy(new CreatedBy(new UserId(managerDomain, managerEmail)));
 
 			if (element.getElementAttributes() == null) {
@@ -241,9 +242,12 @@ public class ElementServiceImplementation implements ExtraElementsService {
 		UserRoles role = UserRoles.valueOf(user.getRole());
 		errorCheckingSizePageAndAdmin(size, page, role);
 		List<ElementBoundary> allElements = new ArrayList<ElementBoundary>();
-		allElements = this.elementDatabase.findAll(PageRequest.of(page, size, Direction.DESC, "elementId")).getContent()
-				.stream().map(this.converter::entityToBoundary).collect(Collectors.toList());
-		checkPlayerIsActive(role,allElements);
+		if (role==UserRoles.MANAGER)
+			allElements = this.elementDatabase.findAll(PageRequest.of(page, size, Direction.DESC, "elementId")).getContent()
+					.stream().map(this.converter::entityToBoundary).collect(Collectors.toList());
+		else
+			allElements = this.elementDatabase.findAllByActive(true,PageRequest.of(page, size, Direction.DESC, "elementId"))
+			.stream().map(this.converter::entityToBoundary).collect(Collectors.toList());
 		return allElements.toArray(new ElementBoundary[0]);
 	}
 
@@ -259,7 +263,6 @@ public class ElementServiceImplementation implements ExtraElementsService {
 		allElements = this.elementDatabase
 				.findAllByParent(parentDomain, parentId, PageRequest.of(page, size, Direction.DESC, "timestamp", "elementId"))
 				.stream().map(converter::entityToBoundary).collect(Collectors.toList());
-		checkPlayerIsActive(role,allElements);
 		return allElements.toArray(new ElementBoundary[0]);
 	}
 
@@ -291,11 +294,16 @@ public class ElementServiceImplementation implements ExtraElementsService {
 		UserBoundary user = this.userService.login(userDomain, userEmail);
 		UserRoles role = UserRoles.valueOf(user.getRole());
 		errorCheckingSizePageAndAdmin(size, page, role);
-		List<ElementBoundary> elements = elementDatabase
+		List<ElementBoundary> elements =new ArrayList<>();
+		if (role==UserRoles.MANAGER)
+			elements = elementDatabase
 				.findAllByName(name, PageRequest.of(page, size, Direction.DESC, "elementId")).stream()
 				.map(this.converter::entityToBoundary).collect(Collectors.toList());
+		else
+			elements = elementDatabase
+			.findAllByNameAndActive(name,true ,PageRequest.of(page, size, Direction.DESC, "elementId")).stream()
+			.map(this.converter::entityToBoundary).collect(Collectors.toList());
 
-		checkPlayerIsActive(role,elements);
 		return elements;
 	}
 
@@ -305,12 +313,17 @@ public class ElementServiceImplementation implements ExtraElementsService {
 			String type, int size, int page) {
 		UserBoundary user = this.userService.login(userDomain, userEmail);
 		UserRoles role = UserRoles.valueOf(user.getRole());
+		List<ElementBoundary> elements=new ArrayList<>();
 		errorCheckingSizePageAndAdmin(size, page, role);
-		List<ElementBoundary> elements = elementDatabase
+		if (role == UserRoles.MANAGER)
+		elements = elementDatabase
 				.findAllByType(type, PageRequest.of(page, size, Direction.DESC, "elementId")).stream()
 				.map(this.converter::entityToBoundary).collect(Collectors.toList());
+		else
+			elements = elementDatabase
+			.findAllByTypeAndActive(type,true ,PageRequest.of(page, size, Direction.DESC, "elementId")).stream()
+			.map(this.converter::entityToBoundary).collect(Collectors.toList());
 
-		checkPlayerIsActive(role,elements);
 		return elements;
 	}
 
@@ -323,13 +336,19 @@ public class ElementServiceImplementation implements ExtraElementsService {
 		errorCheckingSizePageAndAdmin(size, page, role);
 
 		List<ElementBoundary> allElements = new ArrayList<>();
-		allElements = this.elementDatabase
-				.findByLocationBetween(new acs.data.elementEntityProperties.Location(lat-distance,lng-distance), 
-						new acs.data.elementEntityProperties.Location(lat+distance, lng+distance),
-						PageRequest.of(page, size, Direction.DESC, "elementId"))
-				.stream().map(this.converter::entityToBoundary).collect(Collectors.toList());
+		if (role==UserRoles.MANAGER)
+			allElements = this.elementDatabase
+					.findAllByLocationLatBetweenAndLocationLngBetween(lat-distance,lat+distance, 
+							lng-distance, lng+distance,
+							PageRequest.of(page, size, Direction.DESC, "elementId"))
+					.stream().map(this.converter::entityToBoundary).collect(Collectors.toList());
+		else
+			allElements = this.elementDatabase
+			.findAllByLocationLatBetweenAndLocationLngBetweenAndActive(lat-distance,lat+distance, 
+					lng-distance, lng+distance, true,
+					PageRequest.of(page, size, Direction.DESC, "elementId"))
+			.stream().map(this.converter::entityToBoundary).collect(Collectors.toList());
 
-		checkPlayerIsActive(role,allElements);
 		return allElements;
 	}
 	
@@ -344,16 +363,4 @@ public class ElementServiceImplementation implements ExtraElementsService {
 		if (page < 0)
 			throw new RuntimeException("page cannot be negative");
 	}
-	
-	public void checkPlayerIsActive(UserRoles role,List<ElementBoundary> allElements) {
-		if (role == UserRoles.PLAYER) {
-			for (int i = 0; i < allElements.size(); i++) {
-				if (allElements.get(i).isActive() == false) {
-					allElements.remove(i);
-					i = -1;
-				}
-			}
-		}
-	}
-
 }

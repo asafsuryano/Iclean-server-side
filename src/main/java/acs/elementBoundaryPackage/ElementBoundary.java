@@ -49,10 +49,10 @@ public ElementBoundary(String name, ElementIdBoundary eID,String type,boolean ac
 	public void setActive(boolean active) {
 		this.active = active;
 	}
-	public Date getDate() {
+	public Date getCreatedTimestamp() {
 		return createdTimestamp;
 	}
-	public void setDate(Date createdTimeStamp) {
+	public void setCreatedTimestamp(Date createdTimeStamp) {
 		this.createdTimestamp = createdTimeStamp;
 	}
 	public CreatedBy getCreatedBy() {
