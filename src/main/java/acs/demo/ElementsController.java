@@ -1,23 +1,27 @@
 package acs.demo;
 
-import org.postgresql.shaded.com.ongres.scram.common.bouncycastle.pbkdf2.RuntimeCryptoException;
+import java.util.Collections;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import acs.Utils.StringUtil;
-import acs.data.UserRoles;
 import acs.elementBoundaryPackage.ElementBoundary;
 import acs.elementBoundaryPackage.ElementIdBoundary;
 import acs.logic.ExtraElementsService;
 import acs.logic.UserService;
-import acs.serviceImplementation.userServicePackage.UserServiceImplementation;
-import acs.usersBoundaryPackage.UserBoundary;
+import acs.serviceImplementation.elementServicePackage.ElementIsNotActiveException;
+
 
 @RestController
 public class ElementsController {
@@ -167,4 +171,14 @@ public class ElementsController {
 		return this.elementService.getElementsNearWithPagination(userDomain,userEmail,lat, lng, distance, size, page)
 				.toArray(new ElementBoundary[0]);
 		}
+	
+	
+	@ExceptionHandler
+	@ResponseStatus(code = HttpStatus.NOT_FOUND)
+	public Map<String, Object> handleException (ElementIsNotActiveException e){
+		return Collections.singletonMap("error", 
+				(e.getMessage() == null)?
+						"Element is not active":
+						e.getMessage());
+	}
 }

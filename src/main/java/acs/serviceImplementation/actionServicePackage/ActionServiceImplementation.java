@@ -98,6 +98,7 @@ public class ActionServiceImplementation implements ExtraActionService {
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public List<ActionBoundary> getAllActionsWithPagination(String adminDomain, String adminEmail, int size, int page) {
 		UserEntity user=this.userDatabase.findById(new User(adminDomain, adminEmail))
 				.orElseThrow(()->new RuntimeException("user does not exist"));

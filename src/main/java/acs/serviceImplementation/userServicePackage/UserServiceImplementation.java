@@ -85,7 +85,7 @@ public class UserServiceImplementation implements ExtraUserService {
 	}
 
 	@Override
-	@Transactional(readOnly = true)
+	@Transactional
 	public UserBoundary updateUser(String userDomain, String userEmail, UserBoundary update) {
 		// THE UPDATER OF THE USER
 		User updater = new User(userDomain, userEmail);
@@ -149,7 +149,7 @@ public class UserServiceImplementation implements ExtraUserService {
 
 	
 	@Override
-	@Transactional(readOnly = true)
+	@Transactional
 	public void deleteAllUsers(String adminDomain, String adminEmail) {
 		User adminUser = new User(adminDomain, adminEmail);
 		Optional<UserEntity> admin = this.userDatabase.findById(adminUser);
@@ -171,7 +171,7 @@ public class UserServiceImplementation implements ExtraUserService {
 		if (user.getRole()!=UserRoles.ADMIN) {
 			throw new RuntimeException("the user is not admin");
 		}
-		return this.userDatabase.findAll(PageRequest.of(page, size, Direction.DESC, "email"))
+		return this.userDatabase.findAll(PageRequest.of(page, size, Direction.DESC, "UserIdEmail"))
 				.stream()
 				.map(this.converter::entityToBoundary)
 				.collect(Collectors.toList());

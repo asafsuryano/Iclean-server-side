@@ -35,14 +35,14 @@ public class AdminController {
 	public AdminController() {
 	}
 
-//	@Autowired
+	@Autowired
 	public void setAdminServices(ElementService elementService, ExtraUserService userService, ExtraActionService actionService) {
 		this.elementService = elementService;
 		this.userService = userService;
 		this.actionService = actionService;
 	}
 
-	@RequestMapping(path = "acs/admin/actions/{adminDomain}/{adminEmail}",
+	@RequestMapping(path = "/acs/admin/actions/{adminDomain}/{adminEmail}",
 			method = RequestMethod.GET,
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public ActionBoundary[] exportAllActions(@PathVariable("adminDomain") String adminDomain,
@@ -57,7 +57,7 @@ public class AdminController {
 	}
 
 
-	@RequestMapping(path = "acs/admin/users/{adminDomain}/{adminEmail}",
+	@RequestMapping(path = "/acs/admin/users/{adminDomain}/{adminEmail}",
 			method = RequestMethod.GET,
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public UserBoundary[] exportAllUsers(@PathVariable("adminDomain") String adminDomain,
@@ -72,7 +72,7 @@ public class AdminController {
 	}
 
 
-	@RequestMapping(path = "acs/admin/users/{adminDomain}/{adminEmail}",
+	@RequestMapping(path = "/acs/admin/users/{adminDomain}/{adminEmail}",
 			method = RequestMethod.DELETE)
 	public void deleteAllUsers (
 			@PathVariable("adminDomain") String adminDomain,
@@ -84,7 +84,7 @@ public class AdminController {
 		this.userService.deleteAllUsers(adminDomain, adminEmail);
 	}
 
-	@RequestMapping(path = "acs/admin/elements/{adminDomain}/{adminEmail}",
+	@RequestMapping(path = "/acs/admin/elements/{adminDomain}/{adminEmail}",
 			method = RequestMethod.DELETE)
 	public void deleteAllElements (
 			@PathVariable("adminDomain") String adminDomain,
@@ -96,7 +96,7 @@ public class AdminController {
 		this.elementService.deleteAllElements(adminDomain, adminEmail);
 	}
 
-	@RequestMapping(path = "acs/admin/actions/{adminDomain}/{adminEmail}",
+	@RequestMapping(path = "/acs/admin/actions/{adminDomain}/{adminEmail}",
 			method = RequestMethod.DELETE)
 	public void deleteAllActions (
 			@PathVariable("adminDomain") String adminDomain,

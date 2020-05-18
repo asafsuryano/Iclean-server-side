@@ -100,7 +100,7 @@ public class ElementServiceImplementation implements ExtraElementsService {
 	}
 
 	@Override
-	@Transactional(readOnly = true)
+	@Transactional
 	public ElementBoundary update(String managerDomain, String managerEmail, String elementDomain, String elementId,
 			ElementBoundary update) {
 		UserBoundary user = this.userService.login(managerDomain, managerEmail);
@@ -197,7 +197,7 @@ public class ElementServiceImplementation implements ExtraElementsService {
 				if (role == UserRoles.PLAYER && elEntity.get().isActive())
 					return this.converter.entityToBoundary(elEntity.get());
 				else
-					throw new RuntimeException("the element does not exist");
+					throw new ElementIsNotActiveException("the element does not exist");
 			}
 
 		} else
@@ -205,13 +205,13 @@ public class ElementServiceImplementation implements ExtraElementsService {
 	}
 
 	@Override
-	@Transactional(readOnly = true)
+	@Transactional
 	public void deleteAllElements(String adminDomain, String adminEmail) {
 		this.elementDatabase.deleteAll();
 	}
 
 	@Override
-	@Transactional(readOnly = true)
+	@Transactional
 	public void bindParentToChildElements(ElementBoundary parentElement, ElementBoundary childElement) {
 		// TODO Auto-generated method stub
 

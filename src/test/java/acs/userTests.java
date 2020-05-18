@@ -49,13 +49,14 @@ public class userTests {
 	public void setup() {
 		
 	}
+	
 	@AfterEach
 	public void tearDown() {
 		// post admin
 		UserBoundary admin = 
 				this.restTemplate
 				.postForObject(this.userUrl,
-						new NewUserDetails("ba@neww.com","dana",":)","ADMIN"),
+						new NewUserDetails("ba1@neww.com","dana",":)","ADMIN"),
 						UserBoundary.class);
 		
 		//then delete all after every test
@@ -64,7 +65,6 @@ public class userTests {
 				admin.getUserId().getDomain(),
 				admin.getUserId().getEmail());
 	}
-	
 	@Test
 	public void testContext() {
 		
@@ -89,7 +89,6 @@ public class userTests {
 		this.restTemplate.put(this.userUrl + "/{userDomain}/{userEmail}",
 				updatedRole,
 				userId.getDomain(),userId.getEmail());
-		
 		//THEN the DB contains the user with the updated role
 		assertThat(this.restTemplate
 				.getForObject(this.userUrl + "/login/{userDomain}/{userEmail}",
@@ -408,7 +407,6 @@ public class userTests {
 		.containsExactly(admin);
 		
 	}
-		
 	
 	
 }
