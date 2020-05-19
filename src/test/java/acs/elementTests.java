@@ -32,6 +32,9 @@ public class elementTests {
 	private String adminUrl;
 	private String userUrl;
 	private int port;
+	private UserBoundary admin;
+	private UserBoundary manager;
+	private UserBoundary player;
 
 	@LocalServerPort
 	public void setPort(int port) {
@@ -49,17 +52,32 @@ public class elementTests {
 
 	@BeforeEach
 	public void setup() {
+		this.admin = 
+				this.restTemplate
+				.postForObject(this.userUrl,
+						new NewUserDetails("admini@na.com","dana",":)","ADMIN"),
+						UserBoundary.class);
+		this.manager =
+				this.restTemplate
+				.postForObject(this.userUrl,
+						new NewUserDetails("mana@new.com","s1am", "((:))", "MANAGER"),
+						UserBoundary.class);
+		this.player =
+				this.restTemplate
+				.postForObject(this.userUrl,
+						new NewUserDetails("playyy@new.com","sa2m", "((:P))", "PLAYER"),
+						UserBoundary.class);
 
 	}
 
 	@AfterEach
 	public void tearDown() {
-		// post admin
-		UserBoundary admin = 
-				this.restTemplate
-				.postForObject(this.userUrl,
-						new NewUserDetails("ba@na.com","dana",":)","ADMIN"),
-						UserBoundary.class);
+		//		// post admin
+		//		UserBoundary admin1 = 
+		//				this.restTemplate
+		//				.postForObject(this.userUrl,
+		//						new NewUserDetails("ba@na.com","dana",":)","ADMIN"),
+		//						UserBoundary.class);
 
 		//then delete all users/elements after every test
 		this.restTemplate
@@ -74,18 +92,15 @@ public class elementTests {
 
 	}
 
+	/*
+	 * TEST1 - manager can create element
+	 */
 	@Test
 	public void  testCreateElementBoundaryByUserManagerAndCheckIfExistInTheDatabase()throws Exception{
-		UserBoundary newUserPosted;
-
-		newUserPosted =
-				this.restTemplate
-				.postForObject(this.userUrl,
-						new NewUserDetails("ba@new.com","sam", "((:))", "MANAGER"),
-						UserBoundary.class);
 
 
-		
+
+
 		ElementBoundary elementBoundary = new ElementBoundary();		
 		elementBoundary.setName("ban");
 		elementBoundary.setActive(true);
@@ -96,22 +111,75 @@ public class elementTests {
 				.postForObject(this.elementUrl + "/{managerDomain}/{managerEmail}",
 						elementBoundary
 						, ElementBoundary.class,
-						newUserPosted.getUserId().getDomain(),newUserPosted.getUserId().getEmail());
-		
+						manager.getUserId().getDomain(),manager.getUserId().getEmail());
+
 		this.restTemplate
 		.getForObject(this.elementUrl + "/{userDomain}/{userEmail}/{elementDomain}/{elementID}",
 				ElementBoundary.class,
-				newUserPosted.getUserId().getDomain(),newUserPosted.getUserId().getEmail(),boundaryOnServer.getElementId().getDomain(),
+				manager.getUserId().getDomain(),manager.getUserId().getEmail(),boundaryOnServer.getElementId().getDomain(),
 				boundaryOnServer.getElementId().getId());
 
 
 	}
 
 
-
-
+	/*
+	 * TEST2 - player can not create element
+	 */
 	@Test
-	public void testPutOfElementAndUpdateItsNameThenTheNameIsUpdatedInTheDataBase() throws Exception {
+	public void  testCreateElementBoundaryByUserPlayerAndCheckIfExistInTheDatabase()throws Exception{
+
+
+
+		ElementBoundary elementBoundary = new ElementBoundary();		
+		elementBoundary.setName("ban");
+		elementBoundary.setActive(true);
+		elementBoundary.setType("DEMO_ELEMENT");
+		try {
+			ElementBoundary boundaryOnServer =
+					this.restTemplate
+					.postForObject(this.elementUrl + "/{managerDomain}/{managerEmail}",
+							elementBoundary
+							, ElementBoundary.class,
+							player.getUserId().getDomain(),player.getUserId().getEmail());
+			fail();
+		}
+		catch(HttpServerErrorException ex) {
+			assertTrue(ex.getMessage().contains("Only manager can create element"));
+		}
+	}
+
+	/*
+	 * TEST3 - admin can not create element
+	 */
+	@Test
+	public void  testCreateElementBoundaryByUserAdminAndCheckIfExistInTheDatabase()throws Exception{
+
+
+
+		ElementBoundary elementBoundary = new ElementBoundary();		
+		elementBoundary.setName("ban");
+		elementBoundary.setActive(true);
+		elementBoundary.setType("DEMO_ELEMENT");
+		try {
+			ElementBoundary boundaryOnServer =
+					this.restTemplate
+					.postForObject(this.elementUrl + "/{managerDomain}/{managerEmail}",
+							elementBoundary
+							, ElementBoundary.class,
+							admin.getUserId().getDomain(),admin.getUserId().getEmail());
+			fail();
+		}
+		catch(HttpServerErrorException ex) {
+			assertTrue(ex.getMessage().contains("Only manager can create element"));
+		}
+	}
+
+	/*
+	 * TEST4 - update element name (manager user)
+	 */
+	@Test
+	public void testPutOfElementAndUpdateItsNameThenTheNameIsUpdatedInTheDataBaseByManager() throws Exception {
 
 		ElementBoundary elementBoundary = new ElementBoundary();		
 		elementBoundary.setName("ban");
@@ -123,7 +191,7 @@ public class elementTests {
 				.postForObject(this.elementUrl + "/{managerDomain}/{managerEmail}",
 						elementBoundary
 						, ElementBoundary.class,
-						"a","te@st.com");
+						manager.getUserId().getDomain(),manager.getUserId().getEmail());
 		String userDomain = boundaryOnServer.getCreatedBy().getUserId().getDomain();
 		String userEmail = boundaryOnServer.getCreatedBy().getUserId().getEmail();
 		String elementDomain = boundaryOnServer.getElementId().getDomain();
@@ -143,9 +211,93 @@ public class elementTests {
 						ElementBoundary.class,
 						userDomain,userEmail,elementDomain,elementId);
 
-		assertThat(updatedNameInElementBoundary.getName()).isNotNull().isEqualTo(update.getName());						
+		assertThat(updatedNameInElementBoundary.getName()).isNotNull().isEqualTo(update.getName());	
+		assertThat(updatedNameInElementBoundary.getName()).isNotNull().isNotEqualTo(elementBoundary.getName());	
 	}
 
+	/*
+	 * TEST5 - can not update element name (player user) 
+	 */
+	@Test
+	public void testPutOfElementAndUpdateItsNameThenTheNameIsUpdatedInTheDataBaseByPlayer() throws Exception {
+
+		ElementBoundary elementBoundary = new ElementBoundary();		
+		elementBoundary.setName("ban");
+		elementBoundary.setActive(true);
+		elementBoundary.setType("DEMO_ELEMENT");
+
+		ElementBoundary boundaryOnServer =
+				this.restTemplate
+				.postForObject(this.elementUrl + "/{managerDomain}/{managerEmail}",
+						elementBoundary
+						, ElementBoundary.class,
+						manager.getUserId().getDomain(),manager.getUserId().getEmail());
+		String userDomain =player.getUserId().getDomain();
+		String userEmail = player.getUserId().getEmail();
+		String elementDomain = boundaryOnServer.getElementId().getDomain();
+		String elementId = boundaryOnServer.getElementId().getId();
+
+		ElementBoundary update = new ElementBoundary();
+		update.setActive(true);
+		update.setName("workedd");
+		try{
+			this.restTemplate.put(
+					this.elementUrl + "/{userDomain}/{userEmail}/{elementDomain}/{elementID}" ,
+					update,
+					userDomain,userEmail,elementDomain,elementId);
+
+
+			fail();
+		}
+		//THEN we got an exception
+		catch(HttpServerErrorException ex) {
+			assertTrue(ex.getMessage().contains("Only manager can update  element"));
+		}
+	}
+	
+	/*
+	 * TEST6 - can not update element name (admin user) 
+	 */
+	@Test
+	public void testPutOfElementAndUpdateItsNameThenTheNameIsUpdatedInTheDataBaseByAdmin() throws Exception {
+
+		ElementBoundary elementBoundary = new ElementBoundary();		
+		elementBoundary.setName("ban");
+		elementBoundary.setActive(true);
+		elementBoundary.setType("DEMO_ELEMENT");
+
+		ElementBoundary boundaryOnServer =
+				this.restTemplate
+				.postForObject(this.elementUrl + "/{managerDomain}/{managerEmail}",
+						elementBoundary
+						, ElementBoundary.class,
+						manager.getUserId().getDomain(),manager.getUserId().getEmail());
+		String userDomain =admin.getUserId().getDomain();
+		String userEmail = admin.getUserId().getEmail();
+		String elementDomain = boundaryOnServer.getElementId().getDomain();
+		String elementId = boundaryOnServer.getElementId().getId();
+
+		ElementBoundary update = new ElementBoundary();
+		update.setActive(true);
+		update.setName("workedd");
+		try{
+			this.restTemplate.put(
+					this.elementUrl + "/{userDomain}/{userEmail}/{elementDomain}/{elementID}" ,
+					update,
+					userDomain,userEmail,elementDomain,elementId);
+
+
+			fail();
+		}
+		//THEN we got an exception
+		catch(HttpServerErrorException ex) {
+			assertTrue(ex.getMessage().contains("Only manager can update  element"));
+		}
+	}
+
+	/*
+	 * TEST7 - id after post and get is the same
+	 */
 	@Test
 	public void testPostNewElementThenTheDatabaseHasAnElementWithTheSameElementIdAsPosted() { 
 
@@ -160,7 +312,7 @@ public class elementTests {
 				.postForObject(this.elementUrl + "/{managerDomain}/{managerEmail}",
 						elementBoundary
 						, ElementBoundary.class,
-						"test","te@st.com");
+						manager.getUserId().getDomain(),manager.getUserId().getEmail());
 
 		ElementIdBoundary currentElementIdPosted =
 				this.restTemplate
@@ -174,28 +326,6 @@ public class elementTests {
 
 		assertThat(currentElementIdPosted.getId()).isNotNull()
 		.isEqualTo(newElementBoundary.getElementId().getId());
-	}
-
-	@Test
-	public void testGetSpecificElementWithEmptyDatabase()throws Exception{
-
-		// GIVEN the server is up
-
-
-		//WHEN we Get element when there are no elements in DB
-		try {
-			//trying to get element that not exist
-			this.restTemplate
-			.getForObject(this.elementUrl + "/{userDomain}/{userEmail}/{elementDomain}/{elementID}",
-					ElementBoundary.class,
-					"test","te@st.com","2020b.ben.halfon","11514");  
-
-			fail();
-		}
-		//THEN we got an exception
-		catch(HttpServerErrorException ex) {
-			assertTrue(ex.getMessage().contains("the element does not exist"));
-		}
 	}
 
 	@Test
