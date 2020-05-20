@@ -3,7 +3,6 @@ package acs.logic;
 import java.util.List;
 import java.util.Set;
 
-import acs.data.UserRoles;
 import acs.elementBoundaryPackage.ElementBoundary;
 
 public interface ExtraElementsService extends ElementService {

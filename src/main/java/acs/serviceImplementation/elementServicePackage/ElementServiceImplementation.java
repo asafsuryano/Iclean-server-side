@@ -12,21 +12,14 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import org.springframework.data.geo.Distance;
-import org.springframework.data.geo.Metric;
-import org.springframework.data.geo.Metrics;
-import org.springframework.data.geo.Point;
-import org.h2.command.dml.Query;
-import org.h2.util.geometry.GeometryUtils;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.microsoft.sqlserver.jdbc.Geometry;
 
 import acs.dal.ElementDao;
 import acs.data.ElementEntity;
@@ -350,20 +343,6 @@ public class ElementServiceImplementation implements ExtraElementsService {
 		errorCheckingSizePageAndAdmin(size, page, role);
 
 		List<ElementBoundary> allElements = new ArrayList<>();
-		/*
-		if (role==UserRoles.MANAGER)
-			allElements = this.elementDatabase
-					.findAllByLocationLatBetweenAndLocationLngBetween(lat-distance,lat+distance, 
-							lng-distance, lng+distance,
-							PageRequest.of(page, size, Direction.DESC, "elementId"))
-					.stream().map(this.converter::entityToBoundary).collect(Collectors.toList());
-		else
-			allElements = this.elementDatabase
-			.findAllByLocationLatBetweenAndLocationLngBetweenAndActive(lat-distance,lat+distance, 
-					lng-distance, lng+distance, true,
-					PageRequest.of(page, size, Direction.DESC, "elementId"))
-			.stream().map(this.converter::entityToBoundary).collect(Collectors.toList());
-	*/
 
 		if (role==UserRoles.MANAGER)
 			allElements=this.elementDatabase.findAllByLocationNear(lat, lng, distance, PageRequest.of(page, size, Direction.DESC, "element_id"))

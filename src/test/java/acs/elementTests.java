@@ -879,13 +879,13 @@ public class elementTests {
 		elementBoundary2.setName("ban");
 		elementBoundary2.setActive(true);
 		elementBoundary2.setType("DEMO_ELEMENT");
-		elementBoundary2.setLocation(new Location(15, 14));
+		elementBoundary2.setLocation(new Location(12, 12));
 
 		ElementBoundary elementBoundary3 = new ElementBoundary();
 		elementBoundary3.setName("ban");
 		elementBoundary3.setActive(false);
 		elementBoundary3.setType("DEMO_ELEMENT");
-		elementBoundary3.setLocation(new Location(17, 14));
+		elementBoundary3.setLocation(new Location(15, 14));
 
 		// post to database
 		ElementBoundary boundaryOnServer1 = this.restTemplate.postForObject(
