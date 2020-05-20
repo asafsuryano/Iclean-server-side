@@ -15,16 +15,15 @@ public interface ElementDao extends PagingAndSortingRepository<ElementEntity,Ele
 	//select .... From elementEntity where active=?
 	public List<ElementEntity> findAllByActive(@Param("active") boolean isActive,Pageable pageable);
 	
+	
 	//	SELECT ... From ElementEntity where parentDomain=?and parentId=? for managers
-	public  List<ElementEntity>  findAllByParent(@Param("parentDomain") String parentDomain,
-			@Param("parentId") String parentId,
+	public  List<ElementEntity>  findAllByParentElementId(ElementId elementId,
 			Pageable pageable);
 	
 	
-	//	SELECT ... From ElementEntity where parentDomain=?and parentId=? for players
-	public  List<ElementEntity>  findAllByParentAndActive(@Param("parentDomain") String parentDomain,
-			@Param("parentId") String parentId,@Param("active") boolean isActive,
-			Pageable pageable);
+	//	SELECT ... From ElementEntity where parentDomain=?and parentId=? for Players
+	public  List<ElementEntity>  findAllByParentElementIdAndActive(ElementId elementId,
+			boolean active,Pageable pageable);
 	
 	
 	// select ... from ElementEntity where name=? this query is for managers
