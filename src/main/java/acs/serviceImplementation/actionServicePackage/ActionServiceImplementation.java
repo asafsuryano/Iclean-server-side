@@ -28,24 +28,29 @@ import acs.data.UserEntity;
 import acs.data.UserRoles;
 import acs.data.elementEntityProperties.ElementId;
 import acs.data.userEntityProperties.User;
+import acs.elementBoundaryPackage.ElementBoundary;
+import acs.logic.ElementService;
 import acs.logic.ExtraActionService;
+import acs.logic.UserService;
+import acs.usersBoundaryPackage.UserBoundary;
 
 
 @Service
 public class ActionServiceImplementation implements ExtraActionService {
 	private ActionDao  actionsDatabase;
-	private UserDao userDatabase;
-	private ElementDao elementDatabase;
+	private UserService userService;
+	private ElementService elementService;
 	private ActionEntityBoundaryConverter converter; 
 	private ActionEntity invoke;
 	private String projectName;
 
 	@Autowired
 	public ActionServiceImplementation(ActionEntityBoundaryConverter converter,ActionDao actionsDatabase,
-			ElementDao elementDatabase) {
+			ElementService elementService,UserService userService) {
 		this.converter = converter;
 		this.actionsDatabase=actionsDatabase;
-		this.elementDatabase=elementDatabase;
+		this.elementService=elementService;
+		this.userService = userService;
 	}
 	
 
@@ -99,30 +104,37 @@ public class ActionServiceImplementation implements ExtraActionService {
 
 	@Override
 	@Transactional(readOnly = true)
-	public List<ActionBoundary> getAllActionsWithPagination(String adminDomain, String adminEmail, int size, int page) {
-		UserEntity user=this.userDatabase.findById(new User(adminDomain, adminEmail))
-				.orElseThrow(()->new RuntimeException("user does not exist"));
-		if (user.getRole()!=UserRoles.ADMIN) {
+	public List<ActionBoundary> getAllActionsWithPagination(String adminDomain, 
+			String adminEmail, int size, int page) {
+		
+		UserBoundary user= this.userService.login(adminDomain, adminEmail);
+		if (user.getRole()!=UserRoles.ADMIN.toString()) {
 			throw new RuntimeException("the user is not admin");
 		}
-		return this.actionsDatabase.findAll(PageRequest.of
-				(page, size, Direction.DESC, "id"))
-				.stream()
-				.map(this.converter::entityToBoundary)
-				.collect(Collectors.toList());
+		return this.actionsDatabase.findAll(PageRequest.of(page, size, Direction.DESC, "type")).getContent()
+				.stream().map(this.converter::entityToBoundary).collect(Collectors.toList());
+		
+				
+//				this.actionsDatabase.findAllById(PageRequest.of
+//				(page, size))
+//				.stream()
+//				.map(this.converter::entityToBoundary)
+//				.collect(Collectors.toList());
 	}
 	
 	public boolean isElementInActionActive(ActionBoundary action) {
-		ElementEntity element=this.elementDatabase.findById(new ElementId(action.getElement().getElementId().getDomain(), action.getElement().getElementId().getId()))
-				.orElseThrow(()->new RuntimeException("the element does not exist"));
+		ElementBoundary element=this.elementService.getSpecificElement(
+				action.getInvokedBy().getUserId().getDomain(),
+				action.getInvokedBy().getUserId().getEmail(), 
+				action.getElement().getElementId().getDomain(), 
+				action.getElement().getElementId().getId());
 		return element.isActive();
 
 	}
 	public boolean isUserInActionAPlayer(ActionBoundary action) {
-		UserEntity user=this.userDatabase.findById(new User(action.getInvokedBy().getUserId().getDomain(), 
-				action.getInvokedBy().getUserId().getEmail()))
-				.orElseThrow(()->new RuntimeException("user does not exist"));
-		if (user.getRole()!=UserRoles.PLAYER) {
+		UserBoundary user=this.userService.login(action.getInvokedBy().getUserId().getDomain(), 
+				action.getInvokedBy().getUserId().getEmail());
+		if (user.getRole()!=UserRoles.PLAYER.toString()) {
 			return false;
 		}else {
 			return true;
