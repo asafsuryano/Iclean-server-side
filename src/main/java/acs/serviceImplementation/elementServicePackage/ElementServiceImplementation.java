@@ -269,9 +269,14 @@ public class ElementServiceImplementation implements ExtraElementsService {
 		UserRoles role = UserRoles.valueOf(user.getRole());
 		errorCheckingSizePageAndAdmin(size, page, role);
 		List<ElementBoundary> allElements = new ArrayList<ElementBoundary>();
-		allElements = this.elementDatabase
-				.findAllByParent(parentDomain, parentId, PageRequest.of(page, size, Direction.DESC, "timestamp", "elementId"))
-				.stream().map(converter::entityToBoundary).collect(Collectors.toList());
+		if (role==UserRoles.MANAGER)
+			allElements = this.elementDatabase
+					.findAllByParentElementId(new ElementId(parentDomain,parentId) ,PageRequest.of(page, size, Direction.DESC, "createdTimeStamp", "elementId"))
+					.stream().map(converter::entityToBoundary).collect(Collectors.toList());
+		else
+			allElements = this.elementDatabase
+			.findAllByParentElementIdAndActive(new ElementId(parentDomain,parentId),true ,PageRequest.of(page, size, Direction.DESC, "createdTimeStamp", "elementId"))
+			.stream().map(converter::entityToBoundary).collect(Collectors.toList());
 		return allElements.toArray(new ElementBoundary[0]);
 	}
 

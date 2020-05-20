@@ -101,6 +101,30 @@ public class userTests {
 
 	
 	@Test
+	public void testCreateNewUserAsManagerAndCheckIfExistInTheDatabase() throws Exception{
+		
+		
+		UserBoundary newUserPosted = //create manager user
+				this.restTemplate
+				.postForObject(this.userUrl,
+						new NewUserDetails("ba@new.com","sam", "((:))", "MANAGER"),
+						UserBoundary.class);
+		
+		assertThat(	this.restTemplate
+		.getForObject(this.userUrl + "/login/{userDomain}/{userEmail}",
+				UserBoundary.class,
+				newUserPosted.getUserId().getDomain(),newUserPosted.getUserId().getEmail()))
+.extracting("username","role").containsExactly("sam","MANAGER");
+		
+		
+		
+		
+		
+	}	
+	
+	
+	
+	@Test
 	public void testPostNewUserThenTheDatabaseHasAUserWithTheSameUserEmailAsPosted() throws Exception {
 		//GEVEN the server is up
 		
@@ -121,6 +145,10 @@ public class userTests {
 		assertThat(currentUserEmailPosted.getEmail()).isNotNull()
 			.isEqualTo(newUserPosted.getUserId().getEmail());
 	}
+	
+	
+	
+	
 	
 	@Test
 	public void testPostAnUserThatAlreadyExistInTheDataBaseThenThrowAnException() throws Exception {
