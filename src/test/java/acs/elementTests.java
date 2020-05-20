@@ -4,10 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-
 import javax.annotation.PostConstruct;
 
 import org.junit.jupiter.api.AfterEach;
@@ -62,12 +58,12 @@ public class elementTests {
 
 	@AfterEach
 	public void tearDown() {
-		// // post admin
-		// UserBoundary admin1 =
-		// this.restTemplate
-		// .postForObject(this.userUrl,
-		// new NewUserDetails("ba@na.com","dana",":)","ADMIN"),
-		// UserBoundary.class);
+		 //post admin
+		 UserBoundary admin1 =
+		 this.restTemplate
+		 .postForObject(this.userUrl,
+		 new NewUserDetails("ba@na.com","dana",":)","ADMIN"),
+		 UserBoundary.class);
 
 		// then delete all users/elements after every test
 		this.restTemplate.delete(this.adminUrl + "/users/{adminDomain}/{adminEmail}", admin.getUserId().getDomain(),
@@ -725,7 +721,7 @@ public class elementTests {
 	// Test 18 add 3 elements to the database and find by name with manager user
 	
 	@Test
-	public void testAdd3ElementsToDatabaseAndSearchThemByNameOnlyReturns2Elements() {
+	public void testAdd3ElementsToDatabaseAndSearchThemByNameWithManagerUserOnlyReturns2Elements() {
 		//add 3 normal elements
 		ElementBoundary elementBoundary1 = new ElementBoundary();
 		elementBoundary1.setName("ban");
@@ -849,7 +845,7 @@ public class elementTests {
 	// Test 20 add 3 elements(1 of them is active false) to the database and find by name with player user
 	
 	@Test
-	public void testAdd3ElementsToDatabaseAndSearchThemByTypeOnlyReturns2Elements() {
+	public void testAdd3ElementsToDatabaseAndSearchThemByNameOnlyReturns2Elements() {
 		//add 3 normal elements
 		ElementBoundary elementBoundary1 = new ElementBoundary();
 		elementBoundary1.setName("ban");
@@ -886,5 +882,50 @@ public class elementTests {
 		
 		assertThat(elements).hasSize(2);
 	}
+	
+
+	// Test 21 add 3 elements(1 of them is active false) to the database and find by type with player user
+	
+	@Test
+	public void testAdd3ElementsToDatabaseAndSearchThemByTypeOnlyReturns2Elements() {
+		//add 3 normal elements
+		ElementBoundary elementBoundary1 = new ElementBoundary();
+		elementBoundary1.setName("ban");
+		elementBoundary1.setActive(true);
+		elementBoundary1.setType("DEMO_ELEMENT");
+
+		ElementBoundary elementBoundary2 = new ElementBoundary();
+		elementBoundary2.setName("ban");
+		elementBoundary2.setActive(true);
+		elementBoundary2.setType("DEMO_ELEMENT");
+
+		ElementBoundary elementBoundary3 = new ElementBoundary();
+		elementBoundary3.setName("ban");
+		elementBoundary3.setActive(true);
+		elementBoundary3.setType("Dog");
+		
+		// post to database
+		ElementBoundary boundaryOnServer1 = this.restTemplate.postForObject(
+				this.elementUrl + "/{managerDomain}/{managerEmail}", elementBoundary1, ElementBoundary.class,
+				this.manager.getUserId().getDomain(), this.manager.getUserId().getEmail());
+
+		ElementBoundary boundaryOnServer2 = this.restTemplate.postForObject(
+				this.elementUrl + "/{managerDomain}/{managerEmail}", elementBoundary2, ElementBoundary.class,
+				this.manager.getUserId().getDomain(), this.manager.getUserId().getEmail());
+
+		ElementBoundary boundaryOnServer3 = this.restTemplate.postForObject(
+				this.elementUrl + "/{managerDomain}/{managerEmail}", elementBoundary3, ElementBoundary.class,
+				this.manager.getUserId().getDomain(), this.manager.getUserId().getEmail());
+		
+		
+		ElementBoundary[] elements=this.restTemplate.getForObject(this.elementUrl
+			+ "/{userDomain}/{userEmail}/search/byType/{type}",ElementBoundary[].class,
+			this.manager.getUserId().getDomain(),this.manager.getUserId().getEmail(),"Dog",0,2);
+		
+		assertThat(elements).hasSize(1);
+	}
+	
+	
+	
 	
 }
