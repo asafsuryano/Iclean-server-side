@@ -30,6 +30,7 @@ public class adminTests {
 	private String adminUrl;
 	private String userUrl;
 	private String actionUrl;
+	private String paginationUrl;
 	private int port;
 	
 	
@@ -46,6 +47,7 @@ public class adminTests {
 		this.adminUrl = "http://localhost:" + this.port + "/acs/admin";
 		this.userUrl = "http://localhost:" + this.port + "/acs/users";
 		this.actionUrl="http://localhost:" + this.port + "/acs/actions";
+		this.paginationUrl="?page={page}&size={size}";
 
 	}
 

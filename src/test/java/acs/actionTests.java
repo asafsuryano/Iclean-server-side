@@ -39,7 +39,7 @@ public class actionTests {
 	private UserBoundary player;
 	private ElementBoundary elem;
 	private String elementUrl;
-
+	private String paginationUrl;
 
 	@LocalServerPort
 	public void setPort(int port) {
@@ -53,6 +53,7 @@ public class actionTests {
 		this.actionUrl="http://localhost:" + this.port+ "/acs/actions";
 		this.userUrl  ="http://localhost:" + this.port + "/acs/users";
 		this.elementUrl = "http://localhost:" + this.port + "/acs/elements";
+		this.paginationUrl="?page={page}&size={size}";
 	}
 
 	@BeforeEach
@@ -86,11 +87,16 @@ public class actionTests {
 						new NewUserDetails("ba@na.com","dana",":)","ADMIN"),
 						UserBoundary.class);
 		//then delete all users/elements after every test
+		
+		this.restTemplate.delete(this.adminUrl + "/elements/{adminDomain}/{adminEmail}", admin.getUserId().getDomain(),
+				admin.getUserId().getEmail());
+		this.restTemplate.delete(this.adminUrl + "/actions/{adminDomain}/{adminEmail}", admin.getUserId().getDomain(),
+				admin.getUserId().getEmail());
+
 		this.restTemplate
 		.delete(this.adminUrl + "/users/{adminDomain}/{adminEmail}",
 				admin.getUserId().getDomain(),
 				admin.getUserId().getEmail());
-
 	}
 
 	//TEST 1 - create action by player and check if its exists
@@ -172,7 +178,7 @@ public class actionTests {
 	}
 
 
-	//TEST 3 - create 4 actions by player and check if all exists
+	//TEST 3 - create 3 actions by player and check if all exists
 	@Test
 	public void testPostSomeActionInDataBaseAndCheckIfTheyExistInTheDataBase() throws Exception {
 		//GIVEN the server is up
@@ -206,10 +212,11 @@ public class actionTests {
 						ActionBoundary[].class,
 						admin.getUserId().getDomain(),
 						admin.getUserId().getEmail());
-		assertThat(results).hasSize(4);
+		assertThat(results).hasSize(3);
 		for (int i = 0; i < 3; i++) {
-			assertThat(results[i].getElement().getElementId().getId())
-			.isEqualTo(elem.getElementId().getId());
+			
+			assertTrue(results[i].getElement().getElementId().getId().equals(elem.getElementId().getId()));
+			
 			assertThat(results[i].getInvokedBy().getUserId().getEmail())
 			.isEqualTo(player.getUserId().getEmail());
 			assertThat(results[i].getType())
@@ -246,7 +253,7 @@ public class actionTests {
 	}
 
 
-	//TEST 3 - create 4 actions by player get pagging of 2
+	//TEST 5 - create 4 actions by player get pagging of 2
 	@Test
 	public void testPostSomeActionInDataBaseAndCheckIfTheyExistInTheDataBasePagging() throws Exception {
 		//GIVEN the server is up
@@ -276,12 +283,12 @@ public class actionTests {
 
 
 		ActionBoundary[] results =
-				this.restTemplate.getForObject(adminUrl + "/actions/{adminDomain}/{adminEmail}",
+				this.restTemplate.getForObject(adminUrl + "/actions/{adminDomain}/{adminEmail}"+this.paginationUrl,
 						ActionBoundary[].class,
 						admin.getUserId().getDomain(),
-						admin.getUserId().getEmail());
-		assertThat(results).hasSize(4);
-		for (int i = 0; i < 3; i++) {
+						admin.getUserId().getEmail(),0,2);
+		assertThat(results).hasSize(2);
+		for (int i = 0; i < 2; i++) {
 			assertThat(results[i].getElement().getElementId().getId())
 			.isEqualTo(elem.getElementId().getId());
 			assertThat(results[i].getInvokedBy().getUserId().getEmail())
