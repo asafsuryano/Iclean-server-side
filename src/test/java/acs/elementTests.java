@@ -4,10 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-
 import javax.annotation.PostConstruct;
 
 import org.junit.jupiter.api.AfterEach;
@@ -21,6 +17,7 @@ import org.springframework.web.client.RestTemplate;
 
 import acs.elementBoundaryPackage.ElementBoundary;
 import acs.elementBoundaryPackage.ElementIdBoundary;
+import acs.elementBoundaryPackage.Location;
 import acs.newUserDetailsBoundaryPackage.NewUserDetails;
 import acs.usersBoundaryPackage.UserBoundary;
 
@@ -30,6 +27,7 @@ public class elementTests {
 	private String elementUrl;
 	private String adminUrl;
 	private String userUrl;
+	private String paginationUrl;
 	private int port;
 	private UserBoundary admin;
 	private UserBoundary manager;
@@ -46,6 +44,7 @@ public class elementTests {
 		this.elementUrl = "http://localhost:" + this.port + "/acs/elements";
 		this.adminUrl = "http://localhost:" + this.port + "/acs/admin";
 		this.userUrl = "http://localhost:" + this.port + "/acs/users";
+		this.paginationUrl="?page={page}&size={size}";
 
 	}
 
@@ -62,12 +61,12 @@ public class elementTests {
 
 	@AfterEach
 	public void tearDown() {
-		// // post admin
-		// UserBoundary admin1 =
-		// this.restTemplate
-		// .postForObject(this.userUrl,
-		// new NewUserDetails("ba@na.com","dana",":)","ADMIN"),
-		// UserBoundary.class);
+		 //post admin
+		 UserBoundary admin1 =
+		 this.restTemplate
+		 .postForObject(this.userUrl,
+		 new NewUserDetails("ba@na.com","dana",":)","ADMIN"),
+		 UserBoundary.class);
 
 		// then delete all users/elements after every test
 		this.restTemplate.delete(this.adminUrl + "/users/{adminDomain}/{adminEmail}", admin.getUserId().getDomain(),
@@ -585,7 +584,7 @@ public class elementTests {
 		// Then only 2 children will be returned to user player
 		ElementBoundary[] elementBoundary = this.restTemplate.getForObject(
 				this.elementUrl
-				+ "/{userDomain}/{userEmail}/{elementDomain}/{elementID}/children?page={page}&size={size}",
+				+ "/{userDomain}/{userEmail}/{elementDomain}/{elementID}/children"+this.paginationUrl,
 				ElementBoundary[].class, this.player.getUserId().getDomain(), this.player.getUserId().getEmail(),
 				boundaryOnServerParent.getElementId().getDomain(), boundaryOnServerParent.getElementId().getId(), 0, 3);
 
@@ -628,7 +627,7 @@ public class elementTests {
 		
 		try {
 			ElementBoundary[] elements=this.restTemplate.getForObject(this.elementUrl
-				+ "/{userDomain}/{userEmail}/search/byName/{name}",ElementBoundary[].class,
+				+ "/{userDomain}/{userEmail}/search/byName/{name}"+this.paginationUrl,ElementBoundary[].class,
 				this.manager.getUserId().getDomain(),this.manager.getUserId().getEmail(),"ban",0,0);
 		}
 		catch (HttpServerErrorException ex) { 
@@ -671,7 +670,7 @@ public class elementTests {
 		
 		try {
 			ElementBoundary[] elements=this.restTemplate.getForObject(this.elementUrl
-				+ "/{userDomain}/{userEmail}/search/byName/{name}",ElementBoundary[].class,
+				+ "/{userDomain}/{userEmail}/search/byName/{name}"+this.paginationUrl,ElementBoundary[].class,
 				this.manager.getUserId().getDomain(),this.manager.getUserId().getEmail(),"ban",-1,1);
 		}
 		catch (HttpServerErrorException ex) { 
@@ -714,7 +713,7 @@ public class elementTests {
 		
 		try {
 			ElementBoundary[] elements=this.restTemplate.getForObject(this.elementUrl
-				+ "/{userDomain}/{userEmail}/search/byName/{name}",ElementBoundary[].class,
+				+ "/{userDomain}/{userEmail}/search/byName/{name}"+this.paginationUrl,ElementBoundary[].class,
 				this.admin.getUserId().getDomain(),this.admin.getUserId().getEmail(),"ban",0,1);
 		}
 		catch (HttpServerErrorException ex) { 
@@ -725,7 +724,7 @@ public class elementTests {
 	// Test 18 add 3 elements to the database and find by name with manager user
 	
 	@Test
-	public void testAdd3ElementsToDatabaseAndSearchThemByNameOnlyReturns2Elements() {
+	public void testAdd3ElementsToDatabaseAndSearchThemByNameWithManagerUserOnlyReturns2Elements() {
 		//add 3 normal elements
 		ElementBoundary elementBoundary1 = new ElementBoundary();
 		elementBoundary1.setName("ban");
@@ -757,7 +756,7 @@ public class elementTests {
 		
 		
 		ElementBoundary[] elements=this.restTemplate.getForObject(this.elementUrl
-			+ "/{userDomain}/{userEmail}/search/byName/{name}",ElementBoundary[].class,
+			+ "/{userDomain}/{userEmail}/search/byName/{name}"+this.paginationUrl,ElementBoundary[].class,
 			this.manager.getUserId().getDomain(),this.manager.getUserId().getEmail(),"ban",0,3);
 		
 		assertThat(elements).hasSize(2);
@@ -798,7 +797,7 @@ public class elementTests {
 		
 		
 		ElementBoundary[] elements=this.restTemplate.getForObject(this.elementUrl
-			+ "/{userDomain}/{userEmail}/search/byName/{name}",ElementBoundary[].class,
+			+ "/{userDomain}/{userEmail}/search/byName/{name}"+this.paginationUrl,ElementBoundary[].class,
 			this.player.getUserId().getDomain(),this.player.getUserId().getEmail(),"ban",0,3);
 		
 		assertThat(elements).hasSize(2);
@@ -807,7 +806,7 @@ public class elementTests {
 	// Test 19 add 3 elements(1 of them is active false) to the database and find by name with player user
 	
 	@Test
-	public void testAdd3ElementsToDatabaseWhen1OfThemIsFalseAndSearchThemByTypeOnlyReturns2Elements() {
+	public void testAdd3ElementsToDatabaseWhen1OfThemIsFalseAndSearchThemByNamwOnlyReturns2Elements() {
 		//add 3 normal elements
 		ElementBoundary elementBoundary1 = new ElementBoundary();
 		elementBoundary1.setName("ban");
@@ -839,14 +838,14 @@ public class elementTests {
 		
 		
 		ElementBoundary[] elements=this.restTemplate.getForObject(this.elementUrl
-			+ "/{userDomain}/{userEmail}/search/byName/{name}",ElementBoundary[].class,
-			this.player.getUserId().getDomain(),this.player.getUserId().getEmail(),"DEMO_ELEMENT",0,3);
+			+ "/{userDomain}/{userEmail}/search/byName/{name}"+this.paginationUrl,ElementBoundary[].class,
+			this.player.getUserId().getDomain(),this.player.getUserId().getEmail(),"ban",0,3);
 		
 		assertThat(elements).hasSize(2);
 	}
 	
 	
-	// Test 20 add 3 elements(1 of them is active false) to the database and find by name with player user
+	// Test 20 add 3 elements(1 of them is active false) to the database and find by name with manager user
 	
 	@Test
 	public void testAdd3ElementsToDatabaseAndSearchThemByTypeOnlyReturns2Elements() {
@@ -881,10 +880,98 @@ public class elementTests {
 		
 		
 		ElementBoundary[] elements=this.restTemplate.getForObject(this.elementUrl
-			+ "/{userDomain}/{userEmail}/search/byName/{name}",ElementBoundary[].class,
-			this.manager.getUserId().getDomain(),this.manager.getUserId().getEmail(),"ban",0,3);
+			+ "/{userDomain}/{userEmail}/search/byType/{type}"+this.paginationUrl,ElementBoundary[].class,
+			this.manager.getUserId().getDomain(),this.manager.getUserId().getEmail(),"DEMO_ELEMENT",0,3);
 		
 		assertThat(elements).hasSize(2);
 	}
 	
+
+	// Test 21 add 3 elements(1 of them is active false) to the database and find by type with player user
+	
+	@Test
+	public void testAdd3ElementsToDatabaseWhen1IsActiveFalseAndSearchThemByTypeOnlyReturns2Elements() {
+		//add 3 normal elements
+		ElementBoundary elementBoundary1 = new ElementBoundary();
+		elementBoundary1.setName("ban");
+		elementBoundary1.setActive(true);
+		elementBoundary1.setType("DEMO_ELEMENT");
+
+		ElementBoundary elementBoundary2 = new ElementBoundary();
+		elementBoundary2.setName("ban");
+		elementBoundary2.setActive(true);
+		elementBoundary2.setType("DEMO_ELEMENT");
+
+		ElementBoundary elementBoundary3 = new ElementBoundary();
+		elementBoundary3.setName("ban");
+		elementBoundary3.setActive(false);
+		elementBoundary3.setType("DEMO_ELEMENT");
+		
+		// post to database
+		ElementBoundary boundaryOnServer1 = this.restTemplate.postForObject(
+				this.elementUrl + "/{managerDomain}/{managerEmail}", elementBoundary1, ElementBoundary.class,
+				this.manager.getUserId().getDomain(), this.manager.getUserId().getEmail());
+
+		ElementBoundary boundaryOnServer2 = this.restTemplate.postForObject(
+				this.elementUrl + "/{managerDomain}/{managerEmail}", elementBoundary2, ElementBoundary.class,
+				this.manager.getUserId().getDomain(), this.manager.getUserId().getEmail());
+
+		ElementBoundary boundaryOnServer3 = this.restTemplate.postForObject(
+				this.elementUrl + "/{managerDomain}/{managerEmail}", elementBoundary3, ElementBoundary.class,
+				this.manager.getUserId().getDomain(), this.manager.getUserId().getEmail());
+		
+		
+		ElementBoundary[] elements=this.restTemplate.getForObject(this.elementUrl
+			+ "/{userDomain}/{userEmail}/search/byType/{type}"+this.paginationUrl,ElementBoundary[].class,
+			this.player.getUserId().getDomain(),this.player.getUserId().getEmail(),"DEMO_ELEMENT",0,3);
+		
+		assertThat(elements).hasSize(2);
+	}
+	
+	
+	// Test 22 add 3 elements to the database and search nearest by some distance with manager user
+
+	@Test
+	public void testAdd3ElementsToDatabaseAndSearchThemByLocationOnlyReturns2Elements() {
+		//add 3 normal elements
+		ElementBoundary elementBoundary1 = new ElementBoundary();
+		elementBoundary1.setName("ban");
+		elementBoundary1.setActive(true);
+		elementBoundary1.setType("DEMO_ELEMENT");
+		elementBoundary1.setLocation(new Location(5, 4));
+
+		ElementBoundary elementBoundary2 = new ElementBoundary();
+		elementBoundary2.setName("ban");
+		elementBoundary2.setActive(true);
+		elementBoundary2.setType("DEMO_ELEMENT");
+		elementBoundary2.setLocation(new Location(15, 14));
+
+
+		ElementBoundary elementBoundary3 = new ElementBoundary();
+		elementBoundary3.setName("ban");
+		elementBoundary3.setActive(false);
+		elementBoundary3.setType("DEMO_ELEMENT");
+		elementBoundary3.setLocation(new Location(17, 14));
+
+		
+		// post to database
+		ElementBoundary boundaryOnServer1 = this.restTemplate.postForObject(
+				this.elementUrl + "/{managerDomain}/{managerEmail}", elementBoundary1, ElementBoundary.class,
+				this.manager.getUserId().getDomain(), this.manager.getUserId().getEmail());
+
+		ElementBoundary boundaryOnServer2 = this.restTemplate.postForObject(
+				this.elementUrl + "/{managerDomain}/{managerEmail}", elementBoundary2, ElementBoundary.class,
+				this.manager.getUserId().getDomain(), this.manager.getUserId().getEmail());
+
+		ElementBoundary boundaryOnServer3 = this.restTemplate.postForObject(
+				this.elementUrl + "/{managerDomain}/{managerEmail}", elementBoundary3, ElementBoundary.class,
+				this.manager.getUserId().getDomain(), this.manager.getUserId().getEmail());
+		
+		
+		ElementBoundary[] elements=this.restTemplate.getForObject(this.elementUrl
+			+ "/{userDomain}/{userEmail}/search/near/{lat}/{lng}/{distance}"+this.paginationUrl,ElementBoundary[].class,
+			this.player.getUserId().getDomain(),this.player.getUserId().getEmail(),5,5,10,0,3);
+		
+		assertThat(elements).hasSize(2);
+	}
 }
