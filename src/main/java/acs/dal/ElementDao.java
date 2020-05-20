@@ -3,8 +3,11 @@ package acs.dal;
 import java.util.List;
 
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
+
+import com.microsoft.sqlserver.jdbc.Geometry;
 
 import acs.data.ElementEntity;
 import acs.data.elementEntityProperties.ElementId;
@@ -53,5 +56,17 @@ public interface ElementDao extends PagingAndSortingRepository<ElementEntity,Ele
 	public List<ElementEntity> findAllByLocationLatBetweenAndLocationLngBetweenAndActive(@Param("lat1") double minLat,
 			@Param("lat2") double maxLat,@Param("lng1") double minLng,
 					@Param("lng2") double maxLng,@Param("active") boolean isActive,Pageable pageable);
-
+	
+	
+	//select .... from ElementEntity where element is within circle for managers
+	@Query(value="select * from Element  where SQRT((lat - :lat )*(lat - :lat )+(lng - :lng )*(lng - :lng )) <= :distance",nativeQuery = true)
+	public List<ElementEntity> findAllByLocationNear(@Param("lat") double lat,@Param("lng") double lng
+			,@Param("distance") double distance,Pageable pageable);
+	
+	
+	
+	//select .... from ElementEntity where element is within circle for players
+	@Query(value="select * from Element  where SQRT((lat - :lat )*(lat - :lat )+(lng - :lng )*(lng - :lng )) <= :distance and active=true",nativeQuery = true)
+	public List<ElementEntity> findAllByLocationNearAndActive(@Param("lat") double lat,@Param("lng") double lng
+			,@Param("distance") double distance,Pageable pageable);
 }

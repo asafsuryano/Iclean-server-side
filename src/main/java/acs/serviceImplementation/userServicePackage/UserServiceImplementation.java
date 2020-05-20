@@ -96,15 +96,6 @@ public class UserServiceImplementation implements ExtraUserService {
 		if (!updaterUser.isPresent() || updaterUser.get().getDeleted()) {
 			throw new UserNotFoundException("Update Fail, the updater details is incorrect");
 		}
-
-		if (updaterUser.get().getRole() != UserRoles.ADMIN || updaterUser.get().getRole() != UserRoles.MANAGER) {
-			// updater not MANAGER or ADMIN
-			if ((!userDomain.equals(update.getUserId().getDomain()))
-					|| (!userEmail.equals(update.getUserId().getEmail())))
-				// updater is not update
-				throw new NoPermissionsExeption("This user does not have permission");
-		}
-		
 		
 		// THE USER TO UPDATE
 		Optional<UserEntity> existingUser = this.userDatabase.findById(this.converter.boundaryToEntity(update).getUserId());
