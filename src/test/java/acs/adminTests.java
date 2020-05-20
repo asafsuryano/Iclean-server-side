@@ -16,6 +16,8 @@ import org.springframework.web.client.RestTemplate;
 import acs.actionBoundaryPackage.ActionBoundary;
 import acs.actionBoundaryPackage.Element;
 import acs.actionBoundaryPackage.ElementId;
+import acs.actionBoundaryPackage.InvokedBy;
+import acs.actionBoundaryPackage.UserId;
 import acs.elementBoundaryPackage.ElementBoundary;
 import acs.newUserDetailsBoundaryPackage.NewUserDetails;
 import acs.usersBoundaryPackage.UserBoundary;
@@ -32,6 +34,7 @@ public class adminTests {
 	private String actionUrl;
 	private String paginationUrl;
 	private int port;
+	
 	
 	
 	
@@ -67,20 +70,21 @@ public class adminTests {
 	@AfterEach
 	public void tearDown() {
 		// // post admin
-		// UserBoundary admin1 =
-		// this.restTemplate
-		// .postForObject(this.userUrl,
-		// new NewUserDetails("ba@na.com","dana",":)","ADMIN"),
-		// UserBoundary.class);
-		
-
-		
+		 UserBoundary admin1 =
+		 this.restTemplate
+		 .postForObject(this.userUrl,
+		 new NewUserDetails("ba@na.com","dana",":)","ADMIN"),
+		 UserBoundary.class);
 		
 		// then delete all users/elements after every test
-		this.restTemplate.delete(this.adminUrl + "/users/{adminDomain}/{adminEmail}", admin.getUserId().getDomain(),
-				admin.getUserId().getEmail());
 
+		this.restTemplate.delete(this.adminUrl + "/actions/{adminDomain}/{adminEmail}", admin.getUserId().getDomain(),
+				admin.getUserId().getEmail());
+		
 		this.restTemplate.delete(this.adminUrl + "/elements/{adminDomain}/{adminEmail}", admin.getUserId().getDomain(),
+				admin.getUserId().getEmail());
+		
+		this.restTemplate.delete(this.adminUrl + "/users/{adminDomain}/{adminEmail}", admin.getUserId().getDomain(),
 				admin.getUserId().getEmail());
 
 	}
@@ -99,11 +103,11 @@ public class adminTests {
 				new NewUserDetails("niv2@na.com", "omer", ":)", "PLAYER"), UserBoundary.class);
 	
 		
-	       UserBoundary[] User=this.restTemplate.getForObject(this.adminUrl + "/users" +"/{adminDomain}/{adminEmail}" ,
+	       UserBoundary[] User=this.restTemplate.getForObject(this.adminUrl + "/users" +"/{adminDomain}/{adminEmail}"+this.paginationUrl ,
 				UserBoundary[].class, 
-				this.admin.getUserId().getDomain(),this.admin.getUserId().getEmail(),3,0);
+				this.admin.getUserId().getDomain(),this.admin.getUserId().getEmail(),0,3);
 	       
-	       assertThat(User).hasSize(4);
+	       assertThat(User).hasSize(3);
 		
 		
 	} 
@@ -129,20 +133,24 @@ public class adminTests {
             action1.setType("demo");
             action1.setElement(new Element(new ElementId(
             boundaryOnServer1.getElementId().getDomain(),boundaryOnServer1.getElementId().getId())));
+            action1.setInvokedBy(new InvokedBy(new UserId(this.player.getUserId().getDomain(),
+            	this.player.getUserId().getEmail())));
             
             
             
             ActionBoundary	action2=new ActionBoundary();
-            action1.setType("niv");
-            action1.setElement(new Element(new ElementId(
+            action2.setType("niv");
+            action2.setElement(new Element(new ElementId(
             boundaryOnServer1.getElementId().getDomain(),boundaryOnServer1.getElementId().getId())));   
-            
+            action2.setInvokedBy(new InvokedBy(new UserId(this.player.getUserId().getDomain(),
+                	this.player.getUserId().getEmail())));
             
             ActionBoundary	action3=new ActionBoundary();
-            action1.setType("asaf");
-            action1.setElement(new Element(new ElementId(
+            action3.setType("asaf");
+            action3.setElement(new Element(new ElementId(
             boundaryOnServer1.getElementId().getDomain(),boundaryOnServer1.getElementId().getId())));           
-
+            action3.setInvokedBy(new InvokedBy(new UserId(this.player.getUserId().getDomain(),
+                	this.player.getUserId().getEmail())));
 			
 		   this.restTemplate.postForObject(this.actionUrl,
 					action1,ActionBoundary.class);
@@ -156,9 +164,9 @@ public class adminTests {
 		   
 		   
 			
-		       UserBoundary[] User=this.restTemplate.getForObject(this.adminUrl + "/actions" +"/{adminDomain}/{adminEmail}" ,
+		       UserBoundary[] User=this.restTemplate.getForObject(this.adminUrl + "/actions" +"/{adminDomain}/{adminEmail}" +this.paginationUrl,
 					UserBoundary[].class, 
-					this.admin.getUserId().getDomain(),this.admin.getUserId().getEmail(),3,0);
+					this.admin.getUserId().getDomain(),this.admin.getUserId().getEmail(),0,3);
 		       
 		       assertThat(User).hasSize(3);
 			

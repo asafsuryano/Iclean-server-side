@@ -126,10 +126,10 @@ public class actionTests {
 
 
 		ActionBoundary[] results =
-				this.restTemplate.getForObject(adminUrl + "/actions/{adminDomain}/{adminEmail}",
+				this.restTemplate.getForObject(adminUrl + "/actions/{adminDomain}/{adminEmail}"+this.paginationUrl,
 						ActionBoundary[].class,
 						admin.getUserId().getDomain(),
-						admin.getUserId().getEmail());
+						admin.getUserId().getEmail(),0,3);
 
 		assertThat(results).hasSize(1);
 		assertThat(results[0].getElement().getElementId().getId())
