@@ -42,7 +42,7 @@ public class InitForProject implements CommandLineRunner {
 		UserBoundary user1=new UserBoundary(userid1,UserRoles.MANAGER.toString() ,"hello1", "hey1");
 		
 		User userid2=new User(domain, "user2@gmail.com");
-		UserBoundary user2=new UserBoundary(userid1,UserRoles.MANAGER.toString() ,"hello2", "hey2");
+		UserBoundary user2=new UserBoundary(userid2,UserRoles.MANAGER.toString() ,"hello2", "hey2");
 		
 		User userid3=new User(domain, "user3@gmail.com");
 		UserBoundary user3=new UserBoundary(userid3,UserRoles.PLAYER.toString() ,"hello3", "hey3");
