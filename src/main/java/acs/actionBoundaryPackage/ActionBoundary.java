@@ -11,7 +11,7 @@ public class ActionBoundary {
 	private ActionId actionId;
 	private Element element;
 	private InvokedBy invokedBy;
-	private HashMap<String, Object> actionAttributes;
+	private HashMap<String, Object> actionAttributes;//TODO: check if need to convert to map
 	
 	public ActionBoundary() {}
 	public ActionBoundary(String type, Date createdTimestamp, ActionId actionId, Element element, InvokedBy invokedBy,
