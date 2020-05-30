@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -367,5 +368,16 @@ public class ElementServiceImplementation implements ExtraElementsService {
 			throw new RuntimeException("size cannot be less then 1");
 		if (page < 0)
 			throw new RuntimeException("page cannot be negative");
+	}
+
+
+	@Override
+	@Transactional
+	public void updateElementAttributes(String elementDomain, String elementId, Map<String, Object> att) {
+		acs.data.elementEntityProperties.ElementId id = new acs.data.elementEntityProperties.ElementId(
+				elementDomain, elementId);
+		ElementEntity element = this.elementDatabase.findById(id).orElseThrow(()-> new RuntimeException("Could not find element - attributes did not updated"));
+		element.setElementAttributes(att);
+		elementDatabase.save(element);
 	}
 }

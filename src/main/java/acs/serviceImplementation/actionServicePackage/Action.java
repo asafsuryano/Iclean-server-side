@@ -1,17 +1,12 @@
 package acs.serviceImplementation.actionServicePackage;
 
 import javax.annotation.PostConstruct;
-import javax.el.ELManager;
 
-import org.springframework.beans.factory.annotation.Value;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 
 import acs.actionBoundaryPackage.ActionBoundary;
 import acs.data.UserRoles;
 import acs.elementBoundaryPackage.ElementBoundary;
-import acs.logic.ElementService;
+import acs.logic.ExtraElementsService;
 import acs.logic.UserService;
 import acs.usersBoundaryPackage.UserBoundary;
 
@@ -19,12 +14,12 @@ public abstract class Action {
 	
 	
 	protected UserService userService;
-	protected ElementService elementService;
+	protected ExtraElementsService elementService;
 	protected ActionBoundary action;
 	protected UserBoundary user;
 	protected ElementBoundary element;
 	
-	public Action(UserService userService,ElementService elementService,ActionBoundary action) {
+	public Action(UserService userService,ExtraElementsService elementService,ActionBoundary action) {
 		this.userService = userService;
 		this.elementService = elementService;
 		this.action = action;
@@ -67,5 +62,5 @@ public abstract class Action {
 		}
 	}
 	
-	abstract void invoke() throws JsonMappingException, JsonProcessingException;
+	abstract void invoke();
 }

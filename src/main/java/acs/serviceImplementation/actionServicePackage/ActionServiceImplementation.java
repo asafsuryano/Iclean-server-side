@@ -75,7 +75,8 @@ public class ActionServiceImplementation implements ExtraActionService {
 //		if (isElementInActionActive(action)==false) {
 //			throw new RuntimeException("the element is not active");
 //		}
-		ActionManager actionMng = new ActionManager(userService, elementService, action);
+		ActionManager actionMng = new ActionManager(userService, elementService);
+		actionMng.setAction(action);
 		actionMng.getAction().invoke();
 		action.setActionId(new acs.actionBoundaryPackage.ActionId(projectName, UUID.randomUUID().toString()));
 		action.setCreatedTimestamp(new Date());

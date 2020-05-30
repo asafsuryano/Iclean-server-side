@@ -23,6 +23,7 @@ import acs.actionBoundaryPackage.Element;
 import acs.actionBoundaryPackage.ElementId;
 import acs.actionBoundaryPackage.InvokedBy;
 import acs.actionBoundaryPackage.UserId;
+import acs.data.reportsAttributes.Report;
 import acs.elementBoundaryPackage.ElementBoundary;
 import acs.newUserDetailsBoundaryPackage.NewUserDetails;
 import acs.usersBoundaryPackage.UserBoundary;
@@ -68,7 +69,7 @@ public class actionTests {
 		ElementBoundary elem1 = new ElementBoundary();
 		elem1.setName("ban");
 		elem1.setActive(true);
-		elem1.setType("DEMO_ELEMENT");
+		elem1.setType("Trash");
 		elem = this.restTemplate.postForObject(
 				this.elementUrl + "/{managerDomain}/{managerEmail}", 
 				elem1, 
@@ -99,204 +100,231 @@ public class actionTests {
 				admin.getUserId().getEmail());
 	}
 
-	//TEST 1 - create action by player and check if its exists
+//	//TEST 1 - create action by player and check if its exists
+//	@Test
+//	public void testPostActionInDataBaseAndCheckIfItExistInTheDataBase() throws Exception {
+//		//GIVEN the server is up
+//		// and there is a user with PLAYER role 
+//
+//		//WHEN we put new action with PLAYER user
+//		ActionBoundary newActiontPosted = new ActionBoundary();
+//		HashMap<String,Object> map = new HashMap<>();
+//		map.put("cleanLevel", "2");
+//		newActiontPosted.setActionAttributes(map);
+//		newActiontPosted.setElement(new Element(new ElementId(elem.getElementId().getDomain(),elem.getElementId().getId())));
+//		InvokedBy user = new InvokedBy();
+//		user.setUserId(new UserId(this.player.getUserId().getDomain(),this.player.getUserId().getEmail()));
+//		newActiontPosted.setInvokedBy(user);
+//		newActiontPosted.setType("TEST_TYPE");
+//
+//		ActionBoundary boundaryOnServer = 
+//				this.restTemplate
+//				.postForObject(this.actionUrl ,
+//						newActiontPosted,
+//						ActionBoundary.class);
+//
+//		//THEN it exist in the database
+//
+//
+//		ActionBoundary[] results =
+//				this.restTemplate.getForObject(adminUrl + "/actions/{adminDomain}/{adminEmail}"+this.paginationUrl,
+//						ActionBoundary[].class,
+//						admin.getUserId().getDomain(),
+//						admin.getUserId().getEmail(),0,3);
+//
+//		assertThat(results).hasSize(1);
+//		assertThat(results[0].getElement().getElementId().getId())
+//		.isEqualTo(elem.getElementId().getId());
+//		assertThat(results[0].getInvokedBy().getUserId().getEmail())
+//		.isEqualTo(player.getUserId().getEmail());
+//		assertThat(results[0].getType())
+//		.isEqualTo(newActiontPosted.getType());
+//
+//
+//	}
+//
+//
+//	//TEST 2 - try to create action by manager and fail
+//	@Test
+//	public void testPostActionInDataBaseAndCheckIfItExistInTheDataBaseByManager() throws Exception {
+//		//GIVEN the server is up
+//		// and there is a user with MANAGER role 
+//
+//		//WHEN we put new action with MANAGER user
+//		ActionBoundary newActiontPosted = new ActionBoundary();
+//		HashMap<String,Object> map = new HashMap<>();
+//		map.put("cleanLevel", "2");
+//		newActiontPosted.setActionAttributes(map);
+//		newActiontPosted.setElement(new Element(new ElementId(elem.getElementId().getDomain(),elem.getElementId().getId())));
+//		InvokedBy user = new InvokedBy();
+//		user.setUserId(new UserId(this.manager.getUserId().getDomain(),this.manager.getUserId().getEmail()));
+//		newActiontPosted.setInvokedBy(user);
+//		newActiontPosted.setType("TEST_TYPE");
+//		try {
+//			ActionBoundary boundaryOnServer = 
+//					this.restTemplate
+//					.postForObject(this.actionUrl ,
+//							newActiontPosted,
+//							ActionBoundary.class);
+//
+//			fail();
+//		}
+//
+//		//THEN will throw an exception that the user not player
+//		catch(HttpServerErrorException ex) {
+//			assertTrue(ex.getMessage().contains("the user is not a player"));
+//		}
+//
+//
+//	}
+//
+//
+//	//TEST 3 - create 3 actions by player and check if all exists
+//	@Test
+//	public void testPostSomeActionInDataBaseAndCheckIfTheyExistInTheDataBase() throws Exception {
+//		//GIVEN the server is up
+//		// and there is a user with PLAYER role 
+//
+//		//WHEN we put new 3 action with PLAYER user
+//		for (int i = 0; i < 3; i++) {
+//
+//
+//			ActionBoundary newActiontPosted = new ActionBoundary();
+//			HashMap<String,Object> map = new HashMap<>();
+//			map.put("cleanLevel", "2");
+//			newActiontPosted.setActionAttributes(map);
+//			newActiontPosted.setElement(new Element(new ElementId(elem.getElementId().getDomain(),elem.getElementId().getId())));
+//			InvokedBy user = new InvokedBy();
+//			user.setUserId(new UserId(this.player.getUserId().getDomain(),this.player.getUserId().getEmail()));
+//			newActiontPosted.setInvokedBy(user);
+//			newActiontPosted.setType("TEST_TYPE");
+//
+//			ActionBoundary boundaryOnServer = 
+//					this.restTemplate
+//					.postForObject(this.actionUrl ,
+//							newActiontPosted,
+//							ActionBoundary.class);
+//		}
+//		//THEN it exist in the database
+//
+//
+//		ActionBoundary[] results =
+//				this.restTemplate.getForObject(adminUrl + "/actions/{adminDomain}/{adminEmail}",
+//						ActionBoundary[].class,
+//						admin.getUserId().getDomain(),
+//						admin.getUserId().getEmail());
+//		assertThat(results).hasSize(3);
+//		for (int i = 0; i < 3; i++) {
+//			
+//			assertTrue(results[i].getElement().getElementId().getId().equals(elem.getElementId().getId()));
+//			
+//			assertThat(results[i].getInvokedBy().getUserId().getEmail())
+//			.isEqualTo(player.getUserId().getEmail());
+//			assertThat(results[i].getType())
+//			.isEqualTo("TEST_TYPE");
+//		}
+//	}
+//
+//	//TEST 4 - create actions with missing data
+//	@Test
+//	public void testCreateActionAndTypeOfActionNotNull() throws Exception {
+//		//GIVEN server is up an there is a player user
+//
+//		//WHEN we put new action with null type
+//		ActionBoundary newAtiontPosted = new ActionBoundary();
+//		newAtiontPosted.setElement(new Element(new ElementId(
+//				elem.getElementId().getDomain(),
+//				elem.getElementId().getId())));
+//		newAtiontPosted.setInvokedBy(new InvokedBy(new UserId(this.player.getUserId().getDomain()
+//				,this.player.getUserId().getEmail())));
+//		newAtiontPosted.setType(null); // null type
+//
+//		try {
+//			this.restTemplate
+//			.postForObject(this.actionUrl ,newAtiontPosted,
+//					ActionBoundary.class);
+//
+//			fail();
+//		}
+//		//THEN we got an exception
+//		catch(HttpServerErrorException ex) {
+//			assertTrue(ex instanceof HttpServerErrorException);
+//		}
+//
+//	}
+//
+//
+//	//TEST 5 - create 4 actions by player get pagging of 2
+//	@Test
+//	public void testPostSomeActionInDataBaseAndCheckIfTheyExistInTheDataBasePagging() throws Exception {
+//		//GIVEN the server is up
+//		// and there is a user with PLAYER role 
+//
+//		//WHEN we put new 3 action with PLAYER user
+//		for (int i = 0; i < 3; i++) {
+//
+//
+//			ActionBoundary newActiontPosted = new ActionBoundary();
+//			HashMap<String,Object> map = new HashMap<>();
+//			map.put("cleanLevel", "2");
+//			newActiontPosted.setActionAttributes(map);
+//			newActiontPosted.setElement(new Element(new ElementId(elem.getElementId().getDomain(),elem.getElementId().getId())));
+//			InvokedBy user = new InvokedBy();
+//			user.setUserId(new UserId(this.player.getUserId().getDomain(),this.player.getUserId().getEmail()));
+//			newActiontPosted.setInvokedBy(user);
+//			newActiontPosted.setType("TEST_TYPE");
+//
+//			ActionBoundary boundaryOnServer = 
+//					this.restTemplate
+//					.postForObject(this.actionUrl ,
+//							newActiontPosted,
+//							ActionBoundary.class);
+//		}
+//		//THEN it exist in the database
+//
+//
+//		ActionBoundary[] results =
+//				this.restTemplate.getForObject(adminUrl + "/actions/{adminDomain}/{adminEmail}"+this.paginationUrl,
+//						ActionBoundary[].class,
+//						admin.getUserId().getDomain(),
+//						admin.getUserId().getEmail(),0,2);
+//		assertThat(results).hasSize(2);
+//		for (int i = 0; i < 2; i++) {
+//			assertThat(results[i].getElement().getElementId().getId())
+//			.isEqualTo(elem.getElementId().getId());
+//			assertThat(results[i].getInvokedBy().getUserId().getEmail())
+//			.isEqualTo(player.getUserId().getEmail());
+//			assertThat(results[i].getType())
+//			.isEqualTo("TEST_TYPE");
+//		}
+//	}
+//	
+	//TEST 6 - create 4 actions by player get pagging of 2
 	@Test
-	public void testPostActionInDataBaseAndCheckIfItExistInTheDataBase() throws Exception {
-		//GIVEN the server is up
-		// and there is a user with PLAYER role 
-
-		//WHEN we put new action with PLAYER user
+	public void testAddReportAction() {
+		Report r = new Report();
+		r.setComment("ben is the best");
+		r.setTrashLevel(4);
+		HashMap<String,Object> map = new HashMap<String, Object>();
+		map.put("report", r);
+		
 		ActionBoundary newActiontPosted = new ActionBoundary();
-		HashMap<String,Object> map = new HashMap<>();
-		map.put("cleanLevel", "2");
+		newActiontPosted.setType("addReport");
+		newActiontPosted.setInvokedBy(new InvokedBy(new UserId(this.player.getUserId().getDomain(), 
+				this.player.getUserId().getEmail())));
+		newActiontPosted.setElement(new Element(
+				new ElementId(elem.getElementId().getDomain(),
+						elem.getElementId().getId())));
 		newActiontPosted.setActionAttributes(map);
-		newActiontPosted.setElement(new Element(new ElementId(elem.getElementId().getDomain(),elem.getElementId().getId())));
-		InvokedBy user = new InvokedBy();
-		user.setUserId(new UserId(this.player.getUserId().getDomain(),this.player.getUserId().getEmail()));
-		newActiontPosted.setInvokedBy(user);
-		newActiontPosted.setType("TEST_TYPE");
-
+		
 		ActionBoundary boundaryOnServer = 
 				this.restTemplate
 				.postForObject(this.actionUrl ,
 						newActiontPosted,
 						ActionBoundary.class);
-
-		//THEN it exist in the database
-
-
-		ActionBoundary[] results =
-				this.restTemplate.getForObject(adminUrl + "/actions/{adminDomain}/{adminEmail}"+this.paginationUrl,
-						ActionBoundary[].class,
-						admin.getUserId().getDomain(),
-						admin.getUserId().getEmail(),0,3);
-
-		assertThat(results).hasSize(1);
-		assertThat(results[0].getElement().getElementId().getId())
-		.isEqualTo(elem.getElementId().getId());
-		assertThat(results[0].getInvokedBy().getUserId().getEmail())
-		.isEqualTo(player.getUserId().getEmail());
-		assertThat(results[0].getType())
-		.isEqualTo(newActiontPosted.getType());
-
-
+		
 	}
-
-
-	//TEST 2 - try to create action by manager and fail
-	@Test
-	public void testPostActionInDataBaseAndCheckIfItExistInTheDataBaseByManager() throws Exception {
-		//GIVEN the server is up
-		// and there is a user with MANAGER role 
-
-		//WHEN we put new action with MANAGER user
-		ActionBoundary newActiontPosted = new ActionBoundary();
-		HashMap<String,Object> map = new HashMap<>();
-		map.put("cleanLevel", "2");
-		newActiontPosted.setActionAttributes(map);
-		newActiontPosted.setElement(new Element(new ElementId(elem.getElementId().getDomain(),elem.getElementId().getId())));
-		InvokedBy user = new InvokedBy();
-		user.setUserId(new UserId(this.manager.getUserId().getDomain(),this.manager.getUserId().getEmail()));
-		newActiontPosted.setInvokedBy(user);
-		newActiontPosted.setType("TEST_TYPE");
-		try {
-			ActionBoundary boundaryOnServer = 
-					this.restTemplate
-					.postForObject(this.actionUrl ,
-							newActiontPosted,
-							ActionBoundary.class);
-
-			fail();
-		}
-
-		//THEN will throw an exception that the user not player
-		catch(HttpServerErrorException ex) {
-			assertTrue(ex.getMessage().contains("the user is not a player"));
-		}
-
-
-	}
-
-
-	//TEST 3 - create 3 actions by player and check if all exists
-	@Test
-	public void testPostSomeActionInDataBaseAndCheckIfTheyExistInTheDataBase() throws Exception {
-		//GIVEN the server is up
-		// and there is a user with PLAYER role 
-
-		//WHEN we put new 3 action with PLAYER user
-		for (int i = 0; i < 3; i++) {
-
-
-			ActionBoundary newActiontPosted = new ActionBoundary();
-			HashMap<String,Object> map = new HashMap<>();
-			map.put("cleanLevel", "2");
-			newActiontPosted.setActionAttributes(map);
-			newActiontPosted.setElement(new Element(new ElementId(elem.getElementId().getDomain(),elem.getElementId().getId())));
-			InvokedBy user = new InvokedBy();
-			user.setUserId(new UserId(this.player.getUserId().getDomain(),this.player.getUserId().getEmail()));
-			newActiontPosted.setInvokedBy(user);
-			newActiontPosted.setType("TEST_TYPE");
-
-			ActionBoundary boundaryOnServer = 
-					this.restTemplate
-					.postForObject(this.actionUrl ,
-							newActiontPosted,
-							ActionBoundary.class);
-		}
-		//THEN it exist in the database
-
-
-		ActionBoundary[] results =
-				this.restTemplate.getForObject(adminUrl + "/actions/{adminDomain}/{adminEmail}",
-						ActionBoundary[].class,
-						admin.getUserId().getDomain(),
-						admin.getUserId().getEmail());
-		assertThat(results).hasSize(3);
-		for (int i = 0; i < 3; i++) {
-			
-			assertTrue(results[i].getElement().getElementId().getId().equals(elem.getElementId().getId()));
-			
-			assertThat(results[i].getInvokedBy().getUserId().getEmail())
-			.isEqualTo(player.getUserId().getEmail());
-			assertThat(results[i].getType())
-			.isEqualTo("TEST_TYPE");
-		}
-	}
-
-	//TEST 4 - create actions with missing data
-	@Test
-	public void testCreateActionAndTypeOfActionNotNull() throws Exception {
-		//GIVEN server is up an there is a player user
-
-		//WHEN we put new action with null type
-		ActionBoundary newAtiontPosted = new ActionBoundary();
-		newAtiontPosted.setElement(new Element(new ElementId(
-				elem.getElementId().getDomain(),
-				elem.getElementId().getId())));
-		newAtiontPosted.setInvokedBy(new InvokedBy(new UserId(this.player.getUserId().getDomain()
-				,this.player.getUserId().getEmail())));
-		newAtiontPosted.setType(null); // null type
-
-		try {
-			this.restTemplate
-			.postForObject(this.actionUrl ,newAtiontPosted,
-					ActionBoundary.class);
-
-			fail();
-		}
-		//THEN we got an exception
-		catch(HttpServerErrorException ex) {
-			assertTrue(ex instanceof HttpServerErrorException);
-		}
-
-	}
-
-
-	//TEST 5 - create 4 actions by player get pagging of 2
-	@Test
-	public void testPostSomeActionInDataBaseAndCheckIfTheyExistInTheDataBasePagging() throws Exception {
-		//GIVEN the server is up
-		// and there is a user with PLAYER role 
-
-		//WHEN we put new 3 action with PLAYER user
-		for (int i = 0; i < 3; i++) {
-
-
-			ActionBoundary newActiontPosted = new ActionBoundary();
-			HashMap<String,Object> map = new HashMap<>();
-			map.put("cleanLevel", "2");
-			newActiontPosted.setActionAttributes(map);
-			newActiontPosted.setElement(new Element(new ElementId(elem.getElementId().getDomain(),elem.getElementId().getId())));
-			InvokedBy user = new InvokedBy();
-			user.setUserId(new UserId(this.player.getUserId().getDomain(),this.player.getUserId().getEmail()));
-			newActiontPosted.setInvokedBy(user);
-			newActiontPosted.setType("TEST_TYPE");
-
-			ActionBoundary boundaryOnServer = 
-					this.restTemplate
-					.postForObject(this.actionUrl ,
-							newActiontPosted,
-							ActionBoundary.class);
-		}
-		//THEN it exist in the database
-
-
-		ActionBoundary[] results =
-				this.restTemplate.getForObject(adminUrl + "/actions/{adminDomain}/{adminEmail}"+this.paginationUrl,
-						ActionBoundary[].class,
-						admin.getUserId().getDomain(),
-						admin.getUserId().getEmail(),0,2);
-		assertThat(results).hasSize(2);
-		for (int i = 0; i < 2; i++) {
-			assertThat(results[i].getElement().getElementId().getId())
-			.isEqualTo(elem.getElementId().getId());
-			assertThat(results[i].getInvokedBy().getUserId().getEmail())
-			.isEqualTo(player.getUserId().getEmail());
-			assertThat(results[i].getType())
-			.isEqualTo("TEST_TYPE");
-		}
-	}
+	
 
 	
 	

@@ -28,6 +28,11 @@ public class UserId {
 	public void setEmail(String email) {
 		this.email = email;
 	}
+	@Override
+	public String toString() {
+		return "[domain=" + domain + ", email=" + email + "]";
+	}
+	
 	
 	
 	
