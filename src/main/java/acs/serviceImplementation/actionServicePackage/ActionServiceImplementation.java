@@ -37,14 +37,16 @@ public class ActionServiceImplementation implements ExtraActionService {
 	private ActionEntityBoundaryConverter converter; 
 	private ActionEntity invoke;
 	private String projectName;
+	private ActionManager actionMng;
 
 	@Autowired
 	public ActionServiceImplementation(ActionEntityBoundaryConverter converter,ActionDao actionsDatabase,
-			ElementService elementService,UserService userService) {
+			ElementService elementService,UserService userService,ActionManager actionMng) {
 		this.converter = converter;
 		this.actionsDatabase=actionsDatabase;
 		this.elementService=elementService;
 		this.userService = userService;
+		this.actionMng=actionMng;
 	}
 	
 
@@ -75,7 +77,6 @@ public class ActionServiceImplementation implements ExtraActionService {
 //		if (isElementInActionActive(action)==false) {
 //			throw new RuntimeException("the element is not active");
 //		}
-		ActionManager actionMng = new ActionManager(userService, elementService);
 		actionMng.setAction(action);
 		actionMng.getAction().invoke();
 		action.setActionId(new acs.actionBoundaryPackage.ActionId(projectName, UUID.randomUUID().toString()));

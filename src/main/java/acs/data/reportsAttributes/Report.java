@@ -17,6 +17,8 @@ public class Report {
 		this.createdTimeStamp = createdTimeStamp;
 		this.userId = userId;
 	}
+	
+	//public Report(Map<String,>)
 
 	public int getTrashLevel() {
 		return trashLevel;
