@@ -2,10 +2,13 @@ package acs;
 
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
@@ -319,16 +322,59 @@ public class actionTests {
 		
 		ActionBoundary boundaryOnServer = 
 				this.restTemplate
-				.postForObject(this.actionUrl ,
+				.postForObject(this.actionUrl,
 						newActiontPosted,
 						ActionBoundary.class);
+		
+		
+		ElementBoundary[] elementAfterAction=this.restTemplate.getForObject(this.elementUrl
+				+"/{userDomain}/{userEmail}", ElementBoundary[].class,this.player.getUserId().getDomain(),
+				this.player.getUserId().getEmail());
+		ArrayList<Map<String,Object>> allReports=(ArrayList<Map<String,Object>>)elementAfterAction[0].getElementAttributes().get("reports");
+		assertTrue(allReports.get(0).get("comment").equals(r.getComment()));
 		
 	}
 	
 
 	
-	
-
+	//TEST 7 - create action that adds a report and then create an action that cleans
+	@Test
+	public void testAddReportActionAndCleanAction() {
+		Report r = new Report();
+		r.setComment("ben is the best");
+		r.setTrashLevel(4);
+		HashMap<String,Object> map = new HashMap<String, Object>();
+		map.put("report", r);
+		
+		ActionBoundary newActiontPosted = new ActionBoundary();
+		newActiontPosted.setType("addReport");
+		newActiontPosted.setInvokedBy(new InvokedBy(new UserId(this.player.getUserId().getDomain(), 
+				this.player.getUserId().getEmail())));
+		newActiontPosted.setElement(new Element(
+				new ElementId(elem.getElementId().getDomain(),
+						elem.getElementId().getId())));
+		newActiontPosted.setActionAttributes(map);
+		
+		ActionBoundary boundaryOnServer = 
+				this.restTemplate
+				.postForObject(this.actionUrl ,
+						newActiontPosted,
+						ActionBoundary.class);
+		
+		ActionBoundary newActiontPosted1 = new ActionBoundary();
+		newActiontPosted1.setType("cleanReports");
+		newActiontPosted1.setInvokedBy(new InvokedBy(new UserId(this.player.getUserId().getDomain(), 
+				this.player.getUserId().getEmail())));
+		newActiontPosted1.setElement(new Element(
+				new ElementId(elem.getElementId().getDomain(),
+						elem.getElementId().getId())));
+		
+		ActionBoundary boundaryOnServer2 = 
+				this.restTemplate
+				.postForObject(this.actionUrl ,
+						newActiontPosted1,
+						ActionBoundary.class);
+	}
 
 
 

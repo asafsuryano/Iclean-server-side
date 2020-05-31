@@ -1,6 +1,7 @@
 package acs.data.reportsAttributes;
 
 import java.util.Date;
+import java.util.Map;
 
 public class Report {
 	private int trashLevel;
@@ -18,7 +19,10 @@ public class Report {
 		this.userId = userId;
 	}
 	
-	//public Report(Map<String,>)
+	public Report(Map<String,Object> actionAttr) {
+		this.trashLevel=(int)actionAttr.get("trashLevel");
+		this.comment=(String)actionAttr.get("comment");
+	}
 
 	public int getTrashLevel() {
 		return trashLevel;

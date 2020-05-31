@@ -26,7 +26,7 @@ public abstract class Action {
 	}
 	
 	
-	@PostConstruct
+	//@PostConstruct
 	public void init() {
 		user = getActionUserBoundary();
 		if(!isUserAPlayer(user))

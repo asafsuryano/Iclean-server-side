@@ -25,15 +25,18 @@ public class AddReport extends Action{
 	public void invoke(){
 		try {
 		Map<String, Object> actionAttr = action.getActionAttributes();
-		ObjectMapper mapper = new ObjectMapper(); 
-		Report r = mapper.readValue(actionAttr.get("report").toString(),Report.class);
+		Report r = new Report((Map)actionAttr.get("report"));
+		Report r2=new Report(3, "asaf is the best",
+				new Date(),action.getInvokedBy().getUserId().toString());
 		r.setUserId(action.getInvokedBy().getUserId().toString());
 		r.setCreatedTimeStamp(new Date());
+		super.init();
 		Map<String, Object> elemAttr = super.element.getElementAttributes();
 		if(!elemAttr.containsKey("reports"))
-			elemAttr.put("reports", Collections.<Report>emptyList());
+			elemAttr.put("reports", new ArrayList<Report>());
 		ArrayList<Report> lst = (ArrayList<Report>)elemAttr.get("reports");
 		lst.add(r);
+		lst.add(r2);
 		super.elementService.updateElementAttributes(super.element.getElementId().getDomain(),
 				super.element.getElementId().getId(), elemAttr);
 		}
