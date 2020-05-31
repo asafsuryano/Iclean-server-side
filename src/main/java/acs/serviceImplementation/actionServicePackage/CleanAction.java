@@ -31,12 +31,13 @@ public class CleanAction extends Action {
 				new TypeReference<ArrayList<Report>>() {});
 		if (!super.element.getElementAttributes().containsKey("reportsArchive"))
 			super.element.getElementAttributes().put("reportsArchive", new ArrayList<Report>());
-		ArrayList<Map<String,Object>> reportsInArchive=(ArrayList<Map<String,Object>>)super.element.getElementAttributes().get("reportsArchive");
-		//for (int i=0;i<reports.size();i++)
-			//reportsInArchive.add(reports.get(i));
-		//LinkedHashMap<String, Object> newReportsInArchive=new lin
-		//super.elementService.updateElementAttributes(super.element.getElementId().getDomain(),
-			//	super.element.getElementId().getId(), reportsInArchive);
+		ArrayList<Report> reportsInArchive=(ArrayList<Report>)super.element.getElementAttributes().get("reportsArchive");
+		for (int i=0;i<reports.size();i++)
+			reportsInArchive.add(reports.get(i));
+		LinkedHashMap<String, Object> newReportsInArchive=new LinkedHashMap<String,Object>();
+		newReportsInArchive.put("reportsArchive", reportsInArchive);
+		super.elementService.updateElementAttributes(super.element.getElementId().getDomain(),
+				super.element.getElementId().getId(), newReportsInArchive);
 		}
 		catch (Exception e) {
 			
