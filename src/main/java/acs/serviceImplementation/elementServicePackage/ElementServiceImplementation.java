@@ -249,7 +249,7 @@ public class ElementServiceImplementation implements ExtraElementsService {
 			allElements = this.elementDatabase.findAll(PageRequest.of(page, size, Direction.DESC, "elementId")).getContent()
 					.stream().map(this.converter::entityToBoundary).collect(Collectors.toList());
 		else
-			allElements = this.elementDatabase.findAllByActive(true,PageRequest.of(page, size, Direction.DESC, "elementId"))
+			allElements = this.elementDatabase.findAllByActiveAndTypeContaining(true,"location",PageRequest.of(page, size, Direction.DESC, "elementId"))
 			.stream().map(this.converter::entityToBoundary).collect(Collectors.toList());
 		return allElements.toArray(new ElementBoundary[0]);
 	}
@@ -346,12 +346,12 @@ public class ElementServiceImplementation implements ExtraElementsService {
 		List<ElementBoundary> allElements = new ArrayList<>();
 
 		if (role==UserRoles.MANAGER)
-			allElements=this.elementDatabase.findAllByLocationNear(lat, lng, distance, PageRequest.of(page, size, Direction.DESC, "element_id"))
+			allElements=this.elementDatabase.findAllDirtyLocationsByLocationNear(lat, lng, distance, PageRequest.of(page, size, Direction.DESC, "element_id"))
 			.stream()
 			.map(this.converter::entityToBoundary)
 			.collect(Collectors.toList());
 		else
-			allElements=this.elementDatabase.findAllByLocationNearAndActive(lat, lng, distance, PageRequest.of(page, size, Direction.DESC, "element_id"))
+			allElements=this.elementDatabase.findAllDirtyLocationsByLocationNearAndActive(lat, lng, distance, PageRequest.of(page, size, Direction.DESC, "element_id"))
 			.stream()
 			.map(this.converter::entityToBoundary)
 			.collect(Collectors.toList());
