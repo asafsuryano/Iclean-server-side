@@ -130,7 +130,7 @@ public class adminTests {
 			//post element
 			
             ActionBoundary	action1=new ActionBoundary();
-            action1.setType("demo");
+            action1.setType("cleanReports");
             action1.setElement(new Element(new ElementId(
             boundaryOnServer1.getElementId().getDomain(),boundaryOnServer1.getElementId().getId())));
             action1.setInvokedBy(new InvokedBy(new UserId(this.player.getUserId().getDomain(),
@@ -139,14 +139,14 @@ public class adminTests {
             
             
             ActionBoundary	action2=new ActionBoundary();
-            action2.setType("niv");
+            action2.setType("cleanReports");
             action2.setElement(new Element(new ElementId(
             boundaryOnServer1.getElementId().getDomain(),boundaryOnServer1.getElementId().getId())));   
             action2.setInvokedBy(new InvokedBy(new UserId(this.player.getUserId().getDomain(),
                 	this.player.getUserId().getEmail())));
             
             ActionBoundary	action3=new ActionBoundary();
-            action3.setType("asaf");
+            action3.setType("cleanReports");
             action3.setElement(new Element(new ElementId(
             boundaryOnServer1.getElementId().getDomain(),boundaryOnServer1.getElementId().getId())));           
             action3.setInvokedBy(new InvokedBy(new UserId(this.player.getUserId().getDomain(),

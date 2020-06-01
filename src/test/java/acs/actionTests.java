@@ -75,14 +75,14 @@ public class actionTests {
 		ElementBoundary elem1 = new ElementBoundary();
 		elem1.setName("ban");
 		elem1.setActive(true);
-		elem1.setType("Trash");
+		elem1.setType("Trash_location");
 		elem = this.restTemplate.postForObject(
 				this.elementUrl + "/{managerDomain}/{managerEmail}", 
 				elem1, 
 				ElementBoundary.class,
 				this.manager.getUserId().getDomain(), 
 				this.manager.getUserId().getEmail());
-
+		System.out.println();
 	}
 
 	@AfterEach
@@ -384,7 +384,7 @@ public class actionTests {
 		ObjectMapper mapper=new ObjectMapper();
 		ArrayList<Report> reports=mapper.convertValue(elementAfterAction[0].getElementAttributes().get("reportsArchive"),
 				new TypeReference<ArrayList<Report>>() {});
-		assertThat(reports).hasSize(2);
+		assertThat(reports).hasSize(1);
 	}
 
 
