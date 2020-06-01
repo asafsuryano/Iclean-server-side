@@ -3,6 +3,7 @@ package acs;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.xpath;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -85,7 +86,7 @@ public class elementTests {
 		ElementBoundary elementBoundary = new ElementBoundary();
 		elementBoundary.setName("ban");
 		elementBoundary.setActive(true);
-		elementBoundary.setType("DEMO_ELEMENT");
+		elementBoundary.setType("DEMO_ELEMENT_location");
 
 		ElementBoundary boundaryOnServer = this.restTemplate.postForObject(
 				this.elementUrl + "/{managerDomain}/{managerEmail}", elementBoundary, ElementBoundary.class,
@@ -104,7 +105,7 @@ public class elementTests {
 		ElementBoundary elementBoundary = new ElementBoundary();
 		elementBoundary.setName("ban");
 		elementBoundary.setActive(true);
-		elementBoundary.setType("DEMO_ELEMENT");
+		elementBoundary.setType("DEMO_ELEMENT_location");
 		try {
 			ElementBoundary boundaryOnServer = this.restTemplate.postForObject(
 					this.elementUrl + "/{managerDomain}/{managerEmail}", elementBoundary, ElementBoundary.class,
@@ -123,7 +124,7 @@ public class elementTests {
 		ElementBoundary elementBoundary = new ElementBoundary();
 		elementBoundary.setName("ban");
 		elementBoundary.setActive(true);
-		elementBoundary.setType("DEMO_ELEMENT");
+		elementBoundary.setType("DEMO_ELEMENT_location");
 		try {
 			ElementBoundary boundaryOnServer = this.restTemplate.postForObject(
 					this.elementUrl + "/{managerDomain}/{managerEmail}", elementBoundary, ElementBoundary.class,
@@ -142,7 +143,7 @@ public class elementTests {
 		ElementBoundary elementBoundary = new ElementBoundary();
 		elementBoundary.setName("ban");
 		elementBoundary.setActive(true);
-		elementBoundary.setType("DEMO_ELEMENT");
+		elementBoundary.setType("DEMO_ELEMENT_location");
 
 		ElementBoundary boundaryOnServer = this.restTemplate.postForObject(
 				this.elementUrl + "/{managerDomain}/{managerEmail}", elementBoundary, ElementBoundary.class,
@@ -175,7 +176,7 @@ public class elementTests {
 		ElementBoundary elementBoundary = new ElementBoundary();
 		elementBoundary.setName("ban");
 		elementBoundary.setActive(true);
-		elementBoundary.setType("DEMO_ELEMENT");
+		elementBoundary.setType("DEMO_ELEMENT_location");
 
 		ElementBoundary boundaryOnServer = this.restTemplate.postForObject(
 				this.elementUrl + "/{managerDomain}/{managerEmail}", elementBoundary, ElementBoundary.class,
@@ -208,7 +209,7 @@ public class elementTests {
 		ElementBoundary elementBoundary = new ElementBoundary();
 		elementBoundary.setName("ban");
 		elementBoundary.setActive(true);
-		elementBoundary.setType("DEMO_ELEMENT");
+		elementBoundary.setType("DEMO_ELEMENT_location");
 
 		ElementBoundary boundaryOnServer = this.restTemplate.postForObject(
 				this.elementUrl + "/{managerDomain}/{managerEmail}", elementBoundary, ElementBoundary.class,
@@ -242,7 +243,7 @@ public class elementTests {
 		ElementBoundary elementBoundary = new ElementBoundary();
 		elementBoundary.setName("ban");
 		elementBoundary.setActive(true);
-		elementBoundary.setType("DEMO_ELEMENT");
+		elementBoundary.setType("DEMO_ELEMENT_location");
 
 		ElementBoundary newElementBoundary = this.restTemplate.postForObject(
 				this.elementUrl + "/{managerDomain}/{managerEmail}", elementBoundary, ElementBoundary.class,
@@ -266,7 +267,7 @@ public class elementTests {
 		ElementBoundary elementBoundary = new ElementBoundary();
 		elementBoundary.setName("ban");
 		elementBoundary.setActive(false);
-		elementBoundary.setType("DEMO_ELEMENT");
+		elementBoundary.setType("DEMO_ELEMENT_location");
 
 		ElementBoundary newElementBoundary = this.restTemplate.postForObject(
 				this.elementUrl + "/{managerDomain}/{managerEmail}", elementBoundary, ElementBoundary.class,
@@ -304,7 +305,7 @@ public class elementTests {
 		List<ElementBoundary> AllElementsInDataBase =
 
 				IntStream.range(1, numOfElements+1).mapToObj(i -> "test" + i).map(
-						userName -> new ElementBoundary(userName, null, "DEMO_ELEMENT", true, null, null, null, null))
+						userName -> new ElementBoundary(userName, null, "DEMO_ELEMENT_location", true, null, null, null, null))
 						.map(boundary -> this.restTemplate.postForObject(
 								this.elementUrl + "/{managerDomain}/{managerEmail}", boundary, ElementBoundary.class,
 								managerBoundary.getUserId().getDomain(), managerBoundary.getUserId().getEmail()))
@@ -335,7 +336,7 @@ public class elementTests {
 				new NewUserDetails("naory@gmail.com", "niv", ":)", "MANAGER"), UserBoundary.class);
 
 		List<ElementBoundary> AllElementsInDataBase = IntStream.range(1, 4).mapToObj(i -> "test" + i)
-				.map(userName -> new ElementBoundary(userName, null, "DEMO_ELEMENT", true, null, null, null, null))
+				.map(userName -> new ElementBoundary(userName, null, "DEMO_ELEMENT_location", true, null, null, null, null))
 				.map(boundary -> this.restTemplate.postForObject(this.elementUrl + "/{managerDomain}/{managerEmail}",
 						boundary, ElementBoundary.class, managerBoundary.getUserId().getDomain(),
 						managerBoundary.getUserId().getEmail()))
@@ -363,7 +364,7 @@ public class elementTests {
 		// WHEN i post an element with empty name
 		ElementBoundary newElementPosted = new ElementBoundary();
 		newElementPosted.setActive(true);
-		newElementPosted.setType("DEMO_ELEMENT");
+		newElementPosted.setType("DEMO_ELEMENT_location");
 		newElementPosted.setName(""); // empty name
 		try {
 			this.restTemplate.postForObject(this.elementUrl + "/{managerDomain}/{managerEmail}", newElementPosted,
@@ -373,7 +374,10 @@ public class elementTests {
 			assertTrue(ex instanceof HttpServerErrorException);
 		}
 
-	} // Test 11 create an element with empty type and check if throw exception
+	} 
+	
+	
+	// Test 11 create an element with empty type and check if throw exception
 
 	@Test
 	public void testPostAnElementWithEmptyTypeAndThenThrowAnException() throws Exception { // GIVEN server is up
@@ -408,22 +412,22 @@ public class elementTests {
 		ElementBoundary elementBoundaryParent = new ElementBoundary();
 		elementBoundaryParent.setName("ban");
 		elementBoundaryParent.setActive(true);
-		elementBoundaryParent.setType("DEMO_ELEMENT");
+		elementBoundaryParent.setType("DEMO_ELEMENT_location");
 
 		ElementBoundary elementBoundaryChild1 = new ElementBoundary();
 		elementBoundaryChild1.setName("ban");
 		elementBoundaryChild1.setActive(true);
-		elementBoundaryChild1.setType("DEMO_ELEMENT");
+		elementBoundaryChild1.setType("DEMO_ELEMENT_location");
 
 		ElementBoundary elementBoundaryChild2 = new ElementBoundary();
 		elementBoundaryChild2.setName("ban");
 		elementBoundaryChild2.setActive(true);
-		elementBoundaryChild2.setType("DEMO_ELEMENT");
+		elementBoundaryChild2.setType("DEMO_ELEMENT_location");
 
 		ElementBoundary elementBoundaryChild3 = new ElementBoundary();
 		elementBoundaryChild3.setName("ban");
 		elementBoundaryChild3.setActive(true);
-		elementBoundaryChild3.setType("DEMO_ELEMENT");
+		elementBoundaryChild3.setType("DEMO_ELEMENT_location");
 
 		ElementBoundary boundaryOnServerParent = this.restTemplate.postForObject(
 				this.elementUrl + "/{managerDomain}/{managerEmail}", elementBoundaryParent, ElementBoundary.class,
@@ -473,12 +477,12 @@ public class elementTests {
 		ElementBoundary elementBoundaryParent = new ElementBoundary();
 		elementBoundaryParent.setName("ban");
 		elementBoundaryParent.setActive(true);
-		elementBoundaryParent.setType("DEMO_ELEMENT");
+		elementBoundaryParent.setType("DEMO_ELEMENT_location");
 
 		ElementBoundary elementBoundaryChild = new ElementBoundary();
 		elementBoundaryChild.setName("niv");
 		elementBoundaryChild.setActive(true);
-		elementBoundaryChild.setType("DEMO_ELEMENT");
+		elementBoundaryChild.setType("DEMO_ELEMENT_location");
 
 		ElementBoundary boundaryOnServerParent = this.restTemplate.postForObject(
 				this.elementUrl + "/{managerDomain}/{managerEmail}", elementBoundaryParent, ElementBoundary.class,
@@ -511,22 +515,22 @@ public class elementTests {
 		ElementBoundary elementBoundaryParent = new ElementBoundary();
 		elementBoundaryParent.setName("ban");
 		elementBoundaryParent.setActive(true);
-		elementBoundaryParent.setType("DEMO_ELEMENT");
+		elementBoundaryParent.setType("DEMO_ELEMENT_location");
 
 		ElementBoundary elementBoundaryChild1 = new ElementBoundary();
 		elementBoundaryChild1.setName("ban");
 		elementBoundaryChild1.setActive(true);
-		elementBoundaryChild1.setType("DEMO_ELEMENT");
+		elementBoundaryChild1.setType("DEMO_ELEMENT_location");
 
 		ElementBoundary elementBoundaryChild2 = new ElementBoundary();
 		elementBoundaryChild2.setName("ban");
 		elementBoundaryChild2.setActive(true);
-		elementBoundaryChild2.setType("DEMO_ELEMENT");
+		elementBoundaryChild2.setType("DEMO_ELEMENT_location");
 
 		ElementBoundary elementBoundaryChild3 = new ElementBoundary();
 		elementBoundaryChild3.setName("ban");
 		elementBoundaryChild3.setActive(false);
-		elementBoundaryChild3.setType("DEMO_ELEMENT");
+		elementBoundaryChild3.setType("DEMO_ELEMENT_location");
 
 		ElementBoundary boundaryOnServerParent = this.restTemplate.postForObject(
 				this.elementUrl + "/{managerDomain}/{managerEmail}", elementBoundaryParent, ElementBoundary.class,
@@ -577,17 +581,17 @@ public class elementTests {
 		ElementBoundary elementBoundary1 = new ElementBoundary();
 		elementBoundary1.setName("ban");
 		elementBoundary1.setActive(true);
-		elementBoundary1.setType("DEMO_ELEMENT");
+		elementBoundary1.setType("DEMO_ELEMENT_location");
 
 		ElementBoundary elementBoundary2 = new ElementBoundary();
 		elementBoundary2.setName("ban");
 		elementBoundary2.setActive(true);
-		elementBoundary2.setType("DEMO_ELEMENT");
+		elementBoundary2.setType("DEMO_ELEMENT_location");
 
 		ElementBoundary elementBoundary3 = new ElementBoundary();
 		elementBoundary3.setName("ban");
 		elementBoundary3.setActive(true);
-		elementBoundary3.setType("DEMO_ELEMENT");
+		elementBoundary3.setType("DEMO_ELEMENT_location");
 
 		// post to database
 		ElementBoundary boundaryOnServer1 = this.restTemplate.postForObject(
@@ -619,17 +623,17 @@ public class elementTests {
 		ElementBoundary elementBoundary1 = new ElementBoundary();
 		elementBoundary1.setName("ban");
 		elementBoundary1.setActive(true);
-		elementBoundary1.setType("DEMO_ELEMENT");
+		elementBoundary1.setType("DEMO_ELEMENT_location");
 
 		ElementBoundary elementBoundary2 = new ElementBoundary();
 		elementBoundary2.setName("ban");
 		elementBoundary2.setActive(true);
-		elementBoundary2.setType("DEMO_ELEMENT");
+		elementBoundary2.setType("DEMO_ELEMENT_location");
 
 		ElementBoundary elementBoundary3 = new ElementBoundary();
 		elementBoundary3.setName("ban");
 		elementBoundary3.setActive(true);
-		elementBoundary3.setType("DEMO_ELEMENT");
+		elementBoundary3.setType("DEMO_ELEMENT_location");
 
 		// post to database
 		ElementBoundary boundaryOnServer1 = this.restTemplate.postForObject(
@@ -661,17 +665,17 @@ public class elementTests {
 		ElementBoundary elementBoundary1 = new ElementBoundary();
 		elementBoundary1.setName("ban");
 		elementBoundary1.setActive(true);
-		elementBoundary1.setType("DEMO_ELEMENT");
+		elementBoundary1.setType("DEMO_ELEMENT_location");
 
 		ElementBoundary elementBoundary2 = new ElementBoundary();
 		elementBoundary2.setName("ban");
 		elementBoundary2.setActive(true);
-		elementBoundary2.setType("DEMO_ELEMENT");
+		elementBoundary2.setType("DEMO_ELEMENT_location");
 
 		ElementBoundary elementBoundary3 = new ElementBoundary();
 		elementBoundary3.setName("ban");
 		elementBoundary3.setActive(true);
-		elementBoundary3.setType("DEMO_ELEMENT");
+		elementBoundary3.setType("DEMO_ELEMENT_location");
 
 		// post to database
 		ElementBoundary boundaryOnServer1 = this.restTemplate.postForObject(
@@ -704,17 +708,17 @@ public class elementTests {
 		ElementBoundary elementBoundary1 = new ElementBoundary();
 		elementBoundary1.setName("ban");
 		elementBoundary1.setActive(true);
-		elementBoundary1.setType("DEMO_ELEMENT");
+		elementBoundary1.setType("DEMO_ELEMENT_location");
 
 		ElementBoundary elementBoundary2 = new ElementBoundary();
 		elementBoundary2.setName("ban");
 		elementBoundary2.setActive(true);
-		elementBoundary2.setType("DEMO_ELEMENT");
+		elementBoundary2.setType("DEMO_ELEMENT_location");
 
 		ElementBoundary elementBoundary3 = new ElementBoundary();
 		elementBoundary3.setName("hello");
 		elementBoundary3.setActive(true);
-		elementBoundary3.setType("DEMO_ELEMENT");
+		elementBoundary3.setType("DEMO_ELEMENT_location");
 
 		// post to database
 		ElementBoundary boundaryOnServer1 = this.restTemplate.postForObject(
@@ -746,17 +750,17 @@ public class elementTests {
 		ElementBoundary elementBoundary1 = new ElementBoundary();
 		elementBoundary1.setName("ban");
 		elementBoundary1.setActive(true);
-		elementBoundary1.setType("DEMO_ELEMENT");
+		elementBoundary1.setType("DEMO_ELEMENT_location");
 
 		ElementBoundary elementBoundary2 = new ElementBoundary();
 		elementBoundary2.setName("ban");
 		elementBoundary2.setActive(true);
-		elementBoundary2.setType("DEMO_ELEMENT");
+		elementBoundary2.setType("DEMO_ELEMENT_location");
 
 		ElementBoundary elementBoundary3 = new ElementBoundary();
 		elementBoundary3.setName("ban");
 		elementBoundary3.setActive(false);
-		elementBoundary3.setType("DEMO_ELEMENT");
+		elementBoundary3.setType("DEMO_ELEMENT_location");
 
 		// post to database
 		ElementBoundary boundaryOnServer1 = this.restTemplate.postForObject(
@@ -788,12 +792,12 @@ public class elementTests {
 		ElementBoundary elementBoundary1 = new ElementBoundary();
 		elementBoundary1.setName("ban");
 		elementBoundary1.setActive(true);
-		elementBoundary1.setType("DEMO_ELEMENT");
+		elementBoundary1.setType("DEMO_ELEMENT_location");
 
 		ElementBoundary elementBoundary2 = new ElementBoundary();
 		elementBoundary2.setName("ban");
 		elementBoundary2.setActive(true);
-		elementBoundary2.setType("DEMO_ELEMENT");
+		elementBoundary2.setType("DEMO_ELEMENT_location");
 
 		ElementBoundary elementBoundary3 = new ElementBoundary();
 		elementBoundary3.setName("ban");
@@ -816,7 +820,7 @@ public class elementTests {
 		ElementBoundary[] elements = this.restTemplate.getForObject(
 				this.elementUrl + "/{userDomain}/{userEmail}/search/byType/{type}" + this.paginationUrl,
 				ElementBoundary[].class, this.manager.getUserId().getDomain(), this.manager.getUserId().getEmail(),
-				"DEMO_ELEMENT", 0, 3);
+				"DEMO_ELEMENT_location", 0, 3);
 
 		assertThat(elements).hasSize(2);
 	}
@@ -830,17 +834,17 @@ public class elementTests {
 		ElementBoundary elementBoundary1 = new ElementBoundary();
 		elementBoundary1.setName("ban");
 		elementBoundary1.setActive(true);
-		elementBoundary1.setType("DEMO_ELEMENT");
+		elementBoundary1.setType("DEMO_ELEMENT_location");
 
 		ElementBoundary elementBoundary2 = new ElementBoundary();
 		elementBoundary2.setName("ban");
 		elementBoundary2.setActive(true);
-		elementBoundary2.setType("DEMO_ELEMENT");
+		elementBoundary2.setType("DEMO_ELEMENT_location");
 
 		ElementBoundary elementBoundary3 = new ElementBoundary();
 		elementBoundary3.setName("ban");
 		elementBoundary3.setActive(false);
-		elementBoundary3.setType("DEMO_ELEMENT");
+		elementBoundary3.setType("DEMO_ELEMENT_location");
 
 		// post to database
 		ElementBoundary boundaryOnServer1 = this.restTemplate.postForObject(
@@ -858,7 +862,7 @@ public class elementTests {
 		ElementBoundary[] elements = this.restTemplate.getForObject(
 				this.elementUrl + "/{userDomain}/{userEmail}/search/byType/{type}" + this.paginationUrl,
 				ElementBoundary[].class, this.player.getUserId().getDomain(), this.player.getUserId().getEmail(),
-				"DEMO_ELEMENT", 0, 3);
+				"DEMO_ELEMENT_location", 0, 3);
 
 		assertThat(elements).hasSize(2);
 	}
@@ -872,19 +876,19 @@ public class elementTests {
 		ElementBoundary elementBoundary1 = new ElementBoundary();
 		elementBoundary1.setName("ban");
 		elementBoundary1.setActive(true);
-		elementBoundary1.setType("DEMO_ELEMENT");
+		elementBoundary1.setType("DEMO_ELEMENT_location");
 		elementBoundary1.setLocation(new Location(5, 4));
 
 		ElementBoundary elementBoundary2 = new ElementBoundary();
 		elementBoundary2.setName("ban");
 		elementBoundary2.setActive(true);
-		elementBoundary2.setType("DEMO_ELEMENT");
+		elementBoundary2.setType("DEMO_ELEMENT_location");
 		elementBoundary2.setLocation(new Location(12, 12));
 
 		ElementBoundary elementBoundary3 = new ElementBoundary();
 		elementBoundary3.setName("ban");
 		elementBoundary3.setActive(false);
-		elementBoundary3.setType("DEMO_ELEMENT");
+		elementBoundary3.setType("DEMO_ELEMENT_location");
 		elementBoundary3.setLocation(new Location(15, 14));
 
 		// post to database
@@ -907,4 +911,63 @@ public class elementTests {
 
 		assertThat(elements).hasSize(2);
 	}
+	
+	
+	// Test 23 add 3 location elements and 1 mission element to the database and search nearest by some distance
+		// with manager user
+
+		@Test
+		public void testAdd3ElementsAndOneMissionElementToDatabaseAndSearchThemByLocation() {
+			// add 3 normal elements
+			ElementBoundary elementBoundary1 = new ElementBoundary();
+			elementBoundary1.setName("ban");
+			elementBoundary1.setActive(true);
+			elementBoundary1.setType("DEMO_ELEMENT_location");
+			elementBoundary1.setLocation(new Location(5, 4));
+
+			ElementBoundary elementBoundary2 = new ElementBoundary();
+			elementBoundary2.setName("ban");
+			elementBoundary2.setActive(true);
+			elementBoundary2.setType("DEMO_ELEMENT_location");
+			elementBoundary2.setLocation(new Location(12, 12));
+
+			ElementBoundary elementBoundary3 = new ElementBoundary();
+			elementBoundary3.setName("ban");
+			elementBoundary3.setActive(true);
+			elementBoundary3.setType("DEMO_ELEMENT_location");
+			elementBoundary3.setLocation(new Location(15, 14));
+			
+			ElementBoundary missionElementBoundary = new ElementBoundary();
+			missionElementBoundary.setName("banShift");
+			missionElementBoundary.setActive(true);
+			missionElementBoundary.setType("shift");
+			missionElementBoundary.setLocation(new Location(15, 14));
+
+			// post to database
+			ElementBoundary boundaryOnServer1 = this.restTemplate.postForObject(
+					this.elementUrl + "/{managerDomain}/{managerEmail}", elementBoundary1, ElementBoundary.class,
+					this.manager.getUserId().getDomain(), this.manager.getUserId().getEmail());
+
+			ElementBoundary boundaryOnServer2 = this.restTemplate.postForObject(
+					this.elementUrl + "/{managerDomain}/{managerEmail}", elementBoundary2, ElementBoundary.class,
+					this.manager.getUserId().getDomain(), this.manager.getUserId().getEmail());
+
+			ElementBoundary boundaryOnServer3 = this.restTemplate.postForObject(
+					this.elementUrl + "/{managerDomain}/{managerEmail}", elementBoundary3, ElementBoundary.class,
+					this.manager.getUserId().getDomain(), this.manager.getUserId().getEmail());
+			
+			ElementBoundary missionboundaryOnServer = this.restTemplate.postForObject(
+					this.elementUrl + "/{managerDomain}/{managerEmail}", missionElementBoundary, ElementBoundary.class,
+					this.manager.getUserId().getDomain(), this.manager.getUserId().getEmail());
+			
+			
+			ElementBoundary[] elements = this.restTemplate.getForObject(
+					this.elementUrl + "/{userDomain}/{userEmail}/search/near/{lat}/{lng}/{distance}" + this.paginationUrl,
+					ElementBoundary[].class, this.player.getUserId().getDomain(), this.player.getUserId().getEmail(), 5, 5,
+					100, 0, 3);
+
+			assertThat(elements).hasSize(3);
+			assertThat(elements).allMatch(x -> x.getType().equals("DEMO_ELEMENT_location"));
+		}
+	
 }

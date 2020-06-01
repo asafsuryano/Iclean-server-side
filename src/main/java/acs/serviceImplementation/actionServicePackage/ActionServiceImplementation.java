@@ -37,14 +37,16 @@ public class ActionServiceImplementation implements ExtraActionService {
 	private ActionEntityBoundaryConverter converter; 
 	private ActionEntity invoke;
 	private String projectName;
+	private ActionManager actionMng;
 
 	@Autowired
 	public ActionServiceImplementation(ActionEntityBoundaryConverter converter,ActionDao actionsDatabase,
-			ElementService elementService,UserService userService) {
+			ElementService elementService,UserService userService,ActionManager actionMng) {
 		this.converter = converter;
 		this.actionsDatabase=actionsDatabase;
 		this.elementService=elementService;
 		this.userService = userService;
+		this.actionMng=actionMng;
 	}
 	
 
@@ -69,12 +71,14 @@ public class ActionServiceImplementation implements ExtraActionService {
 		if (StringUtil.isNullOrEmpty(action.getInvokedBy().getUserId().getDomain())
 				|| (StringUtil.isNullOrEmpty(action.getInvokedBy().getUserId().getEmail())))
 			throw new RuntimeException("invalid user details");
-		if (isUserInActionAPlayer(action)==false) {
-			throw new RuntimeException("the user is not a player");
-		}
-		if (isElementInActionActive(action)==false) {
-			throw new RuntimeException("the element is not active");
-		}
+//		if (isUserInActionAPlayer(action)==false) {
+//			throw new RuntimeException("the user is not a player");
+//		}
+//		if (isElementInActionActive(action)==false) {
+//			throw new RuntimeException("the element is not active");
+//		}
+		actionMng.setAction(action);
+		actionMng.getAction().invoke();
 		action.setActionId(new acs.actionBoundaryPackage.ActionId(projectName, UUID.randomUUID().toString()));
 		action.setCreatedTimestamp(new Date());
 		this.invoke = this.converter.boundaryToEntity(action);

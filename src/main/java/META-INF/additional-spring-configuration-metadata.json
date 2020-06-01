@@ -1,0 +1,5 @@
+{"properties": [{
+  "name": "action.actions",
+  "type": "java.lang.String",
+  "description": "A description for 'action.actions'"
+}]}

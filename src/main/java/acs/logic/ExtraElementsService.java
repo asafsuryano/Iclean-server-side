@@ -1,6 +1,7 @@
 package acs.logic;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import acs.elementBoundaryPackage.ElementBoundary;
@@ -15,4 +16,5 @@ public interface ExtraElementsService extends ElementService {
 	public List<ElementBoundary> getElementsWithSpecificNameWithPagination(String userDomain,String userEmail,String name, int size,int page);
 	public List<ElementBoundary> getElementsWithSpecificTypeWithPagination(String userDomain,String userEmail,String type, int size,int page);
 	public List<ElementBoundary> getElementsNearWithPagination(String userDomain,String userEmail,double lat,double lng,double distance, int size,int page);
+	public void updateElementAttributes(String elementDomain,String elementId,Map<String,Object> att);
 }
