@@ -969,5 +969,134 @@ public class elementTests {
 			assertThat(elements).hasSize(3);
 			assertThat(elements).allMatch(x -> x.getType().equals("DEMO_ELEMENT_location"));
 		}
+		
+		
+		
+		
+		
+		
+		@Test
+	    public void testCreateElementParentAndBindWith3elementChild() {
+			//create Parent
+			ElementBoundary elementBoundaryParent = new ElementBoundary();
+			elementBoundaryParent.setName("YarkonPark");
+			elementBoundaryParent.setActive(true);
+			elementBoundaryParent.setType("DEMO_ELEMENT_location");
+		
+			
+			//create 3 child 
+			ElementBoundary elementBoundaryChild1 = new ElementBoundary();
+			elementBoundaryChild1.setName("Area 2");
+			elementBoundaryChild1.setActive(true);
+			elementBoundaryChild1.setType("DEMO_ELEMENT_location");
+
+			ElementBoundary elementBoundaryChild2 = new ElementBoundary();
+			elementBoundaryChild2.setName("Area 2");
+			elementBoundaryChild2.setActive(true);
+			elementBoundaryChild2.setType("DEMO_ELEMENT_location");
+
+			ElementBoundary elementBoundaryChild3 = new ElementBoundary();
+			elementBoundaryChild3.setName("Area 3");
+			elementBoundaryChild3.setActive(true);
+			elementBoundaryChild3.setType("DEMO_ELEMENT_location");
+			
+			
+			
+			
+			ElementBoundary boundaryOnServerParent = this.restTemplate.postForObject(
+					this.elementUrl + "/{managerDomain}/{managerEmail}", elementBoundaryParent, ElementBoundary.class,
+					this.manager.getUserId().getDomain(), this.manager.getUserId().getEmail());
+
+			ElementBoundary boundaryOnServerChild1 = this.restTemplate.postForObject(
+					this.elementUrl + "/{managerDomain}/{managerEmail}", elementBoundaryChild1, ElementBoundary.class,
+					this.manager.getUserId().getDomain(), this.manager.getUserId().getEmail());
+
+			ElementBoundary boundaryOnServerChild2 = this.restTemplate.postForObject(
+					this.elementUrl + "/{managerDomain}/{managerEmail}", elementBoundaryChild2, ElementBoundary.class,
+					this.manager.getUserId().getDomain(), this.manager.getUserId().getEmail());
+
+			ElementBoundary boundaryOnServerChild3 = this.restTemplate.postForObject(
+					this.elementUrl + "/{managerDomain}/{managerEmail}", elementBoundaryChild3, ElementBoundary.class,
+					this.manager.getUserId().getDomain(), this.manager.getUserId().getEmail());
+			
+			
+			
+			
+			
+			/// call to bind!!
+			this.restTemplate.put(this.elementUrl + "/{managerDomain}/{managerEmail}/{elementDomain}/{elementId}/children",
+					boundaryOnServerChild1.getElementId(), this.manager.getUserId().getDomain(),
+					this.manager.getUserId().getEmail(), boundaryOnServerParent.getElementId().getDomain(),
+					boundaryOnServerParent.getElementId().getId());
+
+			this.restTemplate.put(this.elementUrl + "/{managerDomain}/{managerEmail}/{elementDomain}/{elementId}/children",
+					boundaryOnServerChild2.getElementId(), this.manager.getUserId().getDomain(),
+					this.manager.getUserId().getEmail(), boundaryOnServerParent.getElementId().getDomain(),
+					boundaryOnServerParent.getElementId().getId());
+
+			this.restTemplate.put(this.elementUrl + "/{managerDomain}/{managerEmail}/{elementDomain}/{elementId}/children",
+					boundaryOnServerChild3.getElementId(), this.manager.getUserId().getDomain(),
+					this.manager.getUserId().getEmail(), boundaryOnServerParent.getElementId().getDomain(),
+					boundaryOnServerParent.getElementId().getId());
+
+			ElementBoundary[] elementBoundary = this.restTemplate.getForObject(
+					this.elementUrl
+							+ "/{userDomain}/{userEmail}/{elementDomain}/{elementID}/children?page={page}&size={size}",
+					ElementBoundary[].class, this.manager.getUserId().getDomain(), this.manager.getUserId().getEmail(),
+					boundaryOnServerParent.getElementId().getDomain(), boundaryOnServerParent.getElementId().getId(), 0,3);
+
+			assertThat(elementBoundary).hasSize(3);
+
+		}
+		 
+		 //    (2: make bind to parent that the child is  Type shift ---- need to throw Execption!
+	    // shift can be only child not parent !!
+		
+	@Test
+	public void CreateParentAndBindHimWithShiftTypeAndCheckIfThrowException() {
+		ElementBoundary elementBoundaryParent = new ElementBoundary();
+		elementBoundaryParent.setName("YarkonPark");
+		elementBoundaryParent.setActive(true);
+		elementBoundaryParent.setType("DEMO_ELEMENT_location");
+	
+		
+		
+		ElementBoundary elementBoundaryChild1 = new ElementBoundary();
+		elementBoundaryChild1.setName("Area 1");
+		elementBoundaryChild1.setActive(true);
+		elementBoundaryChild1.setType("Shift");
+		
+		
+		
+		
+		
+		ElementBoundary boundaryOnServerParent = this.restTemplate.postForObject(
+				this.elementUrl + "/{managerDomain}/{managerEmail}", elementBoundaryParent, ElementBoundary.class,
+				this.manager.getUserId().getDomain(), this.manager.getUserId().getEmail());
+
+		
+		
+		
+		ElementBoundary boundaryOnServerChild1 = this.restTemplate.postForObject(
+				this.elementUrl + "/{managerDomain}/{managerEmail}", elementBoundaryChild1, ElementBoundary.class,
+				this.manager.getUserId().getDomain(), this.manager.getUserId().getEmail());
+
+		
+		
+		try {
+			this.restTemplate.put(this.elementUrl + "/{managerDomain}/{managerEmail}/{elementDomain}/{elementId}/children",
+					boundaryOnServerChild1.getElementId(), this.manager.getUserId().getDomain(),
+					this.manager.getUserId().getEmail(), boundaryOnServerParent.getElementId().getDomain(),
+					boundaryOnServerParent.getElementId().getId());
+			
+			fail();
+	
+		}catch(HttpServerErrorException ex) {
+			assertTrue(ex.getMessage().contains("Shift Type Cannot Have a Parent"));
+		}
+		
+		
+	}
+		
 	
 }
