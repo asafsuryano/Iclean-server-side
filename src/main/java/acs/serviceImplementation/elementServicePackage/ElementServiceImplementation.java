@@ -217,7 +217,8 @@ public class ElementServiceImplementation implements ExtraElementsService {
 	@Transactional
 	public void bindParentToChildElements(ElementBoundary parentElement, ElementBoundary childElement) {
 		// TODO Auto-generated method stub
-
+		if (childElement.getType().compareToIgnoreCase("shift")==0)
+			throw new RuntimeException("Shift Type Cannot Have a Parent");
 		ElementEntity parentEntity = this.elementDatabase
 				.findById(new ElementId(parentElement.getElementId().getDomain(), parentElement.getElementId().getId()))
 				.orElseThrow(() -> new RuntimeException("the element does not exist"));

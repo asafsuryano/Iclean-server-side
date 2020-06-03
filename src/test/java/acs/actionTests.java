@@ -596,18 +596,18 @@ public class actionTests {
 						newActiontPosted3,
 						ActionBoundary.class);
 		
-		ActionBoundary newActiontPosted4 = new ActionBoundary();
-		newActiontPosted4.setType("cleanReports");
-		newActiontPosted4.setInvokedBy(new InvokedBy(new UserId(this.player.getUserId().getDomain(), 
+		ActionBoundary newActionPosted4 = new ActionBoundary();
+		newActionPosted4.setType("cleanReports");
+		newActionPosted4.setInvokedBy(new InvokedBy(new UserId(this.player.getUserId().getDomain(), 
 				this.player.getUserId().getEmail())));
-		newActiontPosted4.setElement(new Element(
+		newActionPosted4.setElement(new Element(
 				new ElementId(elem.getElementId().getDomain(),
 						elem.getElementId().getId())));
 		
 		ActionBoundary boundaryOnServer4 = 
 				this.restTemplate
 				.postForObject(this.actionUrl ,
-						newActiontPosted3,
+						newActionPosted4,
 						ActionBoundary.class);
 		
 		Report r4=new Report();
@@ -623,12 +623,12 @@ public class actionTests {
 		newActiontPosted5.setElement(new Element(
 				new ElementId(elem.getElementId().getDomain(),
 						elem.getElementId().getId())));
-		newActiontPosted3.setActionAttributes(map4);
+		newActiontPosted5.setActionAttributes(map4);
 		
 		ActionBoundary boundaryOnServer5 = 
 				this.restTemplate
 				.postForObject(this.actionUrl ,
-						newActiontPosted3,
+						newActiontPosted5,
 						ActionBoundary.class);
 		
 		Report r5=new Report();
@@ -649,7 +649,7 @@ public class actionTests {
 		ActionBoundary boundaryOnServer6 = 
 				this.restTemplate
 				.postForObject(this.actionUrl ,
-						newActiontPosted3,
+						newActiontPosted6,
 						ActionBoundary.class);
 		
 		Report r6=new Report();
@@ -670,7 +670,7 @@ public class actionTests {
 		ActionBoundary boundaryOnServer7 = 
 				this.restTemplate
 				.postForObject(this.actionUrl ,
-						newActiontPosted3,
+						newActiontPosted7,
 						ActionBoundary.class);
 		
 		ActionBoundary newActiontPosted8 = new ActionBoundary();
@@ -684,7 +684,7 @@ public class actionTests {
 		ActionBoundary boundaryOnServer8 = 
 				this.restTemplate
 				.postForObject(this.actionUrl ,
-						newActiontPosted3,
+						newActiontPosted8,
 						ActionBoundary.class);
 		
 		ElementBoundary[] elementAfterAction=this.restTemplate.getForObject(this.elementUrl

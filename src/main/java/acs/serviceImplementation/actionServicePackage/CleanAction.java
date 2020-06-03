@@ -30,16 +30,20 @@ public class CleanAction extends Action {
 					.getElementAttributes().get("reports");
 			ObjectMapper mapper = new ObjectMapper();
 			ArrayList<Report> reports = mapper.convertValue(super.element.getElementAttributes().get("reports"),
-					new TypeReference<ArrayList<Report>>() {
-					});
+					new TypeReference<ArrayList<Report>>() {}
+					);
 			if (!super.element.getElementAttributes().containsKey("reportsArchive"))
 				super.element.getElementAttributes().put("reportsArchive", new ArrayList<Report>());
-			ArrayList<Report> reportsInArchive = (ArrayList<Report>) super.element.getElementAttributes()
-					.get("reportsArchive");
+			ArrayList<Report> reportsInArchive = mapper.convertValue(super.element.getElementAttributes()
+					.get("reportsArchive"),new TypeReference<ArrayList<Report>>() {});
+			
 			if (reports.size() + reportsInArchive.size()>30) {
 				int remainder=reports.size() + reportsInArchive.size() - 30;
 				ReportsComparator comp=new ReportsComparator();
 				reportsInArchive.sort(comp);
+				for (int i=0;i<remainder;i++) {
+					reportsInArchive.remove(0);
+				}
 			}
 			for (int i = 0; i < reports.size(); i++)
 				reportsInArchive.add(reports.get(i));
