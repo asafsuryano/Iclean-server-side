@@ -10,8 +10,9 @@ public class Employee {
 		this.name = name;
 		this.phoneNumber = phoneNumber;
 	}
-	public Employee(Map map) {
-		
+	public Employee(Map<String, Object> map) {
+		this.name=(String)map.get("name");
+		this.phoneNumber=(String)map.get("phoneNumber");
 	}
 	public String getName() {
 		return name;

@@ -22,13 +22,13 @@ public class AddEmployee extends Action {
 		// TODO Auto-generated method stub
 		try {
 		Map<String, Object> actionAttr = action.getActionAttributes();
-		Employee employee = new Employee((Map)actionAttr.get("report"));
+		Employee employee = new Employee((Map)actionAttr.get("employee"));
 		super.init();
 		Map<String, Object> elemAttr = super.element.getElementAttributes();
-		if(!elemAttr.containsKey("reports"))
-			elemAttr.put("reports", new ArrayList<Report>());
-		ArrayList<Report> lst = (ArrayList<Report>)elemAttr.get("reports");
-		//lst.add(r);
+		if(!elemAttr.containsKey("employees"))
+			elemAttr.put("employees", new ArrayList<Employee>());
+		ArrayList<Employee> lst = (ArrayList<Employee>)elemAttr.get("employees");
+		lst.add(employee);
 		super.elementService.updateElementAttributes(super.element.getElementId().getDomain(),
 				super.element.getElementId().getId(), elemAttr);
 		}
