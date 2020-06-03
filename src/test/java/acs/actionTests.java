@@ -450,7 +450,10 @@ public class actionTests {
 		ElementBoundary[] elementAfterAction=this.restTemplate.getForObject(this.elementUrl
 				+"/{userDomain}/{userEmail}", ElementBoundary[].class,this.player.getUserId().getDomain(),
 				this.player.getUserId().getEmail());
-		System.out.println("");
+		ObjectMapper mapper=new ObjectMapper();
+		ArrayList<Report> reports=mapper.convertValue(elementAfterAction[0].getElementAttributes().get("reportsArchive"),
+				new TypeReference<ArrayList<Report>>() {});
+		assertThat(reports).hasSize(1);
 	}
 	
 	//TEST 9 - create 3 actions that add 3 reports
@@ -524,8 +527,11 @@ public class actionTests {
 		ElementBoundary[] elementAfterAction=this.restTemplate.getForObject(this.elementUrl
 				+"/{userDomain}/{userEmail}", ElementBoundary[].class,this.player.getUserId().getDomain(),
 				this.player.getUserId().getEmail());
-		System.out.println("");
-	}
+		ObjectMapper mapper=new ObjectMapper();
+		ArrayList<Report> reports=mapper.convertValue(elementAfterAction[0].getElementAttributes().get("reports"),
+				new TypeReference<ArrayList<Report>>() {});
+		assertThat(reports).hasSize(3);	
+		}
 	
 	//TEST 10 - create 3 actions that add 3 reports and clean them and create another 3 
 	//actions and clean them
