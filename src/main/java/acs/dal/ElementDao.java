@@ -31,11 +31,18 @@ public interface ElementDao extends PagingAndSortingRepository<ElementEntity,Ele
 
 	// select ... from ElementEntity where name=? this query is for managers
 	public List<ElementEntity> findAllByName(@Param("name") String name,Pageable pageable);
-
+	
+	// select ... from ElementEntity where name=? this query is for managers
+	public List<ElementEntity> findAllByNameAndTypeContaining(@Param("name") String name
+			,@Param("type") String type,Pageable pageable);
+	
 	// select ... from ElementEntity where name=? this query is for player
 	public List<ElementEntity> findAllByNameAndActive(@Param("name") String name,
 			@Param("active") boolean isActive,Pageable pageable);
 
+	// select ... from ElementEntity where name=? this query is for player
+	public List<ElementEntity> findAllByNameAndActiveAndTypeContaining(@Param("name") String name,
+			@Param("active") boolean isActive,@Param("type") String type,Pageable pageable);
 
 	// select ... from ElementEntity where type=? this query is for managers
 	public List<ElementEntity> findAllByType(@Param("type") String name,Pageable pageable);

@@ -527,6 +527,172 @@ public class actionTests {
 		System.out.println("");
 	}
 	
+	//TEST 10 - create 3 actions that add 3 reports and clean them and create another 3 
+	//actions and clean them
+	@Test
+	public void testAdd3ReportsAndCleanThemAndAnother3ReportsAndCleanThem() {
+		Report r1 = new Report();
+		r1.setComment("ben is the best");
+		r1.setTrashLevel(4);
+		HashMap<String,Object> map1 = new HashMap<String, Object>();
+		map1.put("report", r1);
+		
+		ActionBoundary newActiontPosted1 = new ActionBoundary();
+		newActiontPosted1.setType("addReport");
+		newActiontPosted1.setInvokedBy(new InvokedBy(new UserId(this.player.getUserId().getDomain(), 
+				this.player.getUserId().getEmail())));
+		newActiontPosted1.setElement(new Element(
+				new ElementId(elem.getElementId().getDomain(),
+						elem.getElementId().getId())));
+		newActiontPosted1.setActionAttributes(map1);
+		
+		ActionBoundary boundaryOnServer = 
+				this.restTemplate
+				.postForObject(this.actionUrl ,
+						newActiontPosted1,
+						ActionBoundary.class);
+		
+		Report r2 = new Report();
+		r2.setComment("asaf is the best");
+		r2.setTrashLevel(4);
+		HashMap<String,Object> map2 = new HashMap<String, Object>();
+		map2.put("report", r2);
+		
+		ActionBoundary newActiontPosted2 = new ActionBoundary();
+		newActiontPosted2.setType("addReport");
+		newActiontPosted2.setInvokedBy(new InvokedBy(new UserId(this.player.getUserId().getDomain(), 
+				this.player.getUserId().getEmail())));
+		newActiontPosted2.setElement(new Element(
+				new ElementId(elem.getElementId().getDomain(),
+						elem.getElementId().getId())));
+		newActiontPosted2.setActionAttributes(map2);
+
+		
+		
+		ActionBoundary boundaryOnServer2 = 
+				this.restTemplate
+				.postForObject(this.actionUrl ,
+						newActiontPosted2,
+						ActionBoundary.class);
+		
+		Report r3=new Report();
+		r3.setComment("hello is the best");
+		r3.setTrashLevel(3);
+		HashMap<String,Object> map3 = new HashMap<String, Object>();
+		map3.put("report", r3);
+		
+		ActionBoundary newActiontPosted3 = new ActionBoundary();
+		newActiontPosted3.setType("addReport");
+		newActiontPosted3.setInvokedBy(new InvokedBy(new UserId(this.player.getUserId().getDomain(), 
+				this.player.getUserId().getEmail())));
+		newActiontPosted3.setElement(new Element(
+				new ElementId(elem.getElementId().getDomain(),
+						elem.getElementId().getId())));
+		newActiontPosted3.setActionAttributes(map3);
+		
+		ActionBoundary boundaryOnServer3 = 
+				this.restTemplate
+				.postForObject(this.actionUrl ,
+						newActiontPosted3,
+						ActionBoundary.class);
+		
+		ActionBoundary newActiontPosted4 = new ActionBoundary();
+		newActiontPosted4.setType("cleanReports");
+		newActiontPosted4.setInvokedBy(new InvokedBy(new UserId(this.player.getUserId().getDomain(), 
+				this.player.getUserId().getEmail())));
+		newActiontPosted4.setElement(new Element(
+				new ElementId(elem.getElementId().getDomain(),
+						elem.getElementId().getId())));
+		
+		ActionBoundary boundaryOnServer4 = 
+				this.restTemplate
+				.postForObject(this.actionUrl ,
+						newActiontPosted3,
+						ActionBoundary.class);
+		
+		Report r4=new Report();
+		r4.setComment("hello is the best");
+		r4.setTrashLevel(3);
+		HashMap<String,Object> map4 = new HashMap<String, Object>();
+		map4.put("report", r4);
+		
+		ActionBoundary newActiontPosted5 = new ActionBoundary();
+		newActiontPosted5.setType("addReport");
+		newActiontPosted5.setInvokedBy(new InvokedBy(new UserId(this.player.getUserId().getDomain(), 
+				this.player.getUserId().getEmail())));
+		newActiontPosted5.setElement(new Element(
+				new ElementId(elem.getElementId().getDomain(),
+						elem.getElementId().getId())));
+		newActiontPosted3.setActionAttributes(map4);
+		
+		ActionBoundary boundaryOnServer5 = 
+				this.restTemplate
+				.postForObject(this.actionUrl ,
+						newActiontPosted3,
+						ActionBoundary.class);
+		
+		Report r5=new Report();
+		r5.setComment("hello is the best");
+		r5.setTrashLevel(3);
+		HashMap<String,Object> map5 = new HashMap<String, Object>();
+		map5.put("report", r5);
+		
+		ActionBoundary newActiontPosted6 = new ActionBoundary();
+		newActiontPosted6.setType("addReport");
+		newActiontPosted6.setInvokedBy(new InvokedBy(new UserId(this.player.getUserId().getDomain(), 
+				this.player.getUserId().getEmail())));
+		newActiontPosted6.setElement(new Element(
+				new ElementId(elem.getElementId().getDomain(),
+						elem.getElementId().getId())));
+		newActiontPosted6.setActionAttributes(map5);
+		
+		ActionBoundary boundaryOnServer6 = 
+				this.restTemplate
+				.postForObject(this.actionUrl ,
+						newActiontPosted3,
+						ActionBoundary.class);
+		
+		Report r6=new Report();
+		r6.setComment("hello is the best");
+		r6.setTrashLevel(3);
+		HashMap<String,Object> map6 = new HashMap<String, Object>();
+		map3.put("report", r6);
+		
+		ActionBoundary newActiontPosted7 = new ActionBoundary();
+		newActiontPosted7.setType("addReport");
+		newActiontPosted7.setInvokedBy(new InvokedBy(new UserId(this.player.getUserId().getDomain(), 
+				this.player.getUserId().getEmail())));
+		newActiontPosted7.setElement(new Element(
+				new ElementId(elem.getElementId().getDomain(),
+						elem.getElementId().getId())));
+		newActiontPosted7.setActionAttributes(map3);
+		
+		ActionBoundary boundaryOnServer7 = 
+				this.restTemplate
+				.postForObject(this.actionUrl ,
+						newActiontPosted3,
+						ActionBoundary.class);
+		
+		ActionBoundary newActiontPosted8 = new ActionBoundary();
+		newActiontPosted8.setType("cleanReports");
+		newActiontPosted8.setInvokedBy(new InvokedBy(new UserId(this.player.getUserId().getDomain(), 
+				this.player.getUserId().getEmail())));
+		newActiontPosted8.setElement(new Element(
+				new ElementId(elem.getElementId().getDomain(),
+						elem.getElementId().getId())));
+		
+		ActionBoundary boundaryOnServer8 = 
+				this.restTemplate
+				.postForObject(this.actionUrl ,
+						newActiontPosted3,
+						ActionBoundary.class);
+		
+		ElementBoundary[] elementAfterAction=this.restTemplate.getForObject(this.elementUrl
+				+"/{userDomain}/{userEmail}", ElementBoundary[].class,this.player.getUserId().getDomain(),
+				this.player.getUserId().getEmail());
+		System.out.println("");
+	}
+	
 }
 
 

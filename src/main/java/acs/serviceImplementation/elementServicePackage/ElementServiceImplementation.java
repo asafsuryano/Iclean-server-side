@@ -304,14 +304,20 @@ public class ElementServiceImplementation implements ExtraElementsService {
 		errorCheckingSizePageAndAdmin(size, page, role);
 		List<ElementBoundary> elements =new ArrayList<>();
 		if (role==UserRoles.MANAGER)
+			//elements = elementDatabase
+				//.findAllByName(name, PageRequest.of(page, size, Direction.DESC, "elementId")).stream()
+				//.map(this.converter::entityToBoundary).collect(Collectors.toList());
 			elements = elementDatabase
-				.findAllByName(name, PageRequest.of(page, size, Direction.DESC, "elementId")).stream()
-				.map(this.converter::entityToBoundary).collect(Collectors.toList());
-		else
-			elements = elementDatabase
-			.findAllByNameAndActive(name,true ,PageRequest.of(page, size, Direction.DESC, "elementId")).stream()
+			.findAllByNameAndTypeContaining(name,"location" ,PageRequest.of(page, size, Direction.DESC, "elementId")).stream()
 			.map(this.converter::entityToBoundary).collect(Collectors.toList());
-
+		else
+			//elements = elementDatabase
+			//.findAllByNameAndActive(name,true ,PageRequest.of(page, size, Direction.DESC, "elementId")).stream()
+			//.map(this.converter::entityToBoundary).collect(Collectors.toList());
+			elements=this.elementDatabase.findAllByNameAndActiveAndTypeContaining(name,true,"location",
+					 PageRequest.of(page, size, Direction.DESC,"elementId"))
+					.stream().map(this.converter::entityToBoundary).collect(Collectors.toList());
+			
 		return elements;
 	}
 
