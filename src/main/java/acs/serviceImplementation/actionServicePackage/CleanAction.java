@@ -26,6 +26,8 @@ public class CleanAction extends Action {
 	void invoke() {
 		try {
 			super.init();
+			if (!super.element.getType().contains("location"))
+				throw new RuntimeException("you can only add a report to a location element");
 			ArrayList<Map<String, Object>> dataRetrieved = (ArrayList<Map<String, Object>>) super.element
 					.getElementAttributes().get("reports");
 			ObjectMapper mapper = new ObjectMapper();

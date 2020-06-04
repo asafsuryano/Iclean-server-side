@@ -25,6 +25,8 @@ public class AddReport extends Action {
 			r.setUserId(action.getInvokedBy().getUserId().toString());
 			r.setCreatedTimeStamp(new Date());
 			super.init();
+			if (!super.element.getType().contains("location"))
+				throw new RuntimeException("you can only add a report to a location element");
 			Map<String, Object> elemAttr = super.element.getElementAttributes();
 
 			if (!elemAttr.containsKey("reports"))
