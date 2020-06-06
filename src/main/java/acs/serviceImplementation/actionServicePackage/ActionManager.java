@@ -2,24 +2,19 @@ package acs.serviceImplementation.actionServicePackage;
 
 import java.lang.reflect.Constructor;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import acs.actionBoundaryPackage.ActionBoundary;
-import acs.data.reportsAttributes.Report;
-import acs.logic.ElementService;
 import acs.logic.UserService;
 import acs.logic.ExtraElementsService;
 
 @Component
 public class ActionManager {
 
-	private String actions;
 	protected UserService userService;
 	protected ExtraElementsService elementService;
 	protected ActionBoundary action;
