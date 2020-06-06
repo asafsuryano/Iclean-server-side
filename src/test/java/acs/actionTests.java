@@ -2,7 +2,6 @@ package acs;
 
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -535,8 +534,9 @@ public class actionTests {
 		assertThat(reports).hasSize(3);	
 		}
 	
-	//TEST 10 - create 3 actions that add 3 reports and clean them and create another 3 
-	//actions and clean them
+	// TEST 10 - create 3 actions that add 3 reports and clean them and create
+	// another 3
+	// actions and clean them
 	@Test
 	public void testAdd3ReportsAndCleanThemAndAnother3ReportsAndCleanThem() {
 		Report r1 = new Report();
@@ -701,6 +701,9 @@ public class actionTests {
 		System.out.println("");
 	}
 	
+	
+	
+	//TEST 11 - create a no location element type and adding report
 	@Test
 	public void createNoLocationElementTypeAndTryToAddReport() {
 
@@ -714,14 +717,13 @@ public class actionTests {
 				this.manager.getUserId().getDomain(), this.manager.getUserId().getEmail());
 		
 		
-		
 		ActionBoundary newActiontPosted8 = new ActionBoundary();
 		newActiontPosted8.setType("cleanReports");
 		newActiontPosted8.setInvokedBy(new InvokedBy(new UserId(this.player.getUserId().getDomain(), 
 				this.player.getUserId().getEmail())));
 		newActiontPosted8.setElement(new Element(
-				new ElementId(elementBoundary.getElementId().getDomain(),
-						elementBoundary.getElementId().getId())));
+				new ElementId(boundaryOnServerParent.getElementId().getDomain(),
+						boundaryOnServerParent.getElementId().getId())));
 		try {
 		ActionBoundary boundaryOnServer8 = 
 				this.restTemplate
@@ -731,11 +733,10 @@ public class actionTests {
 		
 	             	fail();
 		}catch(HttpServerErrorException ex) {
-	    assertTrue(ex instanceof HttpServerErrorException);		
-		
-	}
+			assertTrue(ex.toString().contains("you can only clean reports in a location element"));
+		}
  }
-	// TEST 11 - create 3 actions that add 3 employees
+	// TEST 12 - create 3 actions that add 3 employees
 	@Test
 	public void testAdd3EmployeesToShiftElement() {
 		ElementBoundary shiftElem=new ElementBoundary();
@@ -779,7 +780,7 @@ public class actionTests {
 
 		Employee e3=new Employee("e3", "333");
 		HashMap<String,Object> map3=new HashMap<>();
-		map1.put("employee", e3);
+		map3.put("employee", e3);
 
 		ActionBoundary newActiontPosted3 = new ActionBoundary();
 		newActiontPosted3.setType("addEmployee");
@@ -789,10 +790,19 @@ public class actionTests {
 				.setElement(new Element(new ElementId(elementOnServer.getElementId().getDomain(), elementOnServer.getElementId().getId())));
 		newActiontPosted3.setActionAttributes(map3);
 
+		ActionBoundary boundaryOnServer3 = this.restTemplate.postForObject(this.actionUrl, newActiontPosted3,
+				ActionBoundary.class);
+		
 		ElementBoundary[] elementAfterAction = this.restTemplate.getForObject(
-				this.elementUrl + "/{userDomain}/{userEmail}", ElementBoundary[].class,
-				this.player.getUserId().getDomain(), this.player.getUserId().getEmail());
-		System.out.println("");
+				this.elementUrl + "/{userDomain}/{userEmail}/search/byType/{type}", ElementBoundary[].class,
+				this.player.getUserId().getDomain(), this.player.getUserId().getEmail(),"shift");
+		
+		ObjectMapper mapper=new ObjectMapper();
+		ArrayList<Employee> employees=mapper.convertValue(
+				elementAfterAction[0].getElementAttributes().get("employees"),
+				new TypeReference<ArrayList<Employee>>() {});
+		assertThat(employees).hasSize(3);
+		
 	}
 }
 

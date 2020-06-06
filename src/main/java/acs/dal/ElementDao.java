@@ -17,6 +17,9 @@ public interface ElementDao extends PagingAndSortingRepository<ElementEntity,Ele
 
 	//select .... From elementEntity where active=? and type like '%?%'
 	public List<ElementEntity> findAllByActiveAndTypeContaining(@Param("active") boolean isActive,@Param("type") String type,Pageable pageable);
+	
+	//select .... From elementEntity where active=? and type like '%?%' for managers
+	public List<ElementEntity> findAllByTypeContaining(@Param("type") String type,Pageable pageable);
 
 
 	//	SELECT ... From ElementEntity where parentDomain=?and parentId=? for managers

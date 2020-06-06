@@ -247,7 +247,7 @@ public class ElementServiceImplementation implements ExtraElementsService {
 		errorCheckingSizePageAndAdmin(size, page, role);
 		List<ElementBoundary> allElements = new ArrayList<ElementBoundary>();
 		if (role==UserRoles.MANAGER)
-			allElements = this.elementDatabase.findAll(PageRequest.of(page, size, Direction.DESC, "elementId")).getContent()
+			allElements = this.elementDatabase.findAllByTypeContaining("location",PageRequest.of(page, size, Direction.DESC, "elementId"))
 					.stream().map(this.converter::entityToBoundary).collect(Collectors.toList());
 		else
 			allElements = this.elementDatabase.findAllByActiveAndTypeContaining(true,"location",PageRequest.of(page, size, Direction.DESC, "elementId"))

@@ -6,6 +6,8 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.springframework.web.client.HttpServerErrorException;
+
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -54,7 +56,7 @@ public class CleanAction extends Action {
 			super.elementService.updateElementAttributes(super.element.getElementId().getDomain(),
 					super.element.getElementId().getId(), newReportsInArchive);
 		} catch (Exception e) {
-			
+			throw new RuntimeException("you can only clean reports in a location element");
 		}
 
 	}
