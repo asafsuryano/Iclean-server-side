@@ -24,6 +24,8 @@ public class AddEmployee extends Action {
 		Map<String, Object> actionAttr = action.getActionAttributes();
 		Employee employee = new Employee((Map)actionAttr.get("employee"));
 		super.init();
+		if (super.element.getType().compareToIgnoreCase("shift")!=0)
+			throw new RuntimeException("you can only add an employee to a shift element");
 		Map<String, Object> elemAttr = super.element.getElementAttributes();
 		if(!elemAttr.containsKey("employees"))
 			elemAttr.put("employees", new ArrayList<Employee>());

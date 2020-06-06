@@ -30,7 +30,9 @@ import acs.actionBoundaryPackage.ElementId;
 import acs.actionBoundaryPackage.InvokedBy;
 import acs.actionBoundaryPackage.UserId;
 import acs.data.reportsAttributes.Report;
+import acs.data.workerAttributes.Employee;
 import acs.elementBoundaryPackage.ElementBoundary;
+import acs.elementBoundaryPackage.Location;
 import acs.newUserDetailsBoundaryPackage.NewUserDetails;
 import acs.usersBoundaryPackage.UserBoundary;
 
@@ -733,6 +735,65 @@ public class actionTests {
 		
 	}
  }
+	// TEST 11 - create 3 actions that add 3 employees
+	@Test
+	public void testAdd3EmployeesToShiftElement() {
+		ElementBoundary shiftElem=new ElementBoundary();
+		shiftElem.setType("shift");
+		shiftElem.setActive(true);
+		shiftElem.setLocation(new Location(1, 1));
+		shiftElem.setName("shift1");
+		ElementBoundary elementOnServer=this.restTemplate.
+				postForObject(this.elementUrl+"/{managerDomain}/{managerEmail}", shiftElem,
+						ElementBoundary.class,this.manager.getUserId().getDomain(),this.manager.getUserId().getEmail());
+		
+		
+		Employee e1=new Employee("e1", "111");
+		HashMap<String,Object> map1=new HashMap<>();
+		map1.put("employee", e1);
+		ActionBoundary newActiontPosted1 = new ActionBoundary();
+		newActiontPosted1.setType("addEmployee");
+		newActiontPosted1.setInvokedBy(
+				new InvokedBy(new UserId(this.player.getUserId().getDomain(), this.player.getUserId().getEmail())));
+		newActiontPosted1
+				.setElement(new Element(new ElementId(elementOnServer.getElementId().getDomain(), elementOnServer.getElementId().getId())));
+		newActiontPosted1.setActionAttributes(map1);
+
+		ActionBoundary boundaryOnServer = this.restTemplate.postForObject(this.actionUrl, newActiontPosted1,
+				ActionBoundary.class);
+
+		Employee e2=new Employee("e2", "222");
+		HashMap<String,Object> map2=new HashMap<>();
+		map2.put("employee", e2);
+
+		ActionBoundary newActiontPosted2 = new ActionBoundary();
+		newActiontPosted2.setType("addEmployee");
+		newActiontPosted2.setInvokedBy(
+				new InvokedBy(new UserId(this.player.getUserId().getDomain(), this.player.getUserId().getEmail())));
+		newActiontPosted2
+				.setElement(new Element(new ElementId(elementOnServer.getElementId().getDomain(), elementOnServer.getElementId().getId())));
+		newActiontPosted2.setActionAttributes(map2);
+
+		ActionBoundary boundaryOnServer2 = this.restTemplate.postForObject(this.actionUrl, newActiontPosted2,
+				ActionBoundary.class);
+
+		Employee e3=new Employee("e3", "333");
+		HashMap<String,Object> map3=new HashMap<>();
+		map1.put("employee", e3);
+
+		ActionBoundary newActiontPosted3 = new ActionBoundary();
+		newActiontPosted3.setType("addEmployee");
+		newActiontPosted3.setInvokedBy(
+				new InvokedBy(new UserId(this.player.getUserId().getDomain(), this.player.getUserId().getEmail())));
+		newActiontPosted3
+				.setElement(new Element(new ElementId(elementOnServer.getElementId().getDomain(), elementOnServer.getElementId().getId())));
+		newActiontPosted3.setActionAttributes(map3);
+
+		ElementBoundary[] elementAfterAction = this.restTemplate.getForObject(
+				this.elementUrl + "/{userDomain}/{userEmail}", ElementBoundary[].class,
+				this.player.getUserId().getDomain(), this.player.getUserId().getEmail());
+		System.out.println("");
+	}
 }
 
 
