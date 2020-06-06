@@ -1097,6 +1097,97 @@ public class elementTests {
 		
 		
 	}
+	
+	
+	
+	
+	@Test 
+	public void Create2ElementsAndReplaceTheirParent() {
+		
+		ElementBoundary elementBoundaryParent = new ElementBoundary();
+		elementBoundaryParent.setName("YarkonPark");
+		elementBoundaryParent.setActive(true);
+		elementBoundaryParent.setType("Shift");
+		
+		
+
+		ElementBoundary elementBoundaryParent2 = new ElementBoundary();
+		elementBoundaryParent.setName("YarkonPark");
+		elementBoundaryParent.setActive(true);
+		elementBoundaryParent.setType("Shift");
+		
+		
+		
+		ElementBoundary elementBoundaryChild1 = new ElementBoundary();
+		elementBoundaryChild1.setName("child 1");
+		elementBoundaryChild1.setActive(true);
+		elementBoundaryChild1.setType("DEMO_ELEMENT_location");
+
+		ElementBoundary elementBoundaryChild2 = new ElementBoundary();
+		elementBoundaryChild2.setName("child 2 ");
+		elementBoundaryChild2.setActive(true);
+		elementBoundaryChild2.setType("DEMO_ELEMENT_location");
+		
+		
+		ElementBoundary boundaryOnServerParent = this.restTemplate.postForObject(
+				this.elementUrl + "/{managerDomain}/{managerEmail}", elementBoundaryParent, ElementBoundary.class,
+				this.manager.getUserId().getDomain(), this.manager.getUserId().getEmail());
+		
+		
+		
+		ElementBoundary boundaryOnServerParent2 = this.restTemplate.postForObject(
+				this.elementUrl + "/{managerDomain}/{managerEmail}", elementBoundaryParent2, ElementBoundary.class,
+				this.manager.getUserId().getDomain(), this.manager.getUserId().getEmail());
+		
+
+		ElementBoundary boundaryOnServerChild1 = this.restTemplate.postForObject(
+				this.elementUrl + "/{managerDomain}/{managerEmail}", elementBoundaryParent, ElementBoundary.class,
+				this.manager.getUserId().getDomain(), this.manager.getUserId().getEmail());
+
+		ElementBoundary boundaryOnServerChild2 = this.restTemplate.postForObject(
+				this.elementUrl + "/{managerDomain}/{managerEmail}", elementBoundaryChild1, ElementBoundary.class,
+				this.manager.getUserId().getDomain(), this.manager.getUserId().getEmail());
+		
+		
+		
+		
+	                	/// Call to bind with parent 1!!
+				this.restTemplate.put(this.elementUrl + "/{managerDomain}/{managerEmail}/{elementDomain}/{elementId}/children",
+						boundaryOnServerChild1.getElementId(), this.manager.getUserId().getDomain(),
+						this.manager.getUserId().getEmail(), boundaryOnServerParent.getElementId().getDomain(),
+						boundaryOnServerParent.getElementId().getId());
+
+				this.restTemplate.put(this.elementUrl + "/{managerDomain}/{managerEmail}/{elementDomain}/{elementId}/children",
+						boundaryOnServerChild2.getElementId(), this.manager.getUserId().getDomain(),
+						this.manager.getUserId().getEmail(), boundaryOnServerParent.getElementId().getDomain(),
+						boundaryOnServerParent.getElementId().getId());
+		
+
+				
+				
+				
+			  	/// Call to bind for the same children with other Parent!!
+				this.restTemplate.put(this.elementUrl + "/{managerDomain}/{managerEmail}/{elementDomain}/{elementId}/children",
+						boundaryOnServerChild1.getElementId(), this.manager.getUserId().getDomain(),
+						this.manager.getUserId().getEmail(), boundaryOnServerParent.getElementId().getDomain(),
+						boundaryOnServerParent2.getElementId().getId());
+
+				this.restTemplate.put(this.elementUrl + "/{managerDomain}/{managerEmail}/{elementDomain}/{elementId}/children",
+						boundaryOnServerChild2.getElementId(), this.manager.getUserId().getDomain(),
+						this.manager.getUserId().getEmail(), boundaryOnServerParent.getElementId().getDomain(),
+						boundaryOnServerParent2.getElementId().getId());
+				
+				
+				
+		    
+				ElementBoundary[] elements = this.restTemplate.getForObject(
+						this.elementUrl + "/{userDomain}/{userEmail}/{elementDomain}/{elementID}/parents",
+						ElementBoundary[].class, this.manager.getUserId().getDomain(), this.manager.getUserId().getEmail(),
+						boundaryOnServerChild1.getElementId().getDomain(), boundaryOnServerChild1.getElementId().getId(), 0, 1);
+
+				  
+			assertTrue(boundaryOnServerParent2.getElementId().getId()==elements[0].getElementId().getId());
+	}
 		
 	
 }

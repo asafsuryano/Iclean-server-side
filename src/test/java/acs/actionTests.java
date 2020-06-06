@@ -699,6 +699,40 @@ public class actionTests {
 		System.out.println("");
 	}
 	
+	@Test
+	public void createNoLocationElementTypeAndTryToAddReport() {
+
+		ElementBoundary elementBoundary = new ElementBoundary();
+		elementBoundary.setName("ban");
+		elementBoundary.setActive(true);
+		elementBoundary.setType("shfit");
+	
+		ElementBoundary boundaryOnServerParent = this.restTemplate.postForObject(
+				this.elementUrl + "/{managerDomain}/{managerEmail}", elementBoundary, ElementBoundary.class,
+				this.manager.getUserId().getDomain(), this.manager.getUserId().getEmail());
+		
+		
+		
+		ActionBoundary newActiontPosted8 = new ActionBoundary();
+		newActiontPosted8.setType("cleanReports");
+		newActiontPosted8.setInvokedBy(new InvokedBy(new UserId(this.player.getUserId().getDomain(), 
+				this.player.getUserId().getEmail())));
+		newActiontPosted8.setElement(new Element(
+				new ElementId(elementBoundary.getElementId().getDomain(),
+						elementBoundary.getElementId().getId())));
+		try {
+		ActionBoundary boundaryOnServer8 = 
+				this.restTemplate
+				.postForObject(this.actionUrl ,
+						newActiontPosted8,
+						ActionBoundary.class);
+		
+	             	fail();
+		}catch(HttpServerErrorException ex) {
+	    assertTrue(ex instanceof HttpServerErrorException);		
+		
+	}
+ }
 }
 
 
