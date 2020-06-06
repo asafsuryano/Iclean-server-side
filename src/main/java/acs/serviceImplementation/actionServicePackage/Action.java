@@ -1,7 +1,5 @@
 package acs.serviceImplementation.actionServicePackage;
 
-import javax.annotation.PostConstruct;
-
 
 import acs.actionBoundaryPackage.ActionBoundary;
 import acs.data.UserRoles;
@@ -26,7 +24,6 @@ public abstract class Action {
 	}
 	
 	
-	//@PostConstruct
 	public void init() {
 		user = getActionUserBoundary();
 		if(!isUserAPlayer(user))

@@ -19,10 +19,6 @@ import acs.logic.ExtraElementsService;
 @Component
 public class ActionManager {
 
-	//@Value("#{'${action.actions}'.split(',')}") 
-	//@Value("#{action.actions}")
-	//@Value("${spring.application.name:demo}")
-	//@Value("#{${action.actions}}")
 	private String actions;
 	protected UserService userService;
 	protected ExtraElementsService elementService;
@@ -32,7 +28,6 @@ public class ActionManager {
 	public ActionManager(UserService userService,ExtraElementsService elementService) {
 		this.userService = userService;
 		this.elementService = elementService;
-//		this.action = action;
 	}
 	
 	
@@ -48,15 +43,9 @@ public class ActionManager {
 	public Action getAction() {
 		
 		try {
-//			actions.stream().filter(actionClass -> actionClass.equals(type))
-//			ObjectMapper mapper = new ObjectMapper(); 
-//			ArrayList<String> r = mapper.readValue(actions,ArrayList<String>.class);
-			String className=this.actionsMap.get(this.action.getType());
-			//return (Action) Class.forName(className).newInstance(); 
-			
+			String className=this.actionsMap.get(this.action.getType());			
 			Constructor<?> c = Class.forName(className).getConstructor(UserService.class, ExtraElementsService.class,ActionBoundary.class);
 			return (Action) c.newInstance(userService, elementService, action);
-			//return Action.class.getDeclaredConstructor(String.class).newInstance( userService, elementService, action);
 		} catch (Exception e) {
 			throw new RuntimeException("the action type is invalid");
 		}
