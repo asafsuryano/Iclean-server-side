@@ -1,30 +1,14 @@
 
 package acs;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-
 import javax.annotation.PostConstruct;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.web.client.RestTemplate;
-
-import acs.data.elementEntityProperties.Type;
-import acs.elementBoundaryPackage.CreatedBy;
-import acs.elementBoundaryPackage.ElementBoundary;
-import acs.elementBoundaryPackage.ElementIdBoundary;
-import acs.elementBoundaryPackage.UserId;
-import acs.newUserDetailsBoundaryPackage.NewUserDetails;
-import acs.usersBoundaryPackage.User;
-import acs.usersBoundaryPackage.UserBoundary;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 public class ApplicationTests {
