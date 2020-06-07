@@ -1101,8 +1101,11 @@ public class elementTests {
 	
 	
 	
+	
 	@Test 
 	public void Create2ElementsAndReplaceTheirParent() {
+		
+		
 		
 		ElementBoundary elementBoundaryParent = new ElementBoundary();
 		elementBoundaryParent.setName("YarkonPark");
@@ -1112,12 +1115,12 @@ public class elementTests {
 		
 
 		ElementBoundary elementBoundaryParent2 = new ElementBoundary();
-		elementBoundaryParent.setName("YarkonPark");
-		elementBoundaryParent.setActive(true);
-		elementBoundaryParent.setType("Shift");
+		elementBoundaryParent2.setName("Afake");
+		elementBoundaryParent2.setActive(true);
+		elementBoundaryParent2.setType("Shift");
 		
 		
-		
+	
 		ElementBoundary elementBoundaryChild1 = new ElementBoundary();
 		elementBoundaryChild1.setName("child 1");
 		elementBoundaryChild1.setActive(true);
@@ -1128,6 +1131,8 @@ public class elementTests {
 		elementBoundaryChild2.setActive(true);
 		elementBoundaryChild2.setType("DEMO_ELEMENT_location");
 		
+		
+		//create 2 parent element
 		
 		ElementBoundary boundaryOnServerParent = this.restTemplate.postForObject(
 				this.elementUrl + "/{managerDomain}/{managerEmail}", elementBoundaryParent, ElementBoundary.class,
@@ -1140,22 +1145,25 @@ public class elementTests {
 				this.manager.getUserId().getDomain(), this.manager.getUserId().getEmail());
 		
 
+		
+		//Create 2 child element
 		ElementBoundary boundaryOnServerChild1 = this.restTemplate.postForObject(
-				this.elementUrl + "/{managerDomain}/{managerEmail}", elementBoundaryParent, ElementBoundary.class,
+				this.elementUrl + "/{managerDomain}/{managerEmail}", elementBoundaryChild1, ElementBoundary.class,
 				this.manager.getUserId().getDomain(), this.manager.getUserId().getEmail());
 
 		ElementBoundary boundaryOnServerChild2 = this.restTemplate.postForObject(
-				this.elementUrl + "/{managerDomain}/{managerEmail}", elementBoundaryChild1, ElementBoundary.class,
+				this.elementUrl + "/{managerDomain}/{managerEmail}", elementBoundaryChild2, ElementBoundary.class,
 				this.manager.getUserId().getDomain(), this.manager.getUserId().getEmail());
 		
 		
 		
 		
-	                	/// Call to bind with parent 1!!
-				this.restTemplate.put(this.elementUrl + "/{managerDomain}/{managerEmail}/{elementDomain}/{elementId}/children",
-						boundaryOnServerChild1.getElementId(), this.manager.getUserId().getDomain(),
-						this.manager.getUserId().getEmail(), boundaryOnServerParent.getElementId().getDomain(),
-						boundaryOnServerParent.getElementId().getId());
+	                
+		/// Call to bind with parent 1!!
+		this.restTemplate.put(this.elementUrl + "/{managerDomain}/{managerEmail}/{elementDomain}/{elementId}/children",
+				boundaryOnServerChild1.getElementId(), this.manager.getUserId().getDomain(),
+				this.manager.getUserId().getEmail(), boundaryOnServerParent.getElementId().getDomain(),
+				boundaryOnServerParent.getElementId().getId());
 
 				this.restTemplate.put(this.elementUrl + "/{managerDomain}/{managerEmail}/{elementDomain}/{elementId}/children",
 						boundaryOnServerChild2.getElementId(), this.manager.getUserId().getDomain(),
@@ -1169,12 +1177,12 @@ public class elementTests {
 			  	/// Call to bind for the same children with other Parent!!
 				this.restTemplate.put(this.elementUrl + "/{managerDomain}/{managerEmail}/{elementDomain}/{elementId}/children",
 						boundaryOnServerChild1.getElementId(), this.manager.getUserId().getDomain(),
-						this.manager.getUserId().getEmail(), boundaryOnServerParent.getElementId().getDomain(),
+						this.manager.getUserId().getEmail(), boundaryOnServerParent2.getElementId().getDomain(),
 						boundaryOnServerParent2.getElementId().getId());
 
 				this.restTemplate.put(this.elementUrl + "/{managerDomain}/{managerEmail}/{elementDomain}/{elementId}/children",
 						boundaryOnServerChild2.getElementId(), this.manager.getUserId().getDomain(),
-						this.manager.getUserId().getEmail(), boundaryOnServerParent.getElementId().getDomain(),
+						this.manager.getUserId().getEmail(), boundaryOnServerParent2.getElementId().getDomain(),
 						boundaryOnServerParent2.getElementId().getId());
 				
 				
@@ -1184,10 +1192,13 @@ public class elementTests {
 						this.elementUrl + "/{userDomain}/{userEmail}/{elementDomain}/{elementID}/parents",
 						ElementBoundary[].class, this.manager.getUserId().getDomain(), this.manager.getUserId().getEmail(),
 						boundaryOnServerChild1.getElementId().getDomain(), boundaryOnServerChild1.getElementId().getId(), 0, 1);
-
-				  
-			assertTrue(boundaryOnServerParent2.getElementId().getId()==elements[0].getElementId().getId());
+				
+				
+				            
+				assertTrue(elements[0].getElementId().getId().contains(boundaryOnServerParent2.getElementId().getId()));
+				 
 	}
+		
 		
 	
 }
