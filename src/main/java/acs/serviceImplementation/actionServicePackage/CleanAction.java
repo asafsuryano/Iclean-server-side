@@ -53,7 +53,7 @@ public class CleanAction extends Action {
 			super.elementService.updateElementAttributes(super.element.getElementId().getDomain(),
 					super.element.getElementId().getId(), newReportsInArchive);
 		} catch (Exception e) {
-			throw new RuntimeException("you can only clean reports in a location element");
+			throw new RuntimeException(e.toString());
 		}
 
 	}
