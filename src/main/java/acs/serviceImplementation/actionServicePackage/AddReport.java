@@ -19,7 +19,13 @@ public class AddReport extends Action {
 	public void invoke() {
 		try {
 			Map<String, Object> actionAttr = action.getActionAttributes();
-			Report r = new Report((Map) actionAttr.get("report"));
+			Report r;
+			if(actionAttr.get("report") instanceof Report) {
+				r = (Report)actionAttr.get("report");
+			}else {
+				r = new Report((Map)actionAttr.get("report"));
+			}
+			
 			r.setUserId(action.getInvokedBy().getUserId().toString());
 			r.setCreatedTimeStamp(new Date());
 			super.init();
